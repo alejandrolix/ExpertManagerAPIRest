@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APIRest.Context;
 
 namespace APIRest
 {
@@ -33,7 +34,7 @@ namespace APIRest
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIRest", Version = "v1" });
             });
-            services.AddDbContext<MvcMovieContext>(options =>
+            services.AddDbContext<ExpertManagerContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ExpertManagerContext")));
         }
 
