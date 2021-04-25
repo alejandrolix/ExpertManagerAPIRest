@@ -8,5 +8,8 @@ namespace APIRest.Context
 {
     public class ExpertManagerContext : DbContext
     {
+        public ExpertManagerContext(DbContextOptions<ExpertManagerContext> options) : base(options)
+        {
+        }
     }
 }
