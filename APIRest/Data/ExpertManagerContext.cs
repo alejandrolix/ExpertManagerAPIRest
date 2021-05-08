@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using APIRest.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,7 @@ namespace APIRest.Context
         public ExpertManagerContext(DbContextOptions<ExpertManagerContext> options) : base(options)
         {
         }
+
+        public DbSet<Aseguradora> Aseguradoras { get; set; }
     }
 }
