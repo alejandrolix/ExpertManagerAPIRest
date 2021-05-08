@@ -15,5 +15,6 @@ namespace APIRest.Context
 
         public DbSet<Aseguradora> Aseguradoras { get; set; }
         public DbSet<Estado> Estados { get; set; }
+        public DbSet<Danio> Danios { get; set; }
     }
 }
