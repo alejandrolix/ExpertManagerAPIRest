@@ -18,6 +18,7 @@ namespace APIRest.Context
         public DbSet<Danio> Danios { get; set; }
         public DbSet<Permiso> Permisos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Mensaje> Mensajes { get; set; }
+        public DbSet<Mensaje> Mensajes { get; set; }        
+        public DbSet<Siniestro> Siniestros { get; set; }        
     }
 }
