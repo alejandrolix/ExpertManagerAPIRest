@@ -37,14 +37,15 @@ namespace APIRest.Controllers
             List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
             {
                 Id = siniestro.Id,
-                Estado = siniestro.Estado.ToString(),
+                Estado = siniestro.Estado.Nombre,
                 Aseguradora = siniestro.Aseguradora.Nombre,
                 Descripcion = siniestro.Descripcion,
                 Perito = siniestro.Perito.Nombre,
-                FechaHoraAlta = siniestro.FechaHoraAlta,
+                FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy"),
                 SujetoAfectado = siniestro.SujetoAfectado.ToString(),
-                ImpValoracionDanios = siniestro.ImpValoracionDanios
-            }).ToList();
+                ImpValoracionDanios = siniestro.ImpValoracionDanios.ToString("F")
+            })
+            .ToList();
 
             return siniestrosVms;
         }

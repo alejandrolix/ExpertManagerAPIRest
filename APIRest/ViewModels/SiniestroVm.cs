@@ -12,8 +12,8 @@ namespace APIRest.ViewModels
         public string Aseguradora { get; set; }
         public string Descripcion { get; set; }
         public string Perito { get; set; }
-        public DateTime FechaHoraAlta { get; set; }
+        public string FechaHoraAlta { get; set; }
         public string SujetoAfectado { get; set; }
-        public decimal ImpValoracionDanios { get; set; }
+        public string ImpValoracionDanios { get; set; }
     }
 }
