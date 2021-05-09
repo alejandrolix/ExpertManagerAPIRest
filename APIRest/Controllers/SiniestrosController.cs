@@ -1,5 +1,6 @@
 ﻿using APIRest.Context;
 using APIRest.Models;
+using APIRest.ViewModels;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace APIRest.Controllers
 
         // GET: SiniestrosController
         [HttpGet]
-        public async Task<List<Siniestro>> Index()
+        public async Task<List<SiniestroVm>> Index()
         {
             List<Siniestro> siniestros = await _contexto.Siniestros
                                                         .Include(siniestro => siniestro.Aseguradora)
@@ -32,7 +33,20 @@ namespace APIRest.Controllers
                                                         .Include(siniestro => siniestro.UsuarioCreado)
                                                         .Include(siniestro => siniestro.Perito)                                                        
                                                         .ToListAsync();
-            return siniestros;
+
+            List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
+            {
+                Id = siniestro.Id,
+                Estado = siniestro.Estado.ToString(),
+                Aseguradora = siniestro.Aseguradora.Nombre,
+                Descripcion = siniestro.Descripcion,
+                Perito = siniestro.Perito.Nombre,
+                FechaHoraAlta = siniestro.FechaHoraAlta,
+                SujetoAfectado = siniestro.SujetoAfectado.ToString(),
+                ImpValoracionDanios = siniestro.ImpValoracionDanios
+            }).ToList();
+
+            return siniestrosVms;
         }
 
         // GET: SiniestrosController/Details/5
