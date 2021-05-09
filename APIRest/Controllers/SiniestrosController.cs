@@ -30,10 +30,8 @@ namespace APIRest.Controllers
                                                         .Include(siniestro => siniestro.Aseguradora)
                                                         .Include(siniestro => siniestro.Estado)
                                                         .Include(siniestro => siniestro.UsuarioCreado)
-                                                        .Include(siniestro => siniestro.Perito)
-                                                        .Include(siniestro => siniestro.Danios)
+                                                        .Include(siniestro => siniestro.Perito)                                                        
                                                         .ToListAsync();
-
             return siniestros;
         }
 
