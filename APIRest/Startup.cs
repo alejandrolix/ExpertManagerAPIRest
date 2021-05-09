@@ -28,6 +28,11 @@ namespace APIRest
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("corsapi",
+                    builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -50,7 +55,9 @@ namespace APIRest
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
+            app.UseRouting();            
+
+            app.UseCors("corsapi");
 
             app.UseAuthorization();
 
