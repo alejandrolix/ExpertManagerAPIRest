@@ -31,7 +31,7 @@ namespace APIRest.Models
         public SujetoAfectado SujetoAfectado { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(4,2)")]
+        [Column(TypeName = "decimal(5,2)")]
         public decimal ImpValoracionDanios { get; set; }
 
         public int PeritoId { get; set; }
