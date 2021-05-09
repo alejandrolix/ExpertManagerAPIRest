@@ -44,7 +44,7 @@ namespace APIRest.Controllers
                 Perito = siniestro.Perito.Nombre,
                 FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
                 SujetoAfectado = siniestro.SujetoAfectado.ToString(),
-                ImpValoracionDanios = siniestro.ImpValoracionDanios.ToString("F")
+                ImpValoracionDanios = $"{siniestro.ImpValoracionDanios.ToString("F")} €"
             })
             .ToList();
 
