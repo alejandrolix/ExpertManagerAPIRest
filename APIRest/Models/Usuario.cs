@@ -15,6 +15,8 @@ namespace APIRest.Models
 
         [Required]
         public string Contrasenia { get; set; }
+
+        public bool? EsPerito { get; set; }
         
         public int PermisoId { get; set; }
         public Permiso Permiso { get; set; }
