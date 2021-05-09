@@ -65,20 +65,61 @@ namespace APIRest.Controllers
         //    return View();
         //}
 
-        //// POST: SiniestrosController/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+        // POST: SiniestrosController/Create
+        [HttpPost]        
+        public async Task<JsonResult> Create(CrearSiniestroVm crearSiniestroVm)
+        {
+            try
+            {
+                Estado estado = await _contexto.Estados
+                                                   .Where(estado => estado.Id == 2)
+                                                   .FirstOrDefaultAsync();
+
+                Aseguradora aseguradora = await _contexto.Aseguradoras
+                                                         .Where(aseguradora => aseguradora.Id == crearSiniestroVm.IdAseguradora)
+                                                         .FirstOrDefaultAsync();
+
+                Usuario usuarioCreado = await _contexto.Usuarios
+                                                        .Where(usuario => usuario.Id == crearSiniestroVm.IdUsuarioAlta)
+                                                        .FirstOrDefaultAsync();
+
+                SujetoAfectado sujetoAfectado = (SujetoAfectado)crearSiniestroVm.IdSujetoAfectado;
+
+                Usuario perito = await _contexto.Usuarios
+                                                .Where(usuario => usuario.Id == crearSiniestroVm.IdPerito)
+                                                .FirstOrDefaultAsync();
+
+                Danio danio = await _contexto.Danios
+                                            .Where(danio => danio.Id == crearSiniestroVm.IdDanio)
+                                            .FirstOrDefaultAsync();
+
+                Siniestro siniestro = new Siniestro()
+                {
+                    Estado = estado,
+                    Aseguradora = aseguradora,
+                    Direccion = crearSiniestroVm.Direccion,
+                    Descripcion = crearSiniestroVm.Descripcion,
+                    UsuarioCreado = usuarioCreado,
+                    FechaHoraAlta = DateTime.Now,
+                    SujetoAfectado = sujetoAfectado,
+                    ImpValoracionDanios = 0.00M,
+                    Perito = perito,
+                    Danio = danio
+                };
+
+                _contexto.Add(siniestro);
+                int numRegistros = await _contexto.SaveChangesAsync();
+
+                if (numRegistros != 0)
+                    return new JsonResult(true);                
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }
+
+            return new JsonResult(false);
+        }
 
         //// GET: SiniestrosController/Edit/5
         //public ActionResult Edit(int id)
