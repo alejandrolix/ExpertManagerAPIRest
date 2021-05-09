@@ -31,7 +31,8 @@ namespace APIRest.Controllers
                                                         .Include(siniestro => siniestro.Aseguradora)
                                                         .Include(siniestro => siniestro.Estado)
                                                         .Include(siniestro => siniestro.UsuarioCreado)
-                                                        .Include(siniestro => siniestro.Perito)          
+                                                        .Include(siniestro => siniestro.Perito)        
+                                                        .Include(siniestro => siniestro.Danio)
                                                         .OrderByDescending(siniestro => siniestro.FechaHoraAlta)
                                                         .ToListAsync();
 
@@ -44,6 +45,7 @@ namespace APIRest.Controllers
                 Perito = siniestro.Perito.Nombre,
                 FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
                 SujetoAfectado = siniestro.SujetoAfectado.ToString(),
+                Danio = siniestro.Danio.Nombre,
                 ImpValoracionDanios = $"{siniestro.ImpValoracionDanios.ToString("F")} €"
             })
             .ToList();

@@ -14,6 +14,7 @@ namespace APIRest.ViewModels
         public string Perito { get; set; }
         public string FechaHoraAlta { get; set; }
         public string SujetoAfectado { get; set; }
+        public string Danio { get; set; }
         public string ImpValoracionDanios { get; set; }
     }
 }
