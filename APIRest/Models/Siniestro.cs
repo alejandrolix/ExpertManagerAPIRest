@@ -41,6 +41,6 @@ namespace APIRest.Models
 
     public enum SujetoAfectado
     {
-        Asegurado, Contrario
+        Asegurado = 0, Contrario = 1
     }
 }
