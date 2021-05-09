@@ -32,7 +32,7 @@ namespace APIRest.Controllers
                                                         .Include(siniestro => siniestro.Estado)
                                                         .Include(siniestro => siniestro.UsuarioCreado)
                                                         .Include(siniestro => siniestro.Perito)          
-                                                        .OrderBy(siniestro => siniestro.FechaHoraAlta)
+                                                        .OrderByDescending(siniestro => siniestro.FechaHoraAlta)
                                                         .ToListAsync();
 
             List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
