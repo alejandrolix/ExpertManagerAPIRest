@@ -148,19 +148,26 @@ namespace APIRest.Controllers
         //    return View();
         //}
 
-        //// POST: SiniestrosController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+        // DELETE: SiniestrosController/Delete/5
+        [HttpDelete("{id}")]        
+        public async Task<JsonResult> Delete(int id)
+        {
+            try
+            {
+                Siniestro siniestro = await _contexto.Siniestros
+                                                         .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
+                if (siniestro is null)
+                    return new JsonResult(false);
+
+                _contexto.Remove(siniestro);
+                await _contexto.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }
+        }
     }
 }
