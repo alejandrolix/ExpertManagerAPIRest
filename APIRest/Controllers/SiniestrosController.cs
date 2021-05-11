@@ -71,6 +71,7 @@ namespace APIRest.Controllers
                 Estado = siniestro.Estado.Nombre,
                 IdAseguradora = siniestro.AseguradoraId,
                 Aseguradora = siniestro.Aseguradora.Nombre,
+                Direccion = siniestro.Direccion,
                 Descripcion = siniestro.Descripcion,
                 IdPerito = siniestro.PeritoId,
                 Perito = siniestro.Perito.Nombre,

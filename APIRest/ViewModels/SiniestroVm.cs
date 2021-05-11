@@ -12,6 +12,7 @@ namespace APIRest.ViewModels
         public string Estado { get; set; }
         public int IdAseguradora { get; set; }
         public string Aseguradora { get; set; }
+        public string Direccion { get; set; }
         public string Descripcion { get; set; }
         public int IdPerito { get; set; }
         public string Perito { get; set; }
