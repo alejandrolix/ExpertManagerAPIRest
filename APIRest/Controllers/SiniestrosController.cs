@@ -67,12 +67,17 @@ namespace APIRest.Controllers
             SiniestroVm siniestroVm = new SiniestroVm()
             {
                 Id = siniestro.Id,
+                IdEstado = siniestro.EstadoId,
                 Estado = siniestro.Estado.Nombre,
+                IdAseguradora = siniestro.AseguradoraId,
                 Aseguradora = siniestro.Aseguradora.Nombre,
                 Descripcion = siniestro.Descripcion,
+                IdPerito = siniestro.PeritoId,
                 Perito = siniestro.Perito.Nombre,
                 FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
+                IdSujetoAfectado = (int) siniestro.SujetoAfectado,
                 SujetoAfectado = siniestro.SujetoAfectado.ToString(),
+                IdDanio = siniestro.DanioId.Value,
                 Danio = siniestro.Danio.Nombre,
                 ImpValoracionDanios = $"{siniestro.ImpValoracionDanios.ToString("F")} €"
             };
