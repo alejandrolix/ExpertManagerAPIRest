@@ -53,17 +53,32 @@ namespace APIRest.Controllers
             return siniestrosVms;
         }
 
-        // GET: SiniestrosController/Details/5
-        //public ActionResult Details(int id)
-        //{
-        //    return View();
-        //}
+        [HttpGet("{id}")]
+        public async Task<SiniestroVm> ObtenerPorId(int id)
+        {
+            Siniestro siniestro = await _contexto.Siniestros
+                                                .Include(siniestro => siniestro.Aseguradora)
+                                                .Include(siniestro => siniestro.Estado)
+                                                .Include(siniestro => siniestro.UsuarioCreado)
+                                                .Include(siniestro => siniestro.Perito)
+                                                .Include(siniestro => siniestro.Danio)
+                                                .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
 
-        //// GET: SiniestrosController/Create
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
+            SiniestroVm siniestroVm = new SiniestroVm()
+            {
+                Id = siniestro.Id,
+                Estado = siniestro.Estado.Nombre,
+                Aseguradora = siniestro.Aseguradora.Nombre,
+                Descripcion = siniestro.Descripcion,
+                Perito = siniestro.Perito.Nombre,
+                FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
+                SujetoAfectado = siniestro.SujetoAfectado.ToString(),
+                Danio = siniestro.Danio.Nombre,
+                ImpValoracionDanios = $"{siniestro.ImpValoracionDanios.ToString("F")} €"
+            };
+
+            return siniestroVm;
+        }
 
         // POST: SiniestrosController/Create
         [HttpPost]        
@@ -142,12 +157,6 @@ namespace APIRest.Controllers
         //    }
         //}
 
-        //// GET: SiniestrosController/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
-
         // DELETE: SiniestrosController/Delete/5
         [HttpDelete("{id}")]        
         public async Task<JsonResult> Delete(int id)
@@ -155,7 +164,7 @@ namespace APIRest.Controllers
             try
             {
                 Siniestro siniestro = await _contexto.Siniestros
-                                                         .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
+                                                     .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
                 if (siniestro is null)
                     return new JsonResult(false);
 
