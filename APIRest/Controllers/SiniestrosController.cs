@@ -148,8 +148,8 @@ namespace APIRest.Controllers
             try
             {
                 Estado estado = await _contexto.Estados
-                                                   .Where(estado => estado.Id == siniestroVm.IdEstado)
-                                                   .FirstOrDefaultAsync();
+                                                .Where(estado => estado.Id == siniestroVm.IdEstado)
+                                                .FirstOrDefaultAsync();
 
                 Aseguradora aseguradora = await _contexto.Aseguradoras
                                                          .Where(aseguradora => aseguradora.Id == siniestroVm.IdAseguradora)
@@ -162,17 +162,17 @@ namespace APIRest.Controllers
                                                 .FirstOrDefaultAsync();
 
                 Danio danio = await _contexto.Danios
-                                            .Where(danio => danio.Id == siniestroVm.IdDanio)
-                                            .FirstOrDefaultAsync();
+                                                .Where(danio => danio.Id == siniestroVm.IdDanio)
+                                                .FirstOrDefaultAsync();
 
                 Siniestro siniestro = await _contexto.Siniestros
-                                                .Include(siniestro => siniestro.Estado)
-                                                .Include(siniestro => siniestro.Aseguradora)
-                                                .Include(siniestro => siniestro.Perito)
-                                                .Include(siniestro => siniestro.Danio)
-                                                .Include(siniestro => siniestro.UsuarioCreado)
-                                                .Where(siniestro => siniestro.Id == id)
-                                                .FirstOrDefaultAsync();
+                                                    .Include(siniestro => siniestro.Estado)
+                                                    .Include(siniestro => siniestro.Aseguradora)
+                                                    .Include(siniestro => siniestro.Perito)
+                                                    .Include(siniestro => siniestro.Danio)
+                                                    .Include(siniestro => siniestro.UsuarioCreado)
+                                                    .Where(siniestro => siniestro.Id == id)
+                                                    .FirstOrDefaultAsync();
 
                 siniestro.Estado = estado;
                 siniestro.Aseguradora = aseguradora;
