@@ -142,28 +142,57 @@ namespace APIRest.Controllers
             return new JsonResult(false);
         }
 
-        //// GET: SiniestrosController/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
+        [HttpPut("{id}")]        
+        public async Task<JsonResult> Edit(int id, SiniestroVm siniestroVm)
+        {
+            try
+            {
+                Estado estado = await _contexto.Estados
+                                                   .Where(estado => estado.Id == siniestroVm.IdEstado)
+                                                   .FirstOrDefaultAsync();
 
-        //// POST: SiniestrosController/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+                Aseguradora aseguradora = await _contexto.Aseguradoras
+                                                         .Where(aseguradora => aseguradora.Id == siniestroVm.IdAseguradora)
+                                                         .FirstOrDefaultAsync();                
 
-        // DELETE: SiniestrosController/Delete/5
+                SujetoAfectado sujetoAfectado = (SujetoAfectado) siniestroVm.IdSujetoAfectado;
+
+                Usuario perito = await _contexto.Usuarios
+                                                .Where(usuario => usuario.Id == siniestroVm.IdPerito)
+                                                .FirstOrDefaultAsync();
+
+                Danio danio = await _contexto.Danios
+                                            .Where(danio => danio.Id == siniestroVm.IdDanio)
+                                            .FirstOrDefaultAsync();
+
+                Siniestro siniestro = await _contexto.Siniestros
+                                                .Include(siniestro => siniestro.Estado)
+                                                .Include(siniestro => siniestro.Aseguradora)
+                                                .Include(siniestro => siniestro.Perito)
+                                                .Include(siniestro => siniestro.Danio)
+                                                .Include(siniestro => siniestro.UsuarioCreado)
+                                                .Where(siniestro => siniestro.Id == id)
+                                                .FirstOrDefaultAsync();
+
+                siniestro.Estado = estado;
+                siniestro.Aseguradora = aseguradora;
+                siniestro.Direccion = siniestroVm.Direccion;
+                siniestro.Descripcion = siniestroVm.Descripcion;
+                siniestro.SujetoAfectado = sujetoAfectado;
+                siniestro.Perito = perito;
+                siniestro.Danio = danio;                                
+
+                _contexto.Update(siniestro);
+                await _contexto.SaveChangesAsync();
+                
+                return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }            
+        }
+
         [HttpDelete("{id}")]        
         public async Task<JsonResult> Delete(int id)
         {
