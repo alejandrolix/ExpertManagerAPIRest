@@ -162,8 +162,8 @@ namespace APIRest.Controllers
                                                 .FirstOrDefaultAsync();
 
                 Danio danio = await _contexto.Danios
-                                                .Where(danio => danio.Id == siniestroVm.IdDanio)
-                                                .FirstOrDefaultAsync();
+                                            .Where(danio => danio.Id == siniestroVm.IdDanio)
+                                            .FirstOrDefaultAsync();
 
                 Siniestro siniestro = await _contexto.Siniestros
                                                     .Include(siniestro => siniestro.Estado)
@@ -180,7 +180,12 @@ namespace APIRest.Controllers
                 siniestro.Descripcion = siniestroVm.Descripcion;
                 siniestro.SujetoAfectado = sujetoAfectado;
                 siniestro.Perito = perito;
-                siniestro.Danio = danio;                                
+                siniestro.Danio = danio;
+
+                if (siniestroVm.IdEstado == 3)      // Estado Valorado
+                    siniestro.ImpValoracionDanios = decimal.Parse(siniestroVm.ImpValoracionDanios);
+                else
+                    siniestro.ImpValoracionDanios = 0;
 
                 _contexto.Update(siniestro);
                 await _contexto.SaveChangesAsync();
