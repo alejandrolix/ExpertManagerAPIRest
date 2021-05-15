@@ -13,6 +13,9 @@ namespace APIRest.Models
         [Required]
         public string Descripcion { get; set; }
 
+        [Required]
+        public string UrlArchivo { get; set; }
+
         public int SiniestroId { get; set; }
         public Siniestro Siniestro { get; set; }
     }
