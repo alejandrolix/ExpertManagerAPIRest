@@ -63,5 +63,16 @@ namespace APIRest.Controllers
             memory.Position = 0;
             return File(memory, "application/pdf", Path.GetFileName(rutaPdf));
         }
+
+        [HttpPost]
+        public bool Subir([FromForm] DocumentacionVm documentacionVm)
+        {
+            //Documentacion documentacion = new Documentacion()
+            //{
+
+            //};
+
+            return true;
+        }
     }
 }
