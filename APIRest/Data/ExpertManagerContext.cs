@@ -20,5 +20,6 @@ namespace APIRest.Context
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Mensaje> Mensajes { get; set; }        
         public DbSet<Siniestro> Siniestros { get; set; }        
+        public DbSet<Documentacion> Documentaciones { get; set; }        
     }
 }
