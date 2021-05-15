@@ -50,18 +50,18 @@ namespace APIRest.Controllers
         public async Task<FileStreamResult> Obtener(int id)
         {
             Documentacion documentacion = await _contexto.Documentaciones
-                                                        .FirstOrDefaultAsync(documentacion => documentacion.Id == id);
+                                                         .FirstOrDefaultAsync(documentacion => documentacion.Id == id);
 
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", documentacion.UrlArchivo);
+            string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", documentacion.UrlArchivo);
 
             var memory = new MemoryStream();
-            using (var stream = new FileStream(path, FileMode.Open))
+            using (var stream = new FileStream(rutaPdf, FileMode.Open))
             {
                 await stream.CopyToAsync(memory);
             }
 
             memory.Position = 0;
-            return File(memory, "application/pdf", Path.GetFileName(path));
+            return File(memory, "application/pdf", Path.GetFileName(rutaPdf));
         }
     }
 }
