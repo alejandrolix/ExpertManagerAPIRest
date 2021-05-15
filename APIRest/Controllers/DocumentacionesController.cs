@@ -27,15 +27,21 @@ namespace APIRest.Controllers
         }
 
         // GET: DocumentacionesController
-        [HttpGet("{id}")]
-        public async Task<List<Aseguradora>> Index(int id)
+        [HttpGet("ObtenerPorIdSiniestro/{idSiniestro}")]
+        public async Task<List<DocumentacionVm>> ObtenerPorIdSiniestro(int idSiniestro)
         {
-            
+            List<Documentacion> documentaciones = await _contexto.Documentaciones
+                                                                 .Where(documentacion => documentacion.SiniestroId == idSiniestro)
+                                                                 .ToListAsync();
 
-            //List<Aseguradora> aseguradoras = await _contexto.Aseguradoras                                                        
-            //                                                .ToListAsync();
+            List<DocumentacionVm> documentacionesVm = documentaciones.Select(documentacion => new DocumentacionVm()
+            {
+                Id = documentacion.Id,
+                Descripcion = documentacion.Descripcion
+            })
+            .ToList();
 
-            return null;
+            return documentacionesVm;
         }        
     }
 }
