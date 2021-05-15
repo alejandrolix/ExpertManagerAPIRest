@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace APIRest.Controllers
@@ -42,6 +44,24 @@ namespace APIRest.Controllers
             .ToList();
 
             return documentacionesVm;
-        }        
+        }
+
+        [HttpGet("{id}")]
+        public async Task<FileStreamResult> Obtener(int id)
+        {
+            Documentacion documentacion = await _contexto.Documentaciones
+                                                        .FirstOrDefaultAsync(documentacion => documentacion.Id == id);
+
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", documentacion.UrlArchivo);
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+
+            memory.Position = 0;
+            return File(memory, "application/pdf", Path.GetFileName(path));
+        }
     }
 }
