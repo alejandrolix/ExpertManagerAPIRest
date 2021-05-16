@@ -93,17 +93,17 @@ namespace APIRest.Controllers
             }
         }
 
-        [HttpDelete("{idSiniestro}")]
-        public async Task<JsonResult> Eliminar(int idSiniestro)
+        [HttpDelete("{id}")]
+        public async Task<JsonResult> Eliminar(int id)
         {
-            Documentacion documentacion = await _contexto.Documentaciones
-                                                         .FirstOrDefaultAsync(documentacion => documentacion.Id == idSiniestro);
+            Imagen imagen = await _contexto.Imagenes
+                                           .FirstOrDefaultAsync(imagen => imagen.Id == id);
             try
             {
-                if (System.IO.File.Exists(documentacion.UrlArchivo))                
-                    System.IO.File.Delete(documentacion.UrlArchivo);                
+                if (System.IO.File.Exists(imagen.UrlArchivo))                
+                    System.IO.File.Delete(imagen.UrlArchivo);                
                 
-                _contexto.Remove(documentacion);
+                _contexto.Remove(imagen);
 
                 await _contexto.SaveChangesAsync();
                 return new JsonResult(true);
