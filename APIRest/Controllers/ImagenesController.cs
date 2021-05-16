@@ -24,20 +24,20 @@ namespace APIRest.Controllers
 
         // GET: ImagenesController
         [HttpGet("ObtenerPorIdSiniestro/{idSiniestro}")]
-        public async Task<List<DocumentacionVm>> ObtenerPorIdSiniestro(int idSiniestro)
+        public async Task<List<ImagenVm>> ObtenerPorIdSiniestro(int idSiniestro)
         {
-            List<Documentacion> documentaciones = await _contexto.Documentaciones
-                                                                 .Where(documentacion => documentacion.SiniestroId == idSiniestro)
-                                                                 .ToListAsync();
+            List<Imagen> imagenes = await _contexto.Imagenes
+                                                    .Where(imagen => imagen.SiniestroId == idSiniestro)
+                                                    .ToListAsync();
 
-            List<DocumentacionVm> documentacionesVm = documentaciones.Select(documentacion => new DocumentacionVm()
+            List<ImagenVm> imagenesVm = imagenes.Select(imagen => new ImagenVm()
             {
-                Id = documentacion.Id,
-                Descripcion = documentacion.Descripcion
+                Id = imagen.Id,
+                Descripcion = imagen.Descripcion
             })
             .ToList();
 
-            return documentacionesVm;
+            return imagenesVm;
         }
 
         [HttpGet("{id}")]
