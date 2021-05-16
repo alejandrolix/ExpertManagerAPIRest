@@ -43,10 +43,10 @@ namespace APIRest.Controllers
         [HttpGet("{id}")]
         public async Task<FileStreamResult> Obtener(int id)
         {
-            Documentacion documentacion = await _contexto.Documentaciones
-                                                         .FirstOrDefaultAsync(documentacion => documentacion.Id == id);
+            Imagen imagen = await _contexto.Imagenes
+                                           .FirstOrDefaultAsync(imagen => imagen.Id == id);
 
-            string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", documentacion.UrlArchivo);
+            string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagen.UrlArchivo);
             rutaPdf = rutaPdf.Replace("\\", "/");
 
             var memory = new MemoryStream();
@@ -56,7 +56,18 @@ namespace APIRest.Controllers
             }
 
             memory.Position = 0;
-            return File(memory, "application/pdf", Path.GetFileName(rutaPdf));
+
+            string extension = Path.GetExtension(rutaPdf);
+            string contentType;
+
+            if (extension.Contains("jpeg"))
+                contentType = "image/jpeg";
+            else if (extension.Contains("jpg"))
+                contentType = "image/jpg";
+            else
+                contentType = "image/png";
+
+            return File(memory, contentType, Path.GetFileName(rutaPdf));
         }
 
         [HttpPost]
