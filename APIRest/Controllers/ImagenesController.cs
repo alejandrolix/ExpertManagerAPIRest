@@ -57,6 +57,20 @@ namespace APIRest.Controllers
 
             memory.Position = 0;
 
+            string contentType = await ObtenerContentTypeArchivo(id);
+
+            return File(memory, contentType, Path.GetFileName(rutaPdf));
+        }
+
+        [HttpGet("ObtenerContentType/{idImagen}")]
+        public async Task<string> ObtenerContentTypeArchivo(int idImagen)
+        {
+            Imagen imagen = await _contexto.Imagenes
+                                           .FirstOrDefaultAsync(imagen => imagen.Id == idImagen);
+
+            string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagen.UrlArchivo);
+            rutaPdf = rutaPdf.Replace("\\", "/");
+
             string extension = Path.GetExtension(rutaPdf).Replace(".", "");
             string contentType;
 
@@ -67,7 +81,7 @@ namespace APIRest.Controllers
             else
                 contentType = "image/png";
 
-            return File(memory, contentType, Path.GetFileName(rutaPdf));
+            return contentType;
         }
 
         [HttpPost]
