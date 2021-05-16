@@ -1,16 +1,12 @@
 ﻿using APIRest.Context;
 using APIRest.Models;
 using APIRest.ViewModels;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace APIRest.Controllers
@@ -19,13 +15,11 @@ namespace APIRest.Controllers
     [ApiController]
     public class DocumentacionesController : ControllerBase
     {
-        private ExpertManagerContext _contexto;
-        private IWebHostEnvironment _webHostEnvironment;
+        private ExpertManagerContext _contexto;        
 
-        public DocumentacionesController(ExpertManagerContext contexto, IWebHostEnvironment webHostEnvironment)
+        public DocumentacionesController(ExpertManagerContext contexto)
         {
             _contexto = contexto;
-            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: DocumentacionesController
@@ -91,6 +85,27 @@ namespace APIRest.Controllers
                 _contexto.Add(documentacion);
                 await _contexto.SaveChangesAsync();
 
+                return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }
+        }
+
+        [HttpDelete("{idSiniestro}")]
+        public async Task<JsonResult> Eliminar(int idSiniestro)
+        {
+            Documentacion documentacion = await _contexto.Documentaciones
+                                                         .FirstOrDefaultAsync(documentacion => documentacion.Id == idSiniestro);
+            try
+            {
+                if (System.IO.File.Exists(documentacion.UrlArchivo))                
+                    System.IO.File.Delete(documentacion.UrlArchivo);                
+                
+                _contexto.Remove(documentacion);
+
+                await _contexto.SaveChangesAsync();
                 return new JsonResult(true);
             }
             catch (Exception ex)
