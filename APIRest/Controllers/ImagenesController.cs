@@ -57,12 +57,12 @@ namespace APIRest.Controllers
 
             memory.Position = 0;
 
-            string extension = Path.GetExtension(rutaPdf);
+            string extension = Path.GetExtension(rutaPdf).Replace(".", "");
             string contentType;
 
-            if (extension.Contains("jpeg"))
+            if (extension == ".jpeg")
                 contentType = "image/jpeg";
-            else if (extension.Contains("jpg"))
+            else if (extension == "jpg")
                 contentType = "image/jpg";
             else
                 contentType = "image/png";
