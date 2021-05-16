@@ -53,6 +53,7 @@ namespace APIRest.Controllers
                                                          .FirstOrDefaultAsync(documentacion => documentacion.Id == id);
 
             string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", documentacion.UrlArchivo);
+            rutaPdf = rutaPdf.Replace("\\", "/");
 
             var memory = new MemoryStream();
             using (var stream = new FileStream(rutaPdf, FileMode.Open))
@@ -65,14 +66,37 @@ namespace APIRest.Controllers
         }
 
         [HttpPost]
-        public bool Subir([FromForm] DocumentacionVm documentacionVm)
+        public async Task<JsonResult> Subir([FromForm] DocumentacionVm documentacionVm)
         {
-            //Documentacion documentacion = new Documentacion()
-            //{
+            Siniestro siniestro = await _contexto.Siniestros
+                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == documentacionVm.IdSiniestro);
+            
+            string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/documentacion", documentacionVm.Archivo.FileName);
+            rutaPdf = rutaPdf.Replace("\\", "/");
 
-            //};
+            Documentacion documentacion = new Documentacion()
+            {
+                Descripcion = documentacionVm.Descripcion,                
+                Siniestro = siniestro,
+                UrlArchivo = rutaPdf
+            };
 
-            return true;
+            try
+            {
+                using (var stream = System.IO.File.Create(rutaPdf))
+                {
+                    await documentacionVm.Archivo.CopyToAsync(stream);
+                }
+
+                _contexto.Add(documentacion);
+                await _contexto.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }
         }
     }
 }
