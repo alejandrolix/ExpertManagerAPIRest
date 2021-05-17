@@ -26,6 +26,7 @@ namespace APIRest.Controllers
         {
             List<Usuario> usuarios = await _contexto.Usuarios
                                                     .Include(usuario => usuario.Permiso)
+                                                    .OrderBy(usuario => usuario.Nombre)
                                                     .ToListAsync();
 
             List<UsuarioVm> usuariosVms = usuarios.Select(usuario => new UsuarioVm(usuario)).ToList();
