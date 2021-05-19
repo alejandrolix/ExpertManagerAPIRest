@@ -14,23 +14,23 @@ namespace APIRest.ViewModels
         public string EsPerito { get; set; }
         public int IdPermiso { get; set; }
         public string Permiso { get; set; }
-        public string hashContrasenia { get; set; }
+        public string HashContrasenia { get; set; }
 
-        //public UsuarioVm(Usuario usuario)
-        //{
-        //    string esPerito = "";
+        public UsuarioVm(Usuario usuario)
+        {
+            string esPerito = "";
 
-        //    if (usuario.EsPerito.HasValue)
-        //        if (usuario.EsPerito.Value)
-        //            esPerito = "Sí";
-        //        else
-        //            esPerito = "No";
+            if (usuario.EsPerito.HasValue)
+                if (usuario.EsPerito.Value)
+                    esPerito = "Sí";
+                else
+                    esPerito = "No";
 
-        //    Id = usuario.Id;
-        //    Nombre = usuario.Nombre;
-        //    EsPerito = esPerito;
-        //    IdPermiso = usuario.Permiso.Id;
-        //    Permiso = usuario.Permiso.Nombre;
-        //}
+            Id = usuario.Id;
+            Nombre = usuario.Nombre;
+            EsPerito = esPerito;
+            IdPermiso = usuario.Permiso.Id;
+            Permiso = usuario.Permiso.Nombre;
+        }
     }
 }
