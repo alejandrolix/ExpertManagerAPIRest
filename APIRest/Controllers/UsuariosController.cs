@@ -29,9 +29,54 @@ namespace APIRest.Controllers
                                                     .OrderBy(usuario => usuario.Nombre)
                                                     .ToListAsync();
 
-            List<UsuarioVm> usuariosVms = usuarios.Select(usuario => new UsuarioVm(usuario)).ToList();
+            //List<UsuarioVm> usuariosVms = usuarios.Select(usuario => new UsuarioVm(usuario)).ToList();
 
-            return usuariosVms;
+            return null;
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Create(UsuarioVm usuarioVm)
+        {
+            try
+            {
+                List<Aseguradora> aseguradoras = new List<Aseguradora>
+                {
+                    new Aseguradora()
+                };
+                Aseguradora[] aseguradoras2 = new Aseguradora[]
+                {
+                    new Aseguradora()
+                };
+
+                var kk = aseguradoras.Select(a => a.Id).Union(aseguradoras2.Select(a => a.Id)).ToList();
+
+                bool esPerito;
+
+                Permiso permiso = await _contexto.Permisos
+                                                 .FirstOrDefaultAsync(permiso => permiso.Id == usuarioVm.IdPermiso);
+
+                if (usuarioVm.IdEsPerito == 0)
+                    esPerito = true;
+                else
+                    esPerito = false;
+
+                Usuario usuario = new Usuario()
+                {
+                    Nombre = usuarioVm.Nombre,
+                    EsPerito = esPerito,
+                    Contrasenia = usuarioVm.hashContrasenia,
+                    Permiso = permiso
+                };
+
+                _contexto.Add(usuario);
+                await _contexto.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }
         }
     }
 }
