@@ -25,16 +25,29 @@ namespace APIRest.Controllers
 
         // GET: SiniestrosController
         [HttpGet]
-        public async Task<List<SiniestroVm>> Index()
+        public async Task<List<SiniestroVm>> Index(int idPerito)
         {
-            List<Siniestro> siniestros = await _contexto.Siniestros
-                                                        .Include(siniestro => siniestro.Aseguradora)
-                                                        .Include(siniestro => siniestro.Estado)
-                                                        .Include(siniestro => siniestro.UsuarioCreado)
-                                                        .Include(siniestro => siniestro.Perito)        
-                                                        .Include(siniestro => siniestro.Danio)
-                                                        .OrderByDescending(siniestro => siniestro.FechaHoraAlta)
-                                                        .ToListAsync();
+            List<Siniestro> siniestros = null;
+
+            if (idPerito == 0)
+                siniestros = await _contexto.Siniestros
+                                            .Include(siniestro => siniestro.Aseguradora)
+                                            .Include(siniestro => siniestro.Estado)
+                                            .Include(siniestro => siniestro.UsuarioCreado)
+                                            .Include(siniestro => siniestro.Perito)        
+                                            .Include(siniestro => siniestro.Danio)
+                                            .OrderByDescending(siniestro => siniestro.FechaHoraAlta)
+                                            .ToListAsync();
+            else
+                siniestros = await _contexto.Siniestros
+                                            .Include(siniestro => siniestro.Aseguradora)
+                                            .Include(siniestro => siniestro.Estado)
+                                            .Include(siniestro => siniestro.UsuarioCreado)
+                                            .Include(siniestro => siniestro.Perito)
+                                            .Include(siniestro => siniestro.Danio)
+                                            .OrderByDescending(siniestro => siniestro.FechaHoraAlta)
+                                            .Where(siniestro => siniestro.Perito.Id == idPerito)
+                                            .ToListAsync();
 
             List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
             {
