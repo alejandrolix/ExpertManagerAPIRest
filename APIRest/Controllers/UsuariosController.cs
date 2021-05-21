@@ -70,6 +70,9 @@ namespace APIRest.Controllers
                 HashContrasenia = usuario.Contrasenia
             };
 
+            if (EsPeritoNoResponsable(usuario.Permiso.Id))
+                usuarioVm.ImpReparacionDanios = usuario.ImpRepacionDanios;
+
             return usuarioVm;
         }
 
@@ -88,7 +91,7 @@ namespace APIRest.Controllers
                     Permiso = permiso
                 };
 
-                if (permiso.Id == 3)
+                if (EsPeritoNoResponsable(permiso.Id))
                     usuario.ImpRepacionDanios = crearUsuarioVm.ImpReparacionDanios;
                 else
                     usuario.ImpRepacionDanios = 0;
@@ -102,6 +105,11 @@ namespace APIRest.Controllers
             {
                 return new JsonResult(false);
             }
+        }
+
+        private bool EsPeritoNoResponsable(int idPermiso)
+        {
+            return idPermiso == 3;
         }
 
         [HttpPut("{id}")]
@@ -120,6 +128,11 @@ namespace APIRest.Controllers
                                                  .FirstOrDefaultAsync(permiso => permiso.Id == usuarioVm.IdPermiso);
 
                 usuario.Permiso = permiso;
+
+                if (EsPeritoNoResponsable(permiso.Id))        // Permiso Perito no responsable
+                    usuario.ImpRepacionDanios = usuarioVm.ImpReparacionDanios;
+                else
+                    usuario.ImpRepacionDanios = 0;
 
                 _contexto.Update(usuario);
                 await _contexto.SaveChangesAsync();
