@@ -53,14 +53,6 @@ namespace APIRest.Controllers
             return esPerito;
         }
 
-        private string ObtenerPeritoCadena(bool? esPerito)
-        {
-            if (esPerito.Value)
-                return "Sí";
-            else
-                return "No";
-        }
-
         [HttpGet("{id}")]
         public async Task<UsuarioVm> ObtenerPorId(int id)
         {
@@ -73,7 +65,6 @@ namespace APIRest.Controllers
             {
                 Id = usuario.Id,
                 Nombre = usuario.Nombre,
-                EsPerito = ObtenerPeritoCadena(usuario.EsPerito),
                 IdPermiso = usuario.Permiso.Id,
                 Permiso = usuario.Permiso.Nombre,
                 HashContrasenia = usuario.Contrasenia
