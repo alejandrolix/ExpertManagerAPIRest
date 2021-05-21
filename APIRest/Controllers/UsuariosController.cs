@@ -34,10 +34,23 @@ namespace APIRest.Controllers
                 Id = usuario.Id,
                 Nombre = usuario.Nombre,                
                 IdPermiso = usuario.Permiso.Id,
+                EsPerito = EsPerito(usuario.Permiso.Id),
                 Permiso = usuario.Permiso.Nombre
             }).ToList();
 
             return usuariosVms;
+        }
+
+        private string EsPerito(int idPermiso)
+        {
+            string esPerito;
+
+            if (idPermiso == 1)
+                esPerito = "No";
+            else
+                esPerito = "Sí";
+
+            return esPerito;
         }
 
         private string ObtenerPeritoCadena(bool? esPerito)
