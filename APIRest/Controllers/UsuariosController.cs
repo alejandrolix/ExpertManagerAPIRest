@@ -109,16 +109,7 @@ namespace APIRest.Controllers
                                                  .FirstOrDefaultAsync(usuario => usuario.Id == id);
 
                 usuario.Nombre = usuarioVm.Nombre;
-                usuario.Contrasenia = usuarioVm.HashContrasenia;
-
-                bool esPerito;
-
-                if (usuarioVm.IdEsPerito == 0)
-                    esPerito = true;
-                else
-                    esPerito = false;
-
-                usuario.EsPerito = esPerito;                
+                usuario.Contrasenia = usuarioVm.HashContrasenia;              
 
                 Permiso permiso = await _contexto.Permisos
                                                  .FirstOrDefaultAsync(permiso => permiso.Id == usuarioVm.IdPermiso);
