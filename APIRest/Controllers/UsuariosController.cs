@@ -25,15 +25,14 @@ namespace APIRest.Controllers
         public async Task<List<UsuarioVm>> ObtenerTodos()
         {
             List<Usuario> usuarios = await _contexto.Usuarios
-                                                    .Include(usuario => usuario.Permiso)
-                                                    .OrderBy(usuario => usuario.Nombre)
-                                                    .ToListAsync();
+                                                            .Include(usuario => usuario.Permiso)
+                                                            .OrderBy(usuario => usuario.Nombre)
+                                                            .ToListAsync();
 
             List<UsuarioVm> usuariosVms = usuarios.Select(usuario => new UsuarioVm()
             {
                 Id = usuario.Id,
-                Nombre = usuario.Nombre,
-                EsPerito = ObtenerPeritoCadena(usuario.EsPerito),
+                Nombre = usuario.Nombre,                
                 IdPermiso = usuario.Permiso.Id,
                 Permiso = usuario.Permiso.Nombre
             }).ToList();
