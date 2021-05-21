@@ -25,7 +25,7 @@ namespace APIRest.Controllers
 
         // GET: SiniestrosController
         [HttpGet]
-        public async Task<List<SiniestroVm>> Index(int idPerito)
+        public async Task<List<SiniestroVm>> Index(int idPerito, int idAseguradora)
         {
             List<Siniestro> siniestros = null;
 
@@ -35,8 +35,7 @@ namespace APIRest.Controllers
                                             .Include(siniestro => siniestro.Estado)
                                             .Include(siniestro => siniestro.UsuarioCreado)
                                             .Include(siniestro => siniestro.Perito)        
-                                            .Include(siniestro => siniestro.Danio)
-                                            .OrderByDescending(siniestro => siniestro.FechaHoraAlta)
+                                            .Include(siniestro => siniestro.Danio)                                            
                                             .ToListAsync();
             else
                 siniestros = await _contexto.Siniestros
@@ -45,9 +44,15 @@ namespace APIRest.Controllers
                                             .Include(siniestro => siniestro.UsuarioCreado)
                                             .Include(siniestro => siniestro.Perito)
                                             .Include(siniestro => siniestro.Danio)
-                                            .OrderByDescending(siniestro => siniestro.FechaHoraAlta)
                                             .Where(siniestro => siniestro.Perito.Id == idPerito)
                                             .ToListAsync();
+
+            if (idAseguradora != 0)
+                siniestros = siniestros.Where(siniestro => siniestro.Aseguradora.Id == idAseguradora)
+                                        .ToList();
+
+            siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
+                                   .ToList();                                   
 
             List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
             {
