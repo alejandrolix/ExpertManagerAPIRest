@@ -10,7 +10,6 @@ namespace APIRest.ViewModels
     {
         public int Id { get; set; }        
         public string Nombre { get; set; }
-        public int IdEsPerito { get; set; }
         public string EsPerito { get; set; }
         public int IdPermiso { get; set; }
         public string Permiso { get; set; }
