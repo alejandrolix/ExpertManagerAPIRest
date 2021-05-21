@@ -19,14 +19,6 @@ namespace APIRest.Models
         public bool? EsPerito { get; set; }
         
         public int PermisoId { get; set; }
-        public Permiso Permiso { get; set; }
-
-        public string ObtenerPeritoCadena(bool? esPerito)
-        {
-            if (esPerito.Value)
-                return "Sí";
-            else
-                return "No";
-        }
+        public Permiso Permiso { get; set; }        
     }
 }

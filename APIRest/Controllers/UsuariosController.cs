@@ -33,12 +33,20 @@ namespace APIRest.Controllers
             {
                 Id = usuario.Id,
                 Nombre = usuario.Nombre,
-                EsPerito = usuario.ObtenerPeritoCadena(usuario.EsPerito),
+                EsPerito = ObtenerPeritoCadena(usuario.EsPerito),
                 IdPermiso = usuario.Permiso.Id,
                 Permiso = usuario.Permiso.Nombre
             }).ToList();
 
             return usuariosVms;
+        }
+
+        private string ObtenerPeritoCadena(bool? esPerito)
+        {
+            if (esPerito.Value)
+                return "Sí";
+            else
+                return "No";
         }
 
         [HttpGet("{id}")]
@@ -53,7 +61,7 @@ namespace APIRest.Controllers
             {
                 Id = usuario.Id,
                 Nombre = usuario.Nombre,
-                EsPerito = usuario.ObtenerPeritoCadena(usuario.EsPerito),
+                EsPerito = ObtenerPeritoCadena(usuario.EsPerito),
                 IdPermiso = usuario.Permiso.Id,
                 Permiso = usuario.Permiso.Nombre,
                 HashContrasenia = usuario.Contrasenia
@@ -102,6 +110,7 @@ namespace APIRest.Controllers
             try
             {
                 Usuario usuario = await _contexto.Usuarios
+                                                 .Include(usuario => usuario.Permiso)
                                                  .FirstOrDefaultAsync(usuario => usuario.Id == id);
 
                 usuario.Nombre = usuarioVm.Nombre;
@@ -110,14 +119,16 @@ namespace APIRest.Controllers
                 bool esPerito;
 
                 if (usuarioVm.IdEsPerito == 0)
-                    esPerito = false;
-                else
                     esPerito = true;
+                else
+                    esPerito = false;
 
-                usuario.EsPerito = esPerito;
+                usuario.EsPerito = esPerito;                
 
                 Permiso permiso = await _contexto.Permisos
                                                  .FirstOrDefaultAsync(permiso => permiso.Id == usuarioVm.IdPermiso);
+
+                usuario.Permiso = permiso;
 
                 _contexto.Update(usuario);
                 await _contexto.SaveChangesAsync();
