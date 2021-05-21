@@ -17,8 +17,6 @@ namespace APIRest.Models
         [Required]
         public string Contrasenia { get; set; }
 
-        public bool? EsPerito { get; set; }
-
         [Column(TypeName = "decimal(5,2)")]
         public decimal ImpRepacionDanios { get; set; }
         
