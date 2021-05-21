@@ -28,7 +28,8 @@ namespace APIRest.Controllers
         public async Task<List<PeritoVm>> Index()
         {
             List<Usuario> peritos = await _contexto.Usuarios
-                                                   .Where(usuario => usuario.EsPerito.HasValue && usuario.EsPerito.Value)
+                                                   .Include(usuario => usuario.Permiso)
+                                                   .Where(usuario => usuario.Permiso.Id != 1)
                                                    .ToListAsync();
 
             List<PeritoVm> peritosVms = peritos.Select(perito => new PeritoVm()
