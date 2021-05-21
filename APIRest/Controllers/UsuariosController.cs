@@ -29,7 +29,14 @@ namespace APIRest.Controllers
                                                     .OrderBy(usuario => usuario.Nombre)
                                                     .ToListAsync();
 
-            List<UsuarioVm> usuariosVms = usuarios.Select(usuario => new UsuarioVm(usuario)).ToList();
+            List<UsuarioVm> usuariosVms = usuarios.Select(usuario => new UsuarioVm()
+            {
+                Id = usuario.Id,
+                Nombre = usuario.Nombre,
+                EsPerito = usuario.ObtenerPeritoCadena(usuario.EsPerito),
+                IdPermiso = usuario.Permiso.Id,
+                Permiso = usuario.Permiso.Nombre
+            }).ToList();
 
             return usuariosVms;
         }
@@ -42,7 +49,10 @@ namespace APIRest.Controllers
                                             .OrderBy(usuario => usuario.Nombre)
                                             .FirstOrDefaultAsync(usuario => usuario.Id == id);
 
-            UsuarioVm usuarioVm = new UsuarioVm(usuario);
+            UsuarioVm usuarioVm = new UsuarioVm()
+            {
+
+            };
 
             return usuarioVm;
         }
@@ -80,5 +90,40 @@ namespace APIRest.Controllers
                 return new JsonResult(false);
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<JsonResult> Edit(int id, UsuarioVm usuarioVm)
+        {
+            try
+            {
+                Usuario usuario = await _contexto.Usuarios
+                                                 .FirstOrDefaultAsync(usuario => usuario.Id == id);
+
+                usuario.Nombre = usuarioVm.Nombre;
+                usuario.Contrasenia = usuarioVm.HashContrasenia;
+
+                bool esPerito;
+
+                if (usuarioVm.IdEsPerito == 0)
+                    esPerito = false;
+                else
+                    esPerito = true;
+
+                usuario.EsPerito = esPerito;
+
+                Permiso permiso = await _contexto.Permisos
+                                                 .FirstOrDefaultAsync(permiso => permiso.Id == usuarioVm.IdPermiso);
+
+                _contexto.Update(usuario);
+                await _contexto.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }
+        }
+
     }
 }
