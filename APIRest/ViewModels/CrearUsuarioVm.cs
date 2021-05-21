@@ -10,5 +10,6 @@ namespace APIRest.ViewModels
         public int IdPermiso { get; set; }
         public string Nombre { get; set; }
         public string HashContrasenia { get; set; }     
+        public decimal ImpReparacionDanios { get; set; }
     }
 }

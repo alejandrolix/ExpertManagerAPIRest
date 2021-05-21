@@ -88,6 +88,11 @@ namespace APIRest.Controllers
                     Permiso = permiso
                 };
 
+                if (permiso.Id == 3)
+                    usuario.ImpRepacionDanios = crearUsuarioVm.ImpReparacionDanios;
+                else
+                    usuario.ImpRepacionDanios = 0;
+
                 _contexto.Add(usuario);
                 await _contexto.SaveChangesAsync();
 
