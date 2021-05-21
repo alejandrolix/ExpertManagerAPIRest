@@ -75,20 +75,12 @@ namespace APIRest.Controllers
         {
             try
             {                                
-                bool esPerito;
-
                 Permiso permiso = await _contexto.Permisos
                                                  .FirstOrDefaultAsync(permiso => permiso.Id == crearUsuarioVm.IdPermiso);
-
-                if (crearUsuarioVm.IdEsPerito == 0)
-                    esPerito = true;
-                else
-                    esPerito = false;
 
                 Usuario usuario = new Usuario()
                 {
                     Nombre = crearUsuarioVm.Nombre,
-                    EsPerito = esPerito,
                     Contrasenia = crearUsuarioVm.HashContrasenia,
                     Permiso = permiso
                 };
