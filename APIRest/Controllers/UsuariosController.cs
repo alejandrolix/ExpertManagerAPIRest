@@ -51,7 +51,12 @@ namespace APIRest.Controllers
 
             UsuarioVm usuarioVm = new UsuarioVm()
             {
-
+                Id = usuario.Id,
+                Nombre = usuario.Nombre,
+                EsPerito = usuario.ObtenerPeritoCadena(usuario.EsPerito),
+                IdPermiso = usuario.Permiso.Id,
+                Permiso = usuario.Permiso.Nombre,
+                HashContrasenia = usuario.Contrasenia
             };
 
             return usuarioVm;
