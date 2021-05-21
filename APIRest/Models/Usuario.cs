@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +18,9 @@ namespace APIRest.Models
         public string Contrasenia { get; set; }
 
         public bool? EsPerito { get; set; }
+
+        [Column(TypeName = "decimal(5,2)")]
+        public decimal ImpRepacionDanios { get; set; }
         
         public int PermisoId { get; set; }
         public Permiso Permiso { get; set; }        
