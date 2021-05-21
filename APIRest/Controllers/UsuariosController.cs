@@ -34,6 +34,19 @@ namespace APIRest.Controllers
             return usuariosVms;
         }
 
+        [HttpGet("{id}")]
+        public async Task<UsuarioVm> ObtenerPorId(int id)
+        {
+            Usuario usuario = await _contexto.Usuarios
+                                            .Include(usuario => usuario.Permiso)
+                                            .OrderBy(usuario => usuario.Nombre)
+                                            .FirstOrDefaultAsync(usuario => usuario.Id == id);
+
+            UsuarioVm usuarioVm = new UsuarioVm(usuario);
+
+            return usuarioVm;
+        }
+
         [HttpPost]
         public async Task<JsonResult> Create(CrearUsuarioVm crearUsuarioVm)
         {

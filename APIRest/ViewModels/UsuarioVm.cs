@@ -31,6 +31,7 @@ namespace APIRest.ViewModels
             EsPerito = esPerito;
             IdPermiso = usuario.Permiso.Id;
             Permiso = usuario.Permiso.Nombre;
+            HashContrasenia = usuario.Contrasenia;
         }
     }
 }
