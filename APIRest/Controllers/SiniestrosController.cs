@@ -80,7 +80,6 @@ namespace APIRest.Controllers
 
             Estado estadoCerrado = await _contexto.Estados
                                                   .FirstOrDefaultAsync(estado => estado.Id == 4);
-
             try
             {
                 siniestro.Estado = estadoCerrado;
