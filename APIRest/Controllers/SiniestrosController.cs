@@ -72,6 +72,30 @@ namespace APIRest.Controllers
             return siniestrosVms;
         }
 
+        [HttpPut("Cerrar/{id}")]
+        public async Task<JsonResult> Cerrar(int id)
+        {
+            Siniestro siniestro = await _contexto.Siniestros
+                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
+
+            Estado estadoCerrado = await _contexto.Estados
+                                                  .FirstOrDefaultAsync(estado => estado.Id == 4);
+
+            try
+            {
+                siniestro.Estado = estadoCerrado;
+
+                _contexto.Update(siniestro);
+                await _contexto.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<SiniestroVm> ObtenerPorId(int id)
         {
