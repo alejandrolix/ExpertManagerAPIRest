@@ -121,6 +121,7 @@ namespace APIRest.Controllers
                 UsuarioVm respuesta = new UsuarioVm()
                 {
                     Nombre = usuario.Nombre,
+                    Id = usuario.Id,
                     IdPermiso = usuario.Permiso.Id
                 };
 
