@@ -107,6 +107,42 @@ namespace APIRest.Controllers
             return siniestrosVms;
         }
 
+        [HttpGet("PeritoResponsable")]
+        public async Task<List<SiniestroVm>> ObtenerPorPeritoResponsable(int idPerito, int idAseguradora)
+        {
+            List<Siniestro> siniestros = await _contexto.Siniestros
+                                                        .Include(siniestro => siniestro.Aseguradora)
+                                                        .Include(siniestro => siniestro.Estado)
+                                                        .Include(siniestro => siniestro.UsuarioCreado)
+                                                        .Include(siniestro => siniestro.Perito)
+                                                        .Include(siniestro => siniestro.Perito.Permiso)
+                                                        .Include(siniestro => siniestro.Danio)
+                                                        .Where(siniestro => siniestro.Perito.Id == idPerito || siniestro.Perito.Permiso.Id == 3)
+                                                        .ToListAsync();
+            if (idAseguradora != 0)
+                siniestros = ObtenerSiniestrosPorIdAseguradora(idAseguradora, siniestros);
+
+            siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
+                                   .ToList();
+
+            List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
+            {
+                Id = siniestro.Id,
+                IdEstado = siniestro.Estado.Id,
+                Estado = siniestro.Estado.Nombre,
+                Aseguradora = siniestro.Aseguradora.Nombre,
+                Descripcion = siniestro.Descripcion,
+                Perito = siniestro.Perito.Nombre,
+                FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
+                SujetoAfectado = siniestro.SujetoAfectado.ToString(),
+                Danio = siniestro.Danio.Nombre,
+                ImpValoracionDanios = $"{siniestro.ImpValoracionDanios.ToString("F")} €"
+            })
+            .ToList();
+
+            return siniestrosVms;
+        }
+
         private List<Siniestro> ObtenerSiniestrosPorIdAseguradora(int idAseguradora, List<Siniestro> siniestros)
         {
             return siniestros.Where(siniestro => siniestro.Aseguradora.Id == idAseguradora)
