@@ -15,5 +15,8 @@ namespace APIRest.Models
 
         public int UsuarioId { get; set; }
         public Usuario Usuario { get; set; }
+
+        public int SiniestroId { get; set; }
+        public Siniestro Siniestro { get; set; }
     }
 }
