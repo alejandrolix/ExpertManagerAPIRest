@@ -57,6 +57,7 @@ namespace APIRest.Controllers
             List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
             {
                 Id = siniestro.Id,
+                IdEstado = siniestro.Estado.Id,
                 Estado = siniestro.Estado.Nombre,
                 Aseguradora = siniestro.Aseguradora.Nombre,
                 Descripcion = siniestro.Descripcion,
