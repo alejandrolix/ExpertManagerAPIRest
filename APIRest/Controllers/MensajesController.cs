@@ -72,6 +72,35 @@ namespace APIRest.Controllers
             }
         }
 
+        [HttpPost("RevisarCierre")]
+        public async Task<JsonResult> CrearMensajeRevisarCierre(MensajeVm mensajeVm)
+        {
+            Usuario usuarioCreacion = await _contexto.Usuarios
+                                                     .FirstOrDefaultAsync(usuario => usuario.Id == mensajeVm.IdUsuarioCreado);
+
+            Siniestro siniestro = await _contexto.Siniestros
+                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == mensajeVm.IdSiniestro);
+
+            Mensaje mensaje = new Mensaje()
+            {
+                Descripcion = "Revisar cierre",
+                Usuario = usuarioCreacion,
+                Siniestro = siniestro
+            };
+
+            try
+            {
+                _contexto.Add(mensaje);
+                await _contexto.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<JsonResult> Eliminar(int id)
         {
