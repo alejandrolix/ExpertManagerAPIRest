@@ -228,14 +228,9 @@ namespace APIRest.Migrations
                     b.Property<int>("PermisoId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UsuarioResponsableId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PermisoId");
-
-                    b.HasIndex("UsuarioResponsableId");
 
                     b.ToTable("Usuarios");
                 });
@@ -322,13 +317,7 @@ namespace APIRest.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("APIRest.Models.Usuario", "UsuarioResponsable")
-                        .WithMany()
-                        .HasForeignKey("UsuarioResponsableId");
-
                     b.Navigation("Permiso");
-
-                    b.Navigation("UsuarioResponsable");
                 });
 
             modelBuilder.Entity("APIRest.Models.Siniestro", b =>

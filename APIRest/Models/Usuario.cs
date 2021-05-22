@@ -22,7 +22,5 @@ namespace APIRest.Models
         
         public int PermisoId { get; set; }
         public Permiso Permiso { get; set; }
-        
-        public Usuario UsuarioResponsable { get; set; }
     }
 }
