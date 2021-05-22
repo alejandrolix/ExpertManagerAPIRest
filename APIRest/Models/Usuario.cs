@@ -21,6 +21,8 @@ namespace APIRest.Models
         public decimal ImpRepacionDanios { get; set; }
         
         public int PermisoId { get; set; }
-        public Permiso Permiso { get; set; }        
+        public Permiso Permiso { get; set; }
+        
+        public Usuario UsuarioResponsable { get; set; }
     }
 }
