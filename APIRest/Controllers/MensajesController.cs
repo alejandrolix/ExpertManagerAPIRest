@@ -71,5 +71,26 @@ namespace APIRest.Controllers
                 return new JsonResult(false);
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<JsonResult> Eliminar(int id)
+        {
+            try
+            {
+                Mensaje mensaje = await _contexto.Mensajes
+                                                 .FirstOrDefaultAsync(mensaje => mensaje.Id == id);
+                if (mensaje is null)
+                    return new JsonResult(false);
+
+                _contexto.Remove(mensaje);
+                await _contexto.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }
+        }
     }
 }
