@@ -107,6 +107,27 @@ namespace APIRest.Controllers
             }
         }
 
+        [HttpPost("IniciarSesion")]
+        public async Task<JsonResult> IniciarSesion(UsuarioVm usuarioVm)
+        {
+            Usuario usuario = await _contexto.Usuarios
+                                             .Include(usuario => usuario.Permiso)
+                                             .FirstOrDefaultAsync(usuario => usuario.Nombre == usuarioVm.Nombre &&
+                                                                  usuario.Contrasenia == usuarioVm.HashContrasenia);
+            if (usuario is null)
+                return new JsonResult(false);
+            else
+            {
+                UsuarioVm respuesta = new UsuarioVm()
+                {
+                    Nombre = usuario.Nombre,
+                    IdPermiso = usuario.Permiso.Id
+                };
+
+                return new JsonResult(respuesta);
+            }
+        }
+
         private bool EsPeritoNoResponsable(int idPermiso)
         {
             return idPermiso == 3;
