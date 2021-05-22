@@ -9,6 +9,8 @@ namespace APIRest.ViewModels
     {
         public int Id { get; set; }
         public string Descripcion { get; set; }
+        public int IdUsuarioCreado { get; set; }
+        public int IdSiniestro { get; set; }
         public string UsuarioCreado { get; set; }
     }
 }

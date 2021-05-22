@@ -41,6 +41,35 @@ namespace APIRest.Controllers
             .ToList();
 
             return mensajesVms;
-        }        
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Crear(MensajeVm mensajeVm)
+        {
+            Usuario usuarioCreacion = await _contexto.Usuarios
+                                                     .FirstOrDefaultAsync(usuario => usuario.Id == mensajeVm.IdUsuarioCreado);
+
+            Siniestro siniestro = await _contexto.Siniestros
+                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == mensajeVm.IdSiniestro);
+
+            Mensaje mensaje = new Mensaje()
+            {
+                Descripcion = mensajeVm.Descripcion,
+                Usuario = usuarioCreacion,
+                Siniestro = siniestro
+            };
+
+            try
+            {
+                _contexto.Add(mensaje);
+                await _contexto.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(false);
+            }
+        }
     }
 }
