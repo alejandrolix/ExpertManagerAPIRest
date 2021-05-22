@@ -27,6 +27,7 @@ namespace APIRest.Controllers
         public async Task<JsonResult> IniciarSesion(UsuarioVm usuarioVm)
         {
             Usuario usuario = await _contexto.Usuarios
+                                             .Include(usuario => usuario.Permiso)
                                              .FirstOrDefaultAsync(usuario => usuario.Nombre == usuarioVm.Nombre &&
                                                                   usuario.Contrasenia == usuarioVm.HashContrasenia);
             if (usuario is null)
