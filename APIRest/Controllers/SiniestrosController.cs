@@ -119,6 +119,7 @@ namespace APIRest.Controllers
                                                         .Include(siniestro => siniestro.Danio)
                                                         .Where(siniestro => siniestro.Perito.Id == idPerito || siniestro.Perito.Permiso.Id == 3)
                                                         .ToListAsync();
+
             if (idAseguradora != 0)
                 siniestros = ObtenerSiniestrosPorIdAseguradora(idAseguradora, siniestros);
 
