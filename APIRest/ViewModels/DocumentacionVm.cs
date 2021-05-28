@@ -8,9 +8,9 @@ namespace APIRest.ViewModels
 {
     public class DocumentacionVm
     {
-        public int Id { get; set; }
-        public string Descripcion { get; set; }
-        public int IdSiniestro { get; set; }
-        public IFormFile Archivo { get; set; }
+        protected int Id { get; set; }
+        protected string Descripcion { get; set; }
+        protected int IdSiniestro { get; set; }
+        protected IFormFile Archivo { get; set; }
     }
 }
