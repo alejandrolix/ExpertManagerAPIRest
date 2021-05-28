@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace APIRest.ViewModels
 {
-    public class ImagenVm : DocumentacionVm
+    public class ImagenVm
     {
-        
+        public int Id { get; set; }
+        public string Descripcion { get; set; }
+        public int IdSiniestro { get; set; }
+        public IFormFile Archivo { get; set; }
     }
 }

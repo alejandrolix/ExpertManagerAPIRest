@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace APIRest.Models
 {
-    public class Imagen : Documentacion
+    public class Imagen
     {
-        
+        public int Id { get; set; }
+
+        [Required]
+        public string Descripcion { get; set; }
+
+        [Required]
+        public string UrlArchivo { get; set; }
+
+        public int SiniestroId { get; set; }
+        public Siniestro Siniestro { get; set; }
     }
 }
