@@ -8,15 +8,15 @@ namespace APIRest.Models
 {
     public class Documentacion
     {
-        protected int Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
-        protected string Descripcion { get; set; }
+        public string Descripcion { get; set; }
 
         [Required]
-        protected string UrlArchivo { get; set; }
+        public string UrlArchivo { get; set; }
 
-        protected int SiniestroId { get; set; }
-        protected Siniestro Siniestro { get; set; }
+        public int SiniestroId { get; set; }
+        public Siniestro Siniestro { get; set; }
     }
 }
