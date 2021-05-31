@@ -90,7 +90,7 @@ namespace APIRest.Controllers
             Siniestro siniestro = await _contexto.Siniestros
                                                  .FirstOrDefaultAsync(siniestro => siniestro.Id == imagenVm.IdSiniestro);
             
-            string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagenes", imagenVm.Archivo.FileName);
+            string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagenes", imagenVm.Imagen.FileName);
             rutaPdf = rutaPdf.Replace("\\", "/");
 
             Imagen imagen = new Imagen()
@@ -104,7 +104,7 @@ namespace APIRest.Controllers
             {
                 using (var stream = System.IO.File.Create(rutaPdf))
                 {
-                    await imagenVm.Archivo.CopyToAsync(stream);
+                    await imagenVm.Imagen.CopyToAsync(stream);
                 }
 
                 _contexto.Add(imagen);
