@@ -1,8 +1,6 @@
 ﻿using APIRest.Context;
 using APIRest.Models;
 using APIRest.ViewModels;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,6 +11,7 @@ using System.Threading.Tasks;
 namespace APIRest.Controllers
 {
     [Route("api/[controller]")]
+    [ServiceInterceptor]
     [ApiController]
     public class InicioController : ControllerBase
     {

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace APIRest.Controllers
 {
-    public class ServiceInterceptor : IActionFilter
+    public class ServiceInterceptor : ActionFilterAttribute, IActionFilter
     {
-        public void OnActionExecuted(ActionExecutedContext context)
+        public override void OnActionExecuted(ActionExecutedContext context)
         {
-            throw new NotImplementedException();
+            return;
         }
 
-        public void OnActionExecuting(ActionExecutingContext context)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
             int numQueryStrings = context.HttpContext.Request.Query["token"].Count;
 

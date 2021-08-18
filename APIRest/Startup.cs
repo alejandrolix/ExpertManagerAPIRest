@@ -35,11 +35,6 @@ namespace APIRest
                     builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
-            services.AddMvc(options =>
-            {
-                options.Filters.Add(new ServiceInterceptor());
-            });
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
