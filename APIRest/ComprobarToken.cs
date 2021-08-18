@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace APIRest
 {
@@ -18,7 +19,7 @@ namespace APIRest
             int numQueryStrings = context.HttpContext.Request.Query["token"].Count;
 
             if (numQueryStrings == 0)
-                throw new Exception("no token");
+                context.Result = new BadRequestObjectResult("no token");
         }
     }
 }

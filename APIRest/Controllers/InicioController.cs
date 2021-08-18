@@ -24,7 +24,7 @@ namespace APIRest.Controllers
 
         [HttpGet("{idUsuario}")]
         public async Task<JsonResult> ObtenerEstadísticas(int idUsuario)
-        {
+        {            
             int numSiniestros = await _contexto.Siniestros
                                                .Include(siniestro => siniestro.UsuarioCreado)
                                                .Include(siniestro => siniestro.Perito)
@@ -57,16 +57,17 @@ namespace APIRest.Controllers
             if (usuario != null)
             {
                 List<Tuple<string, int>> numSiniestrosCerrar = await _contexto.Siniestros
-                                                           .Include(siniestro => siniestro.UsuarioCreado)
-                                                           .Include(siniestro => siniestro.Perito)
-                                                           .Include(siniestro => siniestro.Estado)
-                                                           .Where(siniestro => (siniestro.UsuarioCreado.Id == idUsuario || siniestro.Perito.Id == idUsuario) && siniestro.Estado.Id == 3)
-                                                           .GroupBy(
-                                                                siniestro => siniestro.Aseguradora.Nombre,
-                                                                siniestro => siniestro.Id,
-                                                            (key, g) => new { Aseguradora = key, NumSiniestros = g.Count() })
-                                                            .Select(obj => new Tuple<string, int>(obj.Aseguradora, obj.NumSiniestros))
-                                                            .ToListAsync();
+                                                                           .Include(siniestro => siniestro.UsuarioCreado)
+                                                                           .Include(siniestro => siniestro.Perito)
+                                                                           .Include(siniestro => siniestro.Estado)
+                                                                           .Where(siniestro => (siniestro.UsuarioCreado.Id == idUsuario || siniestro.Perito.Id == idUsuario) &&
+                                                                                  siniestro.Estado.Id == 3)
+                                                                           .GroupBy(
+                                                                                siniestro => siniestro.Aseguradora.Nombre,
+                                                                                siniestro => siniestro.Id,
+                                                                            (key, g) => new { Aseguradora = key, NumSiniestros = g.Count() })
+                                                                            .Select(obj => new Tuple<string, int>(obj.Aseguradora, obj.NumSiniestros))
+                                                                            .ToListAsync();
 
                 estadisticasVm.NumSiniestrosCerrarPorAseguradora = numSiniestrosCerrar;
             }
