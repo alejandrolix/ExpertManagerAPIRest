@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Controllers
+namespace APIRest
 {
-    public class ServiceInterceptor : ActionFilterAttribute, IActionFilter
+    public class ComprobarToken : ActionFilterAttribute, IActionFilter
     {
         public override void OnActionExecuted(ActionExecutedContext context)
         {

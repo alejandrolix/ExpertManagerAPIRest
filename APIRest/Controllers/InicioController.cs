@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace APIRest.Controllers
 {
     [Route("api/[controller]")]
-    [ServiceInterceptor]
+    [ComprobarToken]
     [ApiController]
     public class InicioController : ControllerBase
     {
