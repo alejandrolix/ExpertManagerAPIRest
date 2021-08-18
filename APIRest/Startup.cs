@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIRest.Context;
+using APIRest.Controllers;
 
 namespace APIRest
 {
@@ -32,6 +33,11 @@ namespace APIRest
             {
                 options.AddPolicy("corsapi",
                     builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new ServiceInterceptor());
             });
 
             services.AddControllers();
