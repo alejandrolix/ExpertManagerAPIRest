@@ -118,11 +118,14 @@ namespace APIRest.Controllers
                 return new JsonResult(false);
             else
             {
+                string token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
                 UsuarioVm respuesta = new UsuarioVm()
                 {
                     Nombre = usuario.Nombre,
                     Id = usuario.Id,
-                    IdPermiso = usuario.Permiso.Id
+                    IdPermiso = usuario.Permiso.Id,
+                    Token = token
                 };
 
                 return new JsonResult(respuesta);

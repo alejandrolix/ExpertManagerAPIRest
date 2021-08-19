@@ -15,5 +15,6 @@ namespace APIRest.ViewModels
         public string Permiso { get; set; }
         public string HashContrasenia { get; set; }
         public decimal ImpReparacionDanios { get; set; }
+        public string Token { get; set; }
     }
 }
