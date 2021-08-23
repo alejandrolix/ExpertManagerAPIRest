@@ -35,7 +35,7 @@ namespace APIRest
                     builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
-            services.AddControllers();
+            services.AddControllers(config => config.Filters.Add(new ComprobarToken()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIRest", Version = "v1" });
