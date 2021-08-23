@@ -16,9 +16,10 @@ namespace APIRest
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            int numQueryStrings = context.HttpContext.Request.Query["token"].Count;
+            string cabeceraAutorizacion = context.HttpContext.Request.Headers["Authorization"];
+            string token = cabeceraAutorizacion?.Split(" ")[1];
 
-            if (numQueryStrings == 0)
+            if (string.IsNullOrEmpty(token))
                 context.Result = new BadRequestObjectResult("no token");
         }
     }
