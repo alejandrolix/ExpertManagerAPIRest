@@ -22,7 +22,7 @@ namespace APIRest.Controllers
         }
 
         [HttpGet("{idUsuario}")]
-        public async Task<JsonResult> ObtenerEstadísticas(int idUsuario)
+        public async Task<RespuestaApi> ObtenerEstadísticas(int idUsuario)
         {            
             int numSiniestros = await _contexto.Siniestros
                                                .Include(siniestro => siniestro.UsuarioCreado)
@@ -71,7 +71,13 @@ namespace APIRest.Controllers
                 estadisticasVm.NumSiniestrosCerrarPorAseguradora = numSiniestrosCerrar;
             }
 
-            return new JsonResult(estadisticasVm);
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = 200,
+                Datos = estadisticasVm
+            };
+
+            return respuestaApi;
         }
     }
 }
