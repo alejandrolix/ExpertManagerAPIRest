@@ -22,7 +22,7 @@ namespace APIRest.Controllers
         }
 
         [HttpGet("{idUsuario}")]
-        public async Task<RespuestaApi> ObtenerEstadísticas(int idUsuario)
+        public async Task<RespuestaApi> ObtenerEstadisticas(int idUsuario)
         {            
             int numSiniestros = await _contexto.Siniestros
                                                .Include(siniestro => siniestro.UsuarioCreado)
