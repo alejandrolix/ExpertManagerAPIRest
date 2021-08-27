@@ -94,7 +94,7 @@ namespace APIRest.Controllers
         }
 
         [HttpGet("PeritoNoResponsable")]
-        public async Task<List<SiniestroVm>> ObtenerPorPeritoNoResponsable(int idPerito, int idAseguradora)
+        public async Task<RespuestaApi> ObtenerPorPeritoNoResponsable(int idPerito, int idAseguradora)
         {
             List<Siniestro> siniestros = await _contexto.Siniestros
                                                         .Include(siniestro => siniestro.Aseguradora)
@@ -110,22 +110,45 @@ namespace APIRest.Controllers
             siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
                                    .ToList();
 
-            List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
-            {
-                Id = siniestro.Id,
-                IdEstado = siniestro.Estado.Id,
-                Estado = siniestro.Estado.Nombre,
-                Aseguradora = siniestro.Aseguradora.Nombre,
-                Descripcion = siniestro.Descripcion,
-                Perito = siniestro.Perito.Nombre,
-                FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
-                SujetoAfectado = siniestro.SujetoAfectado.ToString(),
-                Danio = siniestro.Danio.Nombre,
-                ImpValoracionDanios = $"{siniestro.ImpValoracionDanios.ToString("F")} €"
-            })
-            .ToList();
+            int codigoRespuesta;
+            string mensaje = null;
+            object datos = null;
 
-            return siniestrosVms;
+            if (siniestros == null || siniestros.Count == 0)
+            {
+                codigoRespuesta = 500;
+                mensaje = "No existen siniestros";
+            }
+            else
+            {
+                codigoRespuesta = 200;
+
+                List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
+                {
+                    Id = siniestro.Id,
+                    IdEstado = siniestro.Estado.Id,
+                    Estado = siniestro.Estado.Nombre,
+                    Aseguradora = siniestro.Aseguradora.Nombre,
+                    Descripcion = siniestro.Descripcion,
+                    Perito = siniestro.Perito.Nombre,
+                    FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
+                    SujetoAfectado = siniestro.SujetoAfectado.ToString(),
+                    Danio = siniestro.Danio.Nombre,
+                    ImpValoracionDanios = $"{siniestro.ImpValoracionDanios:F} €"
+                })
+                .ToList();
+
+                datos = siniestrosVms;
+            }
+
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = codigoRespuesta,
+                Mensaje = mensaje,
+                Datos = datos
+            };            
+
+            return respuestaApi;
         }
 
         [HttpGet("PeritoResponsable")]
