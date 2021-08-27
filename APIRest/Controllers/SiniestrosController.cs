@@ -1,8 +1,6 @@
 ﻿using APIRest.Context;
 using APIRest.Models;
 using APIRest.ViewModels;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,7 +23,7 @@ namespace APIRest.Controllers
 
         // GET: SiniestrosController
         [HttpGet]
-        public async Task<List<SiniestroVm>> Index(int idPerito, int idAseguradora)
+        public async Task<RespuestaApi> Index(int idPerito, int idAseguradora)
         {
             List<Siniestro> siniestros = null;
 
@@ -52,24 +50,47 @@ namespace APIRest.Controllers
                                         .ToList();
 
             siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
-                                   .ToList();                                   
+                                   .ToList();
 
-            List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
+            int codigoRespuesta;
+            string mensaje = null;
+            object datos = null;
+
+            if (siniestros == null || siniestros.Count == 0)
             {
-                Id = siniestro.Id,
-                IdEstado = siniestro.Estado.Id,
-                Estado = siniestro.Estado.Nombre,
-                Aseguradora = siniestro.Aseguradora.Nombre,
-                Descripcion = siniestro.Descripcion,
-                Perito = siniestro.Perito.Nombre,
-                FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
-                SujetoAfectado = siniestro.SujetoAfectado.ToString(),
-                Danio = siniestro.Danio.Nombre,
-                ImpValoracionDanios = $"{siniestro.ImpValoracionDanios.ToString("F")} €"
-            })
-            .ToList();
+                codigoRespuesta = 500;
+                mensaje = "No existen siniestros";
+            }
+            else
+            {
+                codigoRespuesta = 200;
 
-            return siniestrosVms;
+                List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
+                {
+                    Id = siniestro.Id,
+                    IdEstado = siniestro.Estado.Id,
+                    Estado = siniestro.Estado.Nombre,
+                    Aseguradora = siniestro.Aseguradora.Nombre,
+                    Descripcion = siniestro.Descripcion,
+                    Perito = siniestro.Perito.Nombre,
+                    FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
+                    SujetoAfectado = siniestro.SujetoAfectado.ToString(),
+                    Danio = siniestro.Danio.Nombre,
+                    ImpValoracionDanios = $"{siniestro.ImpValoracionDanios:F} €"
+                })
+                .ToList();
+
+                datos = siniestrosVms;
+            }
+
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = codigoRespuesta,
+                Mensaje = mensaje,
+                Datos = datos
+            };
+
+            return respuestaApi;
         }
 
         [HttpGet("PeritoNoResponsable")]
@@ -108,7 +129,7 @@ namespace APIRest.Controllers
         }
 
         [HttpGet("PeritoResponsable")]
-        public async Task<List<SiniestroVm>> ObtenerPorPeritoResponsable(int idPerito, int idAseguradora)
+        public async Task<RespuestaApi> ObtenerPorPeritoResponsable(int idPerito, int idAseguradora)
         {
             List<Siniestro> siniestros = await _contexto.Siniestros
                                                         .Include(siniestro => siniestro.Aseguradora)
@@ -126,22 +147,45 @@ namespace APIRest.Controllers
             siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
                                    .ToList();
 
-            List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
-            {
-                Id = siniestro.Id,
-                IdEstado = siniestro.Estado.Id,
-                Estado = siniestro.Estado.Nombre,
-                Aseguradora = siniestro.Aseguradora.Nombre,
-                Descripcion = siniestro.Descripcion,
-                Perito = siniestro.Perito.Nombre,
-                FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
-                SujetoAfectado = siniestro.SujetoAfectado.ToString(),
-                Danio = siniestro.Danio.Nombre,
-                ImpValoracionDanios = $"{siniestro.ImpValoracionDanios.ToString("F")} €"
-            })
-            .ToList();
+            int codigoRespuesta;
+            string mensaje = null;
+            object datos = null;
 
-            return siniestrosVms;
+            if (siniestros == null || siniestros.Count == 0)
+            {
+                codigoRespuesta = 500;
+                mensaje = "No existen siniestros";
+            }
+            else
+            {
+                codigoRespuesta = 200;
+
+                List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
+                {
+                    Id = siniestro.Id,
+                    IdEstado = siniestro.Estado.Id,
+                    Estado = siniestro.Estado.Nombre,
+                    Aseguradora = siniestro.Aseguradora.Nombre,
+                    Descripcion = siniestro.Descripcion,
+                    Perito = siniestro.Perito.Nombre,
+                    FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
+                    SujetoAfectado = siniestro.SujetoAfectado.ToString(),
+                    Danio = siniestro.Danio.Nombre,
+                    ImpValoracionDanios = $"{siniestro.ImpValoracionDanios:F} €"
+                })
+                .ToList();
+
+                datos = siniestrosVms;
+            }
+
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = codigoRespuesta,
+                Mensaje = mensaje,
+                Datos = datos
+            };
+            
+            return respuestaApi;
         }
 
         private List<Siniestro> ObtenerSiniestrosPorIdAseguradora(int idAseguradora, List<Siniestro> siniestros)
