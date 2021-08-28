@@ -25,21 +25,40 @@ namespace APIRest.Controllers
 
         // GET: PeritosController
         [HttpGet]
-        public async Task<List<PeritoVm>> Index()
+        public async Task<RespuestaApi> Index()
         {
             List<Usuario> peritos = await _contexto.Usuarios
                                                    .Include(usuario => usuario.Permiso)
                                                    .Where(usuario => usuario.Permiso.Id != 1)
                                                    .ToListAsync();
+            int codigoRespuesta;
+            string mensaje = null;
 
-            List<PeritoVm> peritosVms = peritos.Select(perito => new PeritoVm()
+            if (peritos == null || peritos.Count == 0)
             {
-                Id = perito.Id,
-                Nombre = perito.Nombre
-            })
-            .ToList();
+                codigoRespuesta = 500;
+                mensaje = "No existen peritos";
+            }
+            else
+            {
+                codigoRespuesta = 200;
 
-            return peritosVms;
+                List<PeritoVm> peritosVms = peritos.Select(perito => new PeritoVm()
+                {
+                    Id = perito.Id,
+                    Nombre = perito.Nombre
+                })
+                .ToList();
+            }
+
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = codigoRespuesta,
+                Mensaje = mensaje,
+                Datos = peritos
+            };
+
+            return respuestaApi;
         }
 
         [HttpGet("ImporteReparacionDanios/{idPerito}")]
