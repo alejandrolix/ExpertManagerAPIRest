@@ -25,12 +25,29 @@ namespace APIRest.Controllers
 
         // GET: AseguradorasController
         [HttpGet]
-        public async Task<List<Aseguradora>> Index()
+        public async Task<RespuestaApi> Index()
         {
             List<Aseguradora> aseguradoras = await _contexto.Aseguradoras                                                        
                                                             .ToListAsync();
+            int codigoRespuesta;
+            string mensaje = null;
 
-            return aseguradoras;
+            if (aseguradoras == null || aseguradoras.Count == 0)
+            {
+                codigoRespuesta = 500;
+                mensaje = "No existen aseguradoras";
+            }
+            else
+                codigoRespuesta = 200;
+
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = codigoRespuesta,
+                Mensaje = mensaje,
+                Datos = aseguradoras
+            };
+
+            return respuestaApi;
         }        
     }
 }
