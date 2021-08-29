@@ -225,10 +225,23 @@ namespace APIRest.Controllers
 
             Estado estadoCerrado = await _contexto.Estados
                                                   .FirstOrDefaultAsync(estado => estado.Id == 4);
-            int codigoRespuesta;
+            int codigoRespuesta = 500;
             string mensaje = null;
-            object datos = false;           
+            object datos = false;
 
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = codigoRespuesta,
+                Mensaje = mensaje,
+                Datos = datos
+            };
+
+            if (siniestro is null)
+            {
+                mensaje = $"No existe el siniestro con id {id}";
+                return respuestaApi;
+            }
+                
             try
             {
                 siniestro.Estado = estadoCerrado;
@@ -241,16 +254,8 @@ namespace APIRest.Controllers
             }
             catch (Exception ex)
             {
-                codigoRespuesta = 500;
-                mensaje = $"No se ha podido cerrar el siniestro con id {id}";
-            }
-
-            RespuestaApi respuestaApi = new RespuestaApi
-            {
-                CodigoRespuesta = codigoRespuesta,
-                Mensaje = mensaje,
-                Datos = datos
-            };
+                mensaje = $"No se ha podido cerrar el siniestro con id {id}";             
+            }            
 
             return respuestaApi;
         }
