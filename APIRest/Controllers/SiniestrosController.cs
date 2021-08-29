@@ -218,13 +218,17 @@ namespace APIRest.Controllers
         }
 
         [HttpPut("Cerrar/{id}")]
-        public async Task<JsonResult> Cerrar(int id)
+        public async Task<RespuestaApi> Cerrar(int id)
         {
             Siniestro siniestro = await _contexto.Siniestros
                                                  .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
 
             Estado estadoCerrado = await _contexto.Estados
                                                   .FirstOrDefaultAsync(estado => estado.Id == 4);
+            int codigoRespuesta;
+            string mensaje = null;
+            object datos = false;           
+
             try
             {
                 siniestro.Estado = estadoCerrado;
@@ -232,12 +236,23 @@ namespace APIRest.Controllers
                 _contexto.Update(siniestro);
                 await _contexto.SaveChangesAsync();
 
-                return new JsonResult(true);
+                codigoRespuesta = 200;
+                datos = true;
             }
             catch (Exception ex)
             {
-                return new JsonResult(false);
+                codigoRespuesta = 500;
+                mensaje = $"No se ha podido cerrar el siniestro con id {id}";
             }
+
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = codigoRespuesta,
+                Mensaje = mensaje,
+                Datos = datos
+            };
+
+            return respuestaApi;
         }
 
         [HttpGet("{id}")]
