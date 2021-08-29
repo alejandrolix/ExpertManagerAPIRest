@@ -1,8 +1,6 @@
 ﻿using APIRest.Context;
 using APIRest.Models;
 using APIRest.ViewModels;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -44,14 +42,32 @@ namespace APIRest.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Crear(MensajeVm mensajeVm)
+        public async Task<RespuestaApi> Crear(MensajeVm mensajeVm)
         {
             Usuario usuarioCreacion = await _contexto.Usuarios
                                                      .FirstOrDefaultAsync(usuario => usuario.Id == mensajeVm.IdUsuarioCreado);
 
             Siniestro siniestro = await _contexto.Siniestros
-                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == mensajeVm.IdSiniestro);
+                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == mensajeVm.IdSiniestro);            
+            int codigoRespuesta = 500;
+            string mensajeError = null;
+            object datos = false;
 
+            if (usuarioCreacion is null)
+                mensajeError = $"No existe el usuario con id {mensajeVm.IdUsuarioCreado}";
+            else if (siniestro is null)
+                mensajeError = $"No existe el siniestro con id {mensajeVm.IdSiniestro}";
+
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = codigoRespuesta,
+                Mensaje = mensajeError,
+                Datos = datos
+            };
+
+            if (!string.IsNullOrEmpty(mensajeError))
+                return respuestaApi;
+            
             Mensaje mensaje = new Mensaje()
             {
                 Descripcion = mensajeVm.Descripcion,
@@ -64,22 +80,43 @@ namespace APIRest.Controllers
                 _contexto.Add(mensaje);
                 await _contexto.SaveChangesAsync();
 
-                return new JsonResult(true);
+                codigoRespuesta = 200;                
+                datos = true;
             }
             catch (Exception ex)
             {
-                return new JsonResult(false);
+                datos = false;
             }
+
+            return respuestaApi;
         }
 
         [HttpPost("RevisarCierre")]
-        public async Task<JsonResult> CrearMensajeRevisarCierre(MensajeVm mensajeVm)
+        public async Task<RespuestaApi> CrearMensajeRevisarCierre(MensajeVm mensajeVm)
         {
             Usuario usuarioCreacion = await _contexto.Usuarios
                                                      .FirstOrDefaultAsync(usuario => usuario.Id == mensajeVm.IdUsuarioCreado);
 
             Siniestro siniestro = await _contexto.Siniestros
-                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == mensajeVm.IdSiniestro);
+                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == mensajeVm.IdSiniestro);            
+            int codigoRespuesta = 500;
+            string mensajeError = null;
+            object datos = false;
+
+            if (usuarioCreacion is null)
+                mensajeError = $"No existe el usuario con id {mensajeVm.IdUsuarioCreado}";
+            else if (siniestro is null)
+                mensajeError = $"No existe el siniestro con id {mensajeVm.IdSiniestro}";
+
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = codigoRespuesta,
+                Mensaje = mensajeError,
+                Datos = datos
+            };
+
+            if (!string.IsNullOrEmpty(mensajeError))
+                return respuestaApi;
 
             Mensaje mensaje = new Mensaje()
             {
@@ -93,12 +130,15 @@ namespace APIRest.Controllers
                 _contexto.Add(mensaje);
                 await _contexto.SaveChangesAsync();
 
-                return new JsonResult(true);
+                codigoRespuesta = 200;
+                datos = true;
             }
             catch (Exception ex)
             {
-                return new JsonResult(false);
+                datos = false;
             }
+
+            return respuestaApi;
         }
 
         [HttpDelete("{id}")]
