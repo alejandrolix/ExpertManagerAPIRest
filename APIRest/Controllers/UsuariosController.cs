@@ -108,16 +108,21 @@ namespace APIRest.Controllers
         }
 
         [HttpPost("IniciarSesion")]
-        public async Task<JsonResult> IniciarSesion(UsuarioVm usuarioVm)
+        public async Task<RespuestaApi> IniciarSesion(UsuarioVm usuarioVm)
         {
             Usuario usuario = await _contexto.Usuarios
                                              .Include(usuario => usuario.Permiso)
                                              .FirstOrDefaultAsync(usuario => usuario.Nombre == usuarioVm.Nombre &&
                                                                   usuario.Contrasenia == usuarioVm.HashContrasenia);
+            int codigoRespuesta = 500;
+            string mensaje = null;
+            object datos = null;
+
             if (usuario is null)
-                return new JsonResult(false);
+                mensaje = $"No existe el usuario {usuarioVm.Nombre} o la contraseña es incorrecta";
             else
             {
+                codigoRespuesta = 200;
                 string token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
 
                 UsuarioVm respuesta = new UsuarioVm()
@@ -128,8 +133,17 @@ namespace APIRest.Controllers
                     Token = token
                 };
 
-                return new JsonResult(respuesta);
+                datos = respuesta;
             }
+
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = codigoRespuesta,
+                Mensaje = mensaje,
+                Datos = datos
+            };
+
+            return respuestaApi;            
         }
 
         private bool EsPeritoNoResponsable(int idPermiso)
