@@ -406,24 +406,42 @@ namespace APIRest.Controllers
         }
 
         [HttpDelete("{id}")]        
-        public async Task<JsonResult> Delete(int id)
+        public async Task<RespuestaApi> Delete(int id)
         {
+            Siniestro siniestro = await _contexto.Siniestros
+                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
+            int codigoRespuesta = 500;
+            string mensaje = null;
+            object datos = false;
+
+            RespuestaApi respuestaApi = new RespuestaApi
+            {
+                CodigoRespuesta = codigoRespuesta,
+                Mensaje = mensaje,
+                Datos = datos
+            };
+
+            if (siniestro is null)
+            {
+                mensaje = $"No existe el siniestro con id {id}";
+                respuestaApi.Mensaje = mensaje;
+                return respuestaApi;
+            }
+
             try
             {
-                Siniestro siniestro = await _contexto.Siniestros
-                                                     .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
-                if (siniestro is null)
-                    return new JsonResult(false);
-
                 _contexto.Remove(siniestro);
                 await _contexto.SaveChangesAsync();
 
-                return new JsonResult(true);
+                codigoRespuesta = 200;
+                datos = true;
             }
             catch (Exception ex)
             {
-                return new JsonResult(false);
+                mensaje = $"No se ha podido eliminar el siniestro con id {id}";
             }
+
+            return respuestaApi;
         }
     }
 }
