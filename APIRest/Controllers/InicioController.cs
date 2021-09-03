@@ -23,7 +23,21 @@ namespace APIRest.Controllers
 
         [HttpGet("{idUsuario}")]
         public async Task<RespuestaApi> ObtenerEstadisticas(int idUsuario)
-        {            
+        {
+            Usuario usuario = await _contexto.Usuarios
+                                             .Include(usuario => usuario.Permiso)
+                                             .FirstOrDefaultAsync(usuario => usuario.Id == idUsuario);
+
+            RespuestaApi respuestaApi = new RespuestaApi();
+
+            if (usuario is null)
+            {                
+                respuestaApi.CodigoRespuesta = 500;
+                respuestaApi.Mensaje = $"No existe el usuario con id {idUsuario}";
+
+                return respuestaApi;
+            }          
+
             int numSiniestros = await _contexto.Siniestros
                                                .Include(siniestro => siniestro.UsuarioCreado)
                                                .Include(siniestro => siniestro.Perito)
@@ -31,51 +45,48 @@ namespace APIRest.Controllers
                                                .CountAsync();
 
             List<Tuple<string, int>> numSiniestrosPorAseguradora = await _contexto.Siniestros
-                                                                                 .Include(siniestro => siniestro.UsuarioCreado)
-                                                                                 .Include(siniestro => siniestro.Perito)
-                                                                                 .Include(siniestro => siniestro.Aseguradora)
-                                                                                 .Where(siniestro => siniestro.UsuarioCreado.Id == idUsuario || siniestro.Perito.Id == idUsuario)
-                                                                                 .GroupBy(
+                                                                                  .Include(siniestro => siniestro.UsuarioCreado)
+                                                                                  .Include(siniestro => siniestro.Perito)
+                                                                                  .Include(siniestro => siniestro.Aseguradora)
+                                                                                  .Where(siniestro => siniestro.UsuarioCreado.Id == idUsuario || siniestro.Perito.Id == idUsuario)
+                                                                                  .GroupBy(
                                                                                      siniestro => siniestro.Aseguradora.Nombre,
                                                                                      siniestro => siniestro.Id,
-                                                                                    (key, g) => new { Aseguradora = key, NumSiniestros = g.Count() })
-                                                                                 .Select(obj => new Tuple<string, int>(obj.Aseguradora, obj.NumSiniestros))
-                                                                                 .ToListAsync();
-
-            Usuario usuario = await _contexto.Usuarios
-                                            .Include(usuario => usuario.Permiso)
-                                            .FirstOrDefaultAsync(usuario => usuario.Id == idUsuario && usuario.Permiso.Id != 1);
-
+                                                                                   (key, g) => new { Aseguradora = key, NumSiniestros = g.Count() })
+                                                                                  .Select(obj => new Tuple<string, int>(obj.Aseguradora, obj.NumSiniestros))
+                                                                                  .ToListAsync();            
             EstadisticasVm estadisticasVm = new EstadisticasVm()
             {
                 NumSiniestros = numSiniestros,
                 NumSiniestrosPorAseguradora = numSiniestrosPorAseguradora
             };
 
+            // Comprobamos si el usuario a buscar es perito.
+            Usuario perito = await _contexto.Usuarios
+                                            .Include(usuario => usuario.Permiso)
+                                            .FirstOrDefaultAsync(usuario => usuario.Id == idUsuario && usuario.Permiso.Id != 1);
+
             // El usuario es un perito
-            if (usuario != null)
+            if (perito != null)
             {
                 List<Tuple<string, int>> numSiniestrosCerrar = await _contexto.Siniestros
-                                                                           .Include(siniestro => siniestro.UsuarioCreado)
-                                                                           .Include(siniestro => siniestro.Perito)
-                                                                           .Include(siniestro => siniestro.Estado)
-                                                                           .Where(siniestro => (siniestro.UsuarioCreado.Id == idUsuario || siniestro.Perito.Id == idUsuario) &&
-                                                                                  siniestro.Estado.Id == 3)
-                                                                           .GroupBy(
-                                                                                siniestro => siniestro.Aseguradora.Nombre,
-                                                                                siniestro => siniestro.Id,
-                                                                            (key, g) => new { Aseguradora = key, NumSiniestros = g.Count() })
-                                                                            .Select(obj => new Tuple<string, int>(obj.Aseguradora, obj.NumSiniestros))
-                                                                            .ToListAsync();
+                                                                              .Include(siniestro => siniestro.UsuarioCreado)
+                                                                              .Include(siniestro => siniestro.Perito)
+                                                                              .Include(siniestro => siniestro.Estado)
+                                                                              .Where(siniestro => (siniestro.UsuarioCreado.Id == idUsuario || siniestro.Perito.Id == idUsuario) &&
+                                                                                     siniestro.Estado.Id == 3)
+                                                                              .GroupBy(
+                                                                                  siniestro => siniestro.Aseguradora.Nombre,
+                                                                                  siniestro => siniestro.Id,
+                                                                               (key, g) => new { Aseguradora = key, NumSiniestros = g.Count() })
+                                                                               .Select(obj => new Tuple<string, int>(obj.Aseguradora, obj.NumSiniestros))
+                                                                               .ToListAsync();
 
                 estadisticasVm.NumSiniestrosCerrarPorAseguradora = numSiniestrosCerrar;
             }
 
-            RespuestaApi respuestaApi = new RespuestaApi
-            {
-                CodigoRespuesta = 200,
-                Datos = estadisticasVm
-            };
+            respuestaApi.CodigoRespuesta = 200;
+            respuestaApi.Datos = estadisticasVm;            
 
             return respuestaApi;
         }
