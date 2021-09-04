@@ -49,47 +49,36 @@ namespace APIRest.Controllers
                 siniestros = siniestros.Where(siniestro => siniestro.Aseguradora.Id == idAseguradora)
                                         .ToList();
 
+            RespuestaApi respuestaApi = new RespuestaApi();
+
+            if (siniestros.Count == 0)
+            {
+                respuestaApi.CodigoRespuesta = 500;
+                respuestaApi.Mensaje = "No existen siniestros";
+
+                return respuestaApi;
+            }
+
             siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
                                    .ToList();
 
-            int codigoRespuesta;
-            string mensaje = null;
-            object datos = null;
-
-            if (siniestros == null || siniestros.Count == 0)
+            respuestaApi.CodigoRespuesta = 200;
+            List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
             {
-                codigoRespuesta = 500;
-                mensaje = "No existen siniestros";
-            }
-            else
-            {
-                codigoRespuesta = 200;
+                Id = siniestro.Id,
+                IdEstado = siniestro.Estado.Id,
+                Estado = siniestro.Estado.Nombre,
+                Aseguradora = siniestro.Aseguradora.Nombre,
+                Descripcion = siniestro.Descripcion,
+                Perito = siniestro.Perito.Nombre,
+                FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
+                SujetoAfectado = siniestro.SujetoAfectado.ToString(),
+                Danio = siniestro.Danio.Nombre,
+                ImpValoracionDanios = $"{siniestro.ImpValoracionDanios:F} €"
+            })
+            .ToList();
 
-                List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
-                {
-                    Id = siniestro.Id,
-                    IdEstado = siniestro.Estado.Id,
-                    Estado = siniestro.Estado.Nombre,
-                    Aseguradora = siniestro.Aseguradora.Nombre,
-                    Descripcion = siniestro.Descripcion,
-                    Perito = siniestro.Perito.Nombre,
-                    FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
-                    SujetoAfectado = siniestro.SujetoAfectado.ToString(),
-                    Danio = siniestro.Danio.Nombre,
-                    ImpValoracionDanios = $"{siniestro.ImpValoracionDanios:F} €"
-                })
-                .ToList();
-
-                datos = siniestrosVms;
-            }
-
-            RespuestaApi respuestaApi = new RespuestaApi
-            {
-                CodigoRespuesta = codigoRespuesta,
-                Mensaje = mensaje,
-                Datos = datos
-            };
-
+            respuestaApi.Datos = siniestrosVms;
             return respuestaApi;
         }
 
