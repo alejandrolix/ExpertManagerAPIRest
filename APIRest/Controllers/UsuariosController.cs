@@ -22,13 +22,24 @@ namespace APIRest.Controllers
         }
 
         [HttpGet]
-        public async Task<List<UsuarioVm>> ObtenerTodos()
+        public async Task<RespuestaApi> ObtenerTodos()
         {
             List<Usuario> usuarios = await _contexto.Usuarios
                                                     .Include(usuario => usuario.Permiso)
                                                     .OrderBy(usuario => usuario.Nombre)
                                                     .ToListAsync();
 
+            RespuestaApi respuestaApi = new RespuestaApi();
+
+            if (usuarios is null || usuarios.Count == 0)
+            {
+                respuestaApi.CodigoRespuesta = 500;
+                respuestaApi.Mensaje = "No existen usuarios";
+
+                return respuestaApi;
+            }
+
+            respuestaApi.CodigoRespuesta = 200;
             List<UsuarioVm> usuariosVms = usuarios.Select(usuario => new UsuarioVm()
             {
                 Id = usuario.Id,
@@ -36,9 +47,12 @@ namespace APIRest.Controllers
                 IdPermiso = usuario.Permiso.Id,
                 EsPerito = EsPerito(usuario.Permiso.Id),
                 Permiso = usuario.Permiso.Nombre
-            }).ToList();
+            })
+            .ToList();
 
-            return usuariosVms;
+            respuestaApi.Datos = usuariosVms;
+
+            return respuestaApi;
         }
 
         private string EsPerito(int idPermiso)
