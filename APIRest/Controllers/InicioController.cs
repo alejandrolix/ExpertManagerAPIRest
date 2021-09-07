@@ -29,7 +29,7 @@ namespace APIRest.Controllers
                                              .FirstOrDefaultAsync(usuario => usuario.Id == idUsuario);
             
             if (usuario is null)
-                return StatusCode(500, $"No existe el usuario con id {idUsuario}");
+                return NotFound($"No existe el usuario con id {idUsuario}");
 
             int numSiniestros = await _contexto.Siniestros
                                                .Include(siniestro => siniestro.UsuarioCreado)
