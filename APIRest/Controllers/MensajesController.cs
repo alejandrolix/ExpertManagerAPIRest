@@ -42,31 +42,22 @@ namespace APIRest.Controllers
         }
 
         [HttpPost]
-        public async Task<RespuestaApi> Crear(MensajeVm mensajeVm)
+        public async Task<ActionResult> Crear(MensajeVm mensajeVm)
         {
             Usuario usuarioCreacion = await _contexto.Usuarios
                                                      .FirstOrDefaultAsync(usuario => usuario.Id == mensajeVm.IdUsuarioCreado);
 
             Siniestro siniestro = await _contexto.Siniestros
-                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == mensajeVm.IdSiniestro);            
-            int codigoRespuesta = 500;
+                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == mensajeVm.IdSiniestro);
             string mensajeError = null;
-            object datos = false;
 
             if (usuarioCreacion is null)
                 mensajeError = $"No existe el usuario con id {mensajeVm.IdUsuarioCreado}";
             else if (siniestro is null)
                 mensajeError = $"No existe el siniestro con id {mensajeVm.IdSiniestro}";
 
-            RespuestaApi respuestaApi = new RespuestaApi
-            {
-                CodigoRespuesta = codigoRespuesta,
-                Mensaje = mensajeError,
-                Datos = datos
-            };
-
             if (!string.IsNullOrEmpty(mensajeError))
-                return respuestaApi;
+                return StatusCode(500, mensajeError);
             
             Mensaje mensaje = new Mensaje()
             {
@@ -75,20 +66,24 @@ namespace APIRest.Controllers
                 Siniestro = siniestro
             };
 
+            bool estaGuardado;
+
             try
             {
                 _contexto.Add(mensaje);
                 await _contexto.SaveChangesAsync();
 
-                codigoRespuesta = 200;                
-                datos = true;
+                estaGuardado = true;                
             }
             catch (Exception ex)
             {
-                datos = false;
-            }
+                estaGuardado = false;                
+            }        
+            
+            if (estaGuardado)
+                return Ok(estaGuardado);
 
-            return respuestaApi;
+            return StatusCode(500, estaGuardado);
         }
 
         [HttpPost("RevisarCierre")]
