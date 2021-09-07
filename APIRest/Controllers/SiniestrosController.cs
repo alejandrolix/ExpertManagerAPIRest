@@ -198,29 +198,21 @@ namespace APIRest.Controllers
         }
 
         [HttpPut("Cerrar/{id}")]
-        public async Task<RespuestaApi> Cerrar(int id)
+        public async Task<ActionResult> Cerrar(int id)
         {
             Siniestro siniestro = await _contexto.Siniestros
                                                  .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
 
             Estado estadoCerrado = await _contexto.Estados
                                                   .FirstOrDefaultAsync(estado => estado.Id == 4);
-            int codigoRespuesta = 500;
-            string mensaje = null;
-            object datos = false;
-
-            RespuestaApi respuestaApi = new RespuestaApi
-            {
-                CodigoRespuesta = codigoRespuesta,
-                Mensaje = mensaje,
-                Datos = datos
-            };
+            string mensajeError = null;
+            bool estaCerrado;            
 
             if (siniestro is null)
             {
-                mensaje = $"No existe el siniestro con id {id}";
-                return respuestaApi;
-            }
+                mensajeError = $"No existe el siniestro con id {id}";
+                return NotFound(mensajeError);            
+            }                     
                 
             try
             {
@@ -229,15 +221,18 @@ namespace APIRest.Controllers
                 _contexto.Update(siniestro);
                 await _contexto.SaveChangesAsync();
 
-                codigoRespuesta = 200;
-                datos = true;
+                estaCerrado = true;
             }
             catch (Exception ex)
             {
-                mensaje = $"No se ha podido cerrar el siniestro con id {id}";             
-            }            
+                mensajeError = $"No se ha podido cerrar el siniestro con id {id}";
+                estaCerrado = false;
+            }
 
-            return respuestaApi;
+            if (estaCerrado)
+                return Ok(estaCerrado);
+
+            return StatusCode(500, mensajeError);
         }
 
         [HttpGet("{id}")]
