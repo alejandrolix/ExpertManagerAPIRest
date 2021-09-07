@@ -22,21 +22,14 @@ namespace APIRest.Controllers
         }
 
         [HttpGet("{idUsuario}")]
-        public async Task<RespuestaApi> ObtenerEstadisticas(int idUsuario)
+        public async Task<ActionResult> ObtenerEstadisticas(int idUsuario)
         {
             Usuario usuario = await _contexto.Usuarios
                                              .Include(usuario => usuario.Permiso)
                                              .FirstOrDefaultAsync(usuario => usuario.Id == idUsuario);
-
-            RespuestaApi respuestaApi = new RespuestaApi();
-
+            
             if (usuario is null)
-            {                
-                respuestaApi.CodigoRespuesta = 500;
-                respuestaApi.Mensaje = $"No existe el usuario con id {idUsuario}";
-
-                return respuestaApi;
-            }          
+                return StatusCode(500, $"No existe el usuario con id {idUsuario}");
 
             int numSiniestros = await _contexto.Siniestros
                                                .Include(siniestro => siniestro.UsuarioCreado)
@@ -84,11 +77,8 @@ namespace APIRest.Controllers
 
                 estadisticasVm.NumSiniestrosCerrarPorAseguradora = numSiniestrosCerrar;
             }
-
-            respuestaApi.CodigoRespuesta = 200;
-            respuestaApi.Datos = estadisticasVm;            
-
-            return respuestaApi;
+            
+            return Ok(estadisticasVm);
         }
     }
 }
