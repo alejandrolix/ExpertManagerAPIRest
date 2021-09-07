@@ -23,7 +23,7 @@ namespace APIRest.Controllers
 
         // GET: SiniestrosController
         [HttpGet]
-        public async Task<RespuestaApi> Index(int idPerito, int idAseguradora)
+        public async Task<ActionResult> Index(int idPerito, int idAseguradora)
         {
             List<Siniestro> siniestros = null;
 
@@ -47,22 +47,14 @@ namespace APIRest.Controllers
 
             if (idAseguradora != 0)
                 siniestros = siniestros.Where(siniestro => siniestro.Aseguradora.Id == idAseguradora)
-                                        .ToList();
+                                        .ToList();            
 
-            RespuestaApi respuestaApi = new RespuestaApi();
-
-            if (siniestros.Count == 0)
-            {
-                respuestaApi.CodigoRespuesta = 500;
-                respuestaApi.Mensaje = "No existen siniestros";
-
-                return respuestaApi;
-            }
+            if (siniestros.Count == 0)            
+                return StatusCode(500, "No existen siniestros");            
 
             siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
                                    .ToList();
 
-            respuestaApi.CodigoRespuesta = 200;
             List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
             {
                 Id = siniestro.Id,
@@ -78,8 +70,7 @@ namespace APIRest.Controllers
             })
             .ToList();
 
-            respuestaApi.Datos = siniestrosVms;
-            return respuestaApi;
+            return Ok(siniestrosVms);            
         }
 
         [HttpGet("PeritoNoResponsable")]
