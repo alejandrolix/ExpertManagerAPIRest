@@ -195,7 +195,7 @@ namespace APIRest.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<RespuestaApi> ObtenerPorId(int id)
+        public async Task<ActionResult> ObtenerPorId(int id)
         {
             Siniestro siniestro = await _contexto.Siniestros
                                                  .Include(siniestro => siniestro.Aseguradora)
@@ -204,26 +204,9 @@ namespace APIRest.Controllers
                                                  .Include(siniestro => siniestro.Perito)
                                                  .Include(siniestro => siniestro.Danio)
                                                  .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
-            int codigoRespuesta = 500;
-            string mensaje = null;
-            object datos = false;
+            if (siniestro is null)            
+                return NotFound($"No se ha encontrado el siniestro con id {id}");            
 
-            RespuestaApi respuestaApi = new RespuestaApi
-            {
-                CodigoRespuesta = codigoRespuesta,
-                Mensaje = mensaje,
-                Datos = datos
-            };
-
-            if (siniestro is null)
-            {
-                mensaje = $"No se ha encontrado el siniestro con id {id}";
-                respuestaApi.Mensaje = mensaje;
-
-                return respuestaApi;
-            }
-
-            codigoRespuesta = 200;
             SiniestroVm siniestroVm = new SiniestroVm()
             {
                 Id = siniestro.Id,
@@ -242,12 +225,8 @@ namespace APIRest.Controllers
                 Danio = siniestro.Danio.Nombre,
                 ImpValoracionDanios = $"{siniestro.ImpValoracionDanios.ToString("F")} €"
             };
-            datos = siniestroVm;
 
-            respuestaApi.CodigoRespuesta = codigoRespuesta;
-            respuestaApi.Datos = datos;
-
-            return respuestaApi;
+            return Ok(siniestroVm);
         }
 
         // POST: SiniestrosController/Create
