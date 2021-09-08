@@ -231,58 +231,69 @@ namespace APIRest.Controllers
 
         // POST: SiniestrosController/Create
         [HttpPost]        
-        public async Task<JsonResult> Create(CrearSiniestroVm crearSiniestroVm)
+        public async Task<ActionResult> Create(CrearSiniestroVm crearSiniestroVm)
         {
-            try
-            {
-                Estado estado = await _contexto.Estados
-                                                   .Where(estado => estado.Id == 2)
-                                                   .FirstOrDefaultAsync();
-
-                Aseguradora aseguradora = await _contexto.Aseguradoras
-                                                         .Where(aseguradora => aseguradora.Id == crearSiniestroVm.IdAseguradora)
-                                                         .FirstOrDefaultAsync();
-
-                Usuario usuarioCreado = await _contexto.Usuarios
-                                                        .Where(usuario => usuario.Id == crearSiniestroVm.IdUsuarioAlta)
-                                                        .FirstOrDefaultAsync();
-
-                SujetoAfectado sujetoAfectado = (SujetoAfectado)crearSiniestroVm.IdSujetoAfectado;
-
-                Usuario perito = await _contexto.Usuarios
-                                                .Where(usuario => usuario.Id == crearSiniestroVm.IdPerito)
-                                                .FirstOrDefaultAsync();
-
-                Danio danio = await _contexto.Danios
-                                            .Where(danio => danio.Id == crearSiniestroVm.IdDanio)
+            Estado estado = await _contexto.Estados
+                                            .Where(estado => estado.Id == 2)
                                             .FirstOrDefaultAsync();
 
-                Siniestro siniestro = new Siniestro()
-                {
-                    Estado = estado,
-                    Aseguradora = aseguradora,
-                    Direccion = crearSiniestroVm.Direccion,
-                    Descripcion = crearSiniestroVm.Descripcion,
-                    UsuarioCreado = usuarioCreado,
-                    FechaHoraAlta = DateTime.Now,
-                    SujetoAfectado = sujetoAfectado,
-                    ImpValoracionDanios = 0.00M,
-                    Perito = perito,
-                    Danio = danio
-                };
+            Aseguradora aseguradora = await _contexto.Aseguradoras
+                                                     .Where(aseguradora => aseguradora.Id == crearSiniestroVm.IdAseguradora)
+                                                     .FirstOrDefaultAsync();
+            if (aseguradora is null)            
+                return NotFound($"No existe la aseguradora con id {crearSiniestroVm.IdAseguradora}");            
 
+            Usuario usuarioCreado = await _contexto.Usuarios
+                                                   .Where(usuario => usuario.Id == crearSiniestroVm.IdUsuarioAlta)
+                                                   .FirstOrDefaultAsync();
+            if (usuarioCreado is null)
+                return NotFound($"No existe el usuario con id {crearSiniestroVm.IdUsuarioAlta}");
+
+            SujetoAfectado sujetoAfectado = (SujetoAfectado)crearSiniestroVm.IdSujetoAfectado;
+
+            Usuario perito = await _contexto.Usuarios
+                                            .Where(usuario => usuario.Id == crearSiniestroVm.IdPerito)
+                                            .FirstOrDefaultAsync();
+            if (perito is null)            
+                return NotFound($"No existe el perito con id {crearSiniestroVm.IdPerito}");            
+
+            Danio danio = await _contexto.Danios
+                                         .Where(danio => danio.Id == crearSiniestroVm.IdDanio)
+                                         .FirstOrDefaultAsync();
+            if (danio is null)            
+                return NotFound($"No existe el daño con id {crearSiniestroVm.IdDanio}");            
+
+            Siniestro siniestro = new Siniestro()
+            {
+                Estado = estado,
+                Aseguradora = aseguradora,
+                Direccion = crearSiniestroVm.Direccion,
+                Descripcion = crearSiniestroVm.Descripcion,
+                UsuarioCreado = usuarioCreado,
+                FechaHoraAlta = DateTime.Now,
+                SujetoAfectado = sujetoAfectado,
+                ImpValoracionDanios = 0.00M,
+                Perito = perito,
+                Danio = danio
+            };
+            bool estaCreado;
+
+            try
+            {
                 _contexto.Add(siniestro);
-                int numRegistros = await _contexto.SaveChangesAsync();
+                await _contexto.SaveChangesAsync();
 
-                if (numRegistros != 0)
-                    return new JsonResult(true);                
+                estaCreado = true;
             }
             catch (Exception ex)
             {
-                return new JsonResult(false);
+                estaCreado = false;
             }
 
-            return new JsonResult(false);
+            if (estaCreado)
+                return Ok(estaCreado);
+
+            return StatusCode(500, "No se ha podido crear el siniestro");
         }
 
         [HttpPut("{id}")]        
