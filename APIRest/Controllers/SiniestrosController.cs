@@ -233,7 +233,11 @@ namespace APIRest.Controllers
         [HttpPost]        
         public async Task<ActionResult> Create(CrearSiniestroVm crearSiniestroVm)
         {
-            Estado estado = 
+            Estado estado = await _contexto.Estados
+                                           .Where(estado => estado.Id == 2)
+                                           .FirstOrDefaultAsync();
+            if (estado is null)
+                return NotFound("No existe el estado con id 2");
 
             Aseguradora aseguradora = await _contexto.Aseguradoras
                                                      .Where(aseguradora => aseguradora.Id == crearSiniestroVm.IdAseguradora)
