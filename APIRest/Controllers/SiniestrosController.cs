@@ -299,59 +299,76 @@ namespace APIRest.Controllers
         }
 
         [HttpPut("{id}")]        
-        public async Task<JsonResult> Edit(int id, SiniestroVm siniestroVm)
+        public async Task<ActionResult> Edit(int id, SiniestroVm siniestroVm)
         {
-            try
-            {
-                Estado estado = await _contexto.Estados
-                                                .Where(estado => estado.Id == siniestroVm.IdEstado)
-                                                .FirstOrDefaultAsync();
+            Estado estado = await _contexto.Estados
+                                           .Where(estado => estado.Id == siniestroVm.IdEstado)
+                                           .FirstOrDefaultAsync();
+            if (estado is null)
+                return NotFound($"No existe el estado con id {siniestroVm.IdEstado}");
 
-                Aseguradora aseguradora = await _contexto.Aseguradoras
-                                                         .Where(aseguradora => aseguradora.Id == siniestroVm.IdAseguradora)
-                                                         .FirstOrDefaultAsync();                
+            Aseguradora aseguradora = await _contexto.Aseguradoras
+                                                     .Where(aseguradora => aseguradora.Id == siniestroVm.IdAseguradora)
+                                                     .FirstOrDefaultAsync();
+            if (aseguradora is null)
+                return NotFound($"No existe la aseguradora con id {siniestroVm.IdAseguradora}");
 
-                SujetoAfectado sujetoAfectado = (SujetoAfectado) siniestroVm.IdSujetoAfectado;
+            SujetoAfectado sujetoAfectado = (SujetoAfectado)siniestroVm.IdSujetoAfectado;
 
-                Usuario perito = await _contexto.Usuarios
-                                                .Where(usuario => usuario.Id == siniestroVm.IdPerito)
-                                                .FirstOrDefaultAsync();
-
-                Danio danio = await _contexto.Danios
-                                            .Where(danio => danio.Id == siniestroVm.IdDanio)
+            Usuario perito = await _contexto.Usuarios
+                                            .Where(usuario => usuario.Id == siniestroVm.IdPerito)
                                             .FirstOrDefaultAsync();
+            if (perito is null)
+                return NotFound($"No existe el perito con id {siniestroVm.IdPerito}");
 
-                Siniestro siniestro = await _contexto.Siniestros
-                                                    .Include(siniestro => siniestro.Estado)
-                                                    .Include(siniestro => siniestro.Aseguradora)
-                                                    .Include(siniestro => siniestro.Perito)
-                                                    .Include(siniestro => siniestro.Danio)
-                                                    .Include(siniestro => siniestro.UsuarioCreado)
-                                                    .Where(siniestro => siniestro.Id == id)
-                                                    .FirstOrDefaultAsync();
+            Danio danio = await _contexto.Danios
+                                         .Where(danio => danio.Id == siniestroVm.IdDanio)
+                                         .FirstOrDefaultAsync();
+            if (danio is null)
+                return NotFound($"No existe el daño con id {siniestroVm.IdDanio}");
 
-                siniestro.Estado = estado;
-                siniestro.Aseguradora = aseguradora;
-                siniestro.Direccion = siniestroVm.Direccion;
-                siniestro.Descripcion = siniestroVm.Descripcion;
-                siniestro.SujetoAfectado = sujetoAfectado;
-                siniestro.Perito = perito;
-                siniestro.Danio = danio;
+            Siniestro siniestro = await _contexto.Siniestros
+                                                 .Include(siniestro => siniestro.Estado)
+                                                 .Include(siniestro => siniestro.Aseguradora)
+                                                 .Include(siniestro => siniestro.Perito)
+                                                 .Include(siniestro => siniestro.Danio)
+                                                 .Include(siniestro => siniestro.UsuarioCreado)
+                                                 .Where(siniestro => siniestro.Id == id)
+                                                 .FirstOrDefaultAsync();
+            if (siniestro is null)
+                return NotFound($"No existe el siniestro con id {id}");
 
-                if (siniestroVm.IdEstado == 3)      // Estado Valorado
-                    siniestro.ImpValoracionDanios = decimal.Parse(siniestroVm.ImpValoracionDanios);
-                else
-                    siniestro.ImpValoracionDanios = 0;
+            siniestro.Estado = estado;
+            siniestro.Aseguradora = aseguradora;
+            siniestro.Direccion = siniestroVm.Direccion;
+            siniestro.Descripcion = siniestroVm.Descripcion;
+            siniestro.SujetoAfectado = sujetoAfectado;
+            siniestro.Perito = perito;
+            siniestro.Danio = danio;
 
+            if (siniestroVm.IdEstado == 3)      // Estado Valorado
+                siniestro.ImpValoracionDanios = decimal.Parse(siniestroVm.ImpValoracionDanios);
+            else
+                siniestro.ImpValoracionDanios = 0;
+
+            bool estaEditado;
+
+            try
+            {                
                 _contexto.Update(siniestro);
                 await _contexto.SaveChangesAsync();
-                
-                return new JsonResult(true);
+
+                estaEditado = true;
             }
             catch (Exception ex)
             {
-                return new JsonResult(false);
-            }            
+                estaEditado = false;
+            }
+
+            if (estaEditado)
+                return Ok(estaEditado);
+
+            return StatusCode(500, "No se ha podido editar el siniestro");
         }
 
         [HttpDelete("{id}")]        
