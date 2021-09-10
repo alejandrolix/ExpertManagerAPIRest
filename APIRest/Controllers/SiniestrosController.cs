@@ -162,8 +162,7 @@ namespace APIRest.Controllers
         [HttpPut("Cerrar/{id}")]
         public async Task<ActionResult> Cerrar(int id)
         {
-            Siniestro siniestro = await _contexto.Siniestros
-                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);
 
             Estado estadoCerrado = await _contexto.Estados
                                                   .FirstOrDefaultAsync(estado => estado.Id == 4);
