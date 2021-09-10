@@ -325,14 +325,8 @@ namespace APIRest.Controllers
             if (danio is null)
                 return NotFound($"No existe el daño con id {siniestroVm.IdDanio}");
 
-            Siniestro siniestro = await _contexto.Siniestros
-                                                 .Include(siniestro => siniestro.Estado)
-                                                 .Include(siniestro => siniestro.Aseguradora)
-                                                 .Include(siniestro => siniestro.Perito)
-                                                 .Include(siniestro => siniestro.Danio)
-                                                 .Include(siniestro => siniestro.UsuarioCreado)
-                                                 .Where(siniestro => siniestro.Id == id)
-                                                 .FirstOrDefaultAsync();
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);
+
             if (siniestro is null)
                 return NotFound($"No existe el siniestro con id {id}");
 
@@ -372,8 +366,7 @@ namespace APIRest.Controllers
         [HttpDelete("{id}")]        
         public async Task<ActionResult> Delete(int id)
         {
-            Siniestro siniestro = await _contexto.Siniestros
-                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == id);            
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);
             string mensaje = null;
             bool estaEliminado;            
 
