@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using APIRest.Context;
 using APIRest.Controllers;
+using APIRest.Repositorios;
 
 namespace APIRest
 {
@@ -42,6 +43,8 @@ namespace APIRest
             });
             services.AddDbContext<ExpertManagerContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ExpertManagerContext")));
+
+            services.AddScoped<RepositorioSiniestros>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

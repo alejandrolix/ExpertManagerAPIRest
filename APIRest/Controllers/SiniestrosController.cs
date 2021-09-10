@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APIRest.Repositorios;
 
 namespace APIRest.Controllers
 {    
@@ -15,10 +16,12 @@ namespace APIRest.Controllers
     public class SiniestrosController : ControllerBase
     {
         private ExpertManagerContext _contexto;
+        private RepositorioSiniestros _repositorioSiniestros;
 
-        public SiniestrosController(ExpertManagerContext contexto)
+        public SiniestrosController(ExpertManagerContext contexto, RepositorioSiniestros repositorioSiniestros)
         {
             _contexto = contexto;
+            _repositorioSiniestros = repositorioSiniestros;
         }
 
         // GET: SiniestrosController
@@ -197,13 +200,8 @@ namespace APIRest.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> ObtenerPorId(int id)
         {
-            Siniestro siniestro = await _contexto.Siniestros
-                                                 .Include(siniestro => siniestro.Aseguradora)
-                                                 .Include(siniestro => siniestro.Estado)
-                                                 .Include(siniestro => siniestro.UsuarioCreado)
-                                                 .Include(siniestro => siniestro.Perito)
-                                                 .Include(siniestro => siniestro.Danio)
-                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);
+
             if (siniestro is null)            
                 return NotFound($"No se ha encontrado el siniestro con id {id}");            
 
