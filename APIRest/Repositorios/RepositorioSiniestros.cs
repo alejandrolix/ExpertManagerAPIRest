@@ -28,5 +28,18 @@ namespace APIRest.Repositorios
                                                  .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
             return siniestro;
         }
+
+        private async Task<List<Siniestro>> ObtenerPorIdPerito(int idPerito)
+        {
+            List<Siniestro> siniestros = await _contexto.Siniestros
+                                            .Include(siniestro => siniestro.Aseguradora)
+                                            .Include(siniestro => siniestro.Estado)
+                                            .Include(siniestro => siniestro.UsuarioCreado)
+                                            .Include(siniestro => siniestro.Perito)
+                                            .Include(siniestro => siniestro.Danio)
+                                            .Where(siniestro => siniestro.Perito.Id == idPerito)
+                                            .ToListAsync();
+            return siniestros;
+        }
     }
 }
