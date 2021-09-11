@@ -32,13 +32,25 @@ namespace APIRest.Repositorios
         public async Task<List<Siniestro>> ObtenerPorIdPerito(int idPerito)
         {
             List<Siniestro> siniestros = await _contexto.Siniestros
-                                            .Include(siniestro => siniestro.Aseguradora)
-                                            .Include(siniestro => siniestro.Estado)
-                                            .Include(siniestro => siniestro.UsuarioCreado)
-                                            .Include(siniestro => siniestro.Perito)
-                                            .Include(siniestro => siniestro.Danio)
-                                            .Where(siniestro => siniestro.Perito.Id == idPerito)
-                                            .ToListAsync();
+                                                        .Include(siniestro => siniestro.Aseguradora)
+                                                        .Include(siniestro => siniestro.Estado)
+                                                        .Include(siniestro => siniestro.UsuarioCreado)
+                                                        .Include(siniestro => siniestro.Perito)
+                                                        .Include(siniestro => siniestro.Danio)
+                                                        .Where(siniestro => siniestro.Perito.Id == idPerito)
+                                                        .ToListAsync();
+            return siniestros;
+        }
+
+        public async Task<List<Siniestro>> ObtenerTodos()
+        {
+            List<Siniestro> siniestros = await _contexto.Siniestros
+                                                        .Include(siniestro => siniestro.Aseguradora)
+                                                        .Include(siniestro => siniestro.Estado)
+                                                        .Include(siniestro => siniestro.UsuarioCreado)
+                                                        .Include(siniestro => siniestro.Perito)
+                                                        .Include(siniestro => siniestro.Danio)
+                                                        .ToListAsync();
             return siniestros;
         }
     }
