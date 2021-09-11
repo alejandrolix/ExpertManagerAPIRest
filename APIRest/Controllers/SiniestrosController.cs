@@ -31,13 +31,7 @@ namespace APIRest.Controllers
             List<Siniestro> siniestros = null;
 
             if (idPerito == 0)
-                siniestros = await _contexto.Siniestros
-                                            .Include(siniestro => siniestro.Aseguradora)
-                                            .Include(siniestro => siniestro.Estado)
-                                            .Include(siniestro => siniestro.UsuarioCreado)
-                                            .Include(siniestro => siniestro.Perito)
-                                            .Include(siniestro => siniestro.Danio)
-                                            .ToListAsync();
+                siniestros = await _repositorioSiniestros.ObtenerTodos();
             else
                 siniestros = await _repositorioSiniestros.ObtenerPorIdPerito(idPerito);
 
