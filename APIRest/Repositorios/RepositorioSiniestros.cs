@@ -29,7 +29,7 @@ namespace APIRest.Repositorios
             return siniestro;
         }
 
-        private async Task<List<Siniestro>> ObtenerPorIdPerito(int idPerito)
+        public async Task<List<Siniestro>> ObtenerPorIdPerito(int idPerito)
         {
             List<Siniestro> siniestros = await _contexto.Siniestros
                                             .Include(siniestro => siniestro.Aseguradora)

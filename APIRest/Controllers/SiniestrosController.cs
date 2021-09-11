@@ -39,7 +39,7 @@ namespace APIRest.Controllers
                                             .Include(siniestro => siniestro.Danio)
                                             .ToListAsync();
             else
-                siniestros = await ObtenerPorIdPerito(idPerito);
+                siniestros = await _repositorioSiniestros.ObtenerPorIdPerito(idPerito);
 
             if (idAseguradora != 0)
                 siniestros = siniestros.Where(siniestro => siniestro.Aseguradora.Id == idAseguradora)
@@ -69,23 +69,10 @@ namespace APIRest.Controllers
             return Ok(siniestrosVms);            
         }
 
-        private async Task<List<Siniestro>> ObtenerPorIdPerito(int idPerito)
-        {
-            List<Siniestro> siniestros = await _contexto.Siniestros
-                                            .Include(siniestro => siniestro.Aseguradora)
-                                            .Include(siniestro => siniestro.Estado)
-                                            .Include(siniestro => siniestro.UsuarioCreado)
-                                            .Include(siniestro => siniestro.Perito)
-                                            .Include(siniestro => siniestro.Danio)
-                                            .Where(siniestro => siniestro.Perito.Id == idPerito)
-                                            .ToListAsync();
-            return siniestros;
-        }
-
         [HttpGet("PeritoNoResponsable")]
         public async Task<ActionResult> ObtenerPorPeritoNoResponsable(int idPerito, int idAseguradora)
         {
-            List<Siniestro> siniestros = await ObtenerPorIdPerito(idPerito);
+            List<Siniestro> siniestros = await _repositorioSiniestros.ObtenerPorIdPerito(idPerito);
 
             if (idAseguradora != 0)
                 siniestros = ObtenerSiniestrosPorIdAseguradora(idAseguradora, siniestros);
