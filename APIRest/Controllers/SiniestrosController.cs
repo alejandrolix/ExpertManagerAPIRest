@@ -24,7 +24,6 @@ namespace APIRest.Controllers
             _repositorioSiniestros = repositorioSiniestros;
         }
 
-        // GET: SiniestrosController
         [HttpGet]
         public async Task<ActionResult> Index(int idPerito, int idAseguradora)
         {
@@ -207,7 +206,6 @@ namespace APIRest.Controllers
             return Ok(siniestroVm);
         }
 
-        // POST: SiniestrosController/Create
         [HttpPost]        
         public async Task<ActionResult> Create(CrearSiniestroVm crearSiniestroVm)
         {
