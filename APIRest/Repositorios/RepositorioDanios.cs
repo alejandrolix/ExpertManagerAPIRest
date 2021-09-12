@@ -16,5 +16,13 @@ namespace APIRest.Repositorios
         {
             _contexto = contexto;
         }
+
+        public async Task<Danio> ObtenerPorId(int id)
+        {
+            Danio danio = await _contexto.Danios
+                                         .Where(danio => danio.Id == id)
+                                         .FirstOrDefaultAsync();
+            return danio;
+        }
     }
 }
