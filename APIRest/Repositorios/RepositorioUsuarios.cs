@@ -24,5 +24,14 @@ namespace APIRest.Repositorios
                                              .FirstOrDefaultAsync();
             return usuario;
         }
+
+        public async Task<int> ObtenerNumSiniestrosPorIdUsuario(int id)
+        {
+            int numSiniestros = await _contexto.Siniestros
+                                               .Include(siniestro => siniestro.UsuarioCreado)                                               
+                                               .Where(siniestro => siniestro.UsuarioCreado.Id == id)
+                                               .CountAsync();
+            return numSiniestros;
+        }
     }
 }

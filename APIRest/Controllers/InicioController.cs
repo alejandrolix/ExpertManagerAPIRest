@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APIRest.Repositorios;
 
 namespace APIRest.Controllers
 {
@@ -15,18 +16,18 @@ namespace APIRest.Controllers
     public class InicioController : ControllerBase
     {
         private ExpertManagerContext _contexto;
+        private RepositorioUsuarios _repositorioUsuarios;
 
-        public InicioController(ExpertManagerContext contexto)
+        public InicioController(ExpertManagerContext contexto, RepositorioUsuarios repositorioUsuarios)
         {
             _contexto = contexto;
+            _repositorioUsuarios = repositorioUsuarios;
         }
 
         [HttpGet("{idUsuario}")]
         public async Task<ActionResult> ObtenerEstadisticas(int idUsuario)
         {
-            Usuario usuario = await _contexto.Usuarios
-                                             .Include(usuario => usuario.Permiso)
-                                             .FirstOrDefaultAsync(usuario => usuario.Id == idUsuario);
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(idUsuario);
             
             if (usuario is null)
                 return NotFound($"No existe el usuario con id {idUsuario}");
