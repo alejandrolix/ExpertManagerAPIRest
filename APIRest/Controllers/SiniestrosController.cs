@@ -293,9 +293,8 @@ namespace APIRest.Controllers
             bool estaEditado;
 
             try
-            {                
-                _contexto.Update(siniestro);
-                await _contexto.SaveChangesAsync();
+            {
+                await _repositorioSiniestros.Actualizar(siniestro);
 
                 estaEditado = true;
             }
