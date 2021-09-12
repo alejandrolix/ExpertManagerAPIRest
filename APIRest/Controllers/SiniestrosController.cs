@@ -233,23 +233,18 @@ namespace APIRest.Controllers
                 ImpValoracionDanios = 0.00M,
                 Perito = perito,
                 Danio = danio
-            };
-            bool estaCreado;
+            };            
 
             try
             {
-                await _repositorioSiniestros.Guardar(siniestro);
-                estaCreado = true;
+                await _repositorioSiniestros.Guardar(siniestro);                
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                estaCreado = false;
+                return StatusCode(500, "No se ha podido crear el siniestro");
             }
-
-            if (estaCreado)
-                return Ok(estaCreado);
-
-            return StatusCode(500, "No se ha podido crear el siniestro");
+            
+            return Ok(true);            
         }
 
         [HttpPut("{id}")]        
