@@ -318,7 +318,7 @@ namespace APIRest.Controllers
             siniestro.Perito = perito;
             siniestro.Danio = danio;
 
-            if (siniestroVm.IdEstado == 3)      // Estado Valorado
+            if (siniestroVm.IdEstado == (int)TipoEstado.Valorado)
                 siniestro.ImpValoracionDanios = decimal.Parse(siniestroVm.ImpValoracionDanios);
             else
                 siniestro.ImpValoracionDanios = 0;
