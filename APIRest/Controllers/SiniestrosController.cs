@@ -145,7 +145,7 @@ namespace APIRest.Controllers
         public async Task<ActionResult> Cerrar(int id)
         {
             Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);
-            Estado estadoCerrado = await _repositorioEstados.ObtenerPorTipo(RepositorioEstados.Tipo.Cerrado);
+            Estado estadoCerrado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.Cerrado);
 
             string mensajeError = null;
             bool estaCerrado;            

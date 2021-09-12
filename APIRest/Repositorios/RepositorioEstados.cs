@@ -8,6 +8,14 @@ using System.Threading.Tasks;
 
 namespace APIRest.Repositorios
 {
+    public enum TipoEstado
+    {
+        Procesando = 1,
+        SinValorar = 2,
+        Valorado = 3,
+        Cerrado = 4
+    }
+
     public class RepositorioEstados
     {
         private ExpertManagerContext _contexto;
@@ -15,17 +23,9 @@ namespace APIRest.Repositorios
         public RepositorioEstados(ExpertManagerContext contexto)
         {
             _contexto = contexto;
-        }
+        }        
 
-        public enum Tipo
-        {
-            Procesando = 1,
-            SinValorar = 2,
-            Valorado = 3,
-            Cerrado = 4
-        }
-
-        public async Task<Estado> ObtenerPorTipo(Tipo tipo)
+        public async Task<Estado> ObtenerPorTipo(TipoEstado tipo)
         {
             int idEstado = (int)tipo;
             Estado estado = await _contexto.Estados
