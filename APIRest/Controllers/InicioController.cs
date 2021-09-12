@@ -40,28 +40,20 @@ namespace APIRest.Controllers
                 return NotFound($"No existe el perito con id {idUsuario}");
             
             int totalNumSiniestros = 0;
+            List<EstadisticaInicioVm> numSiniestrosPorAseguradora = null;
 
             if (usuario != null)
             {
                 totalNumSiniestros = await _repositorioUsuarios.ObtenerNumSiniestrosPorIdUsuario(idUsuario);
+                numSiniestrosPorAseguradora = await _repositorioUsuarios.ObtenerEstadisticasPorIdUsuario(idUsuario);
             }
 
             if (perito != null)
             {
                 totalNumSiniestros = await _repositorioPeritos.ObtenerNumSiniestrosPorIdPerito(idUsuario);
+                numSiniestrosPorAseguradora = await _repositorioPeritos.ObtenerEstadisticasPorIdPerito(idUsuario);
             }                                    
-
-            List<Tuple<string, int>> numSiniestrosPorAseguradora = await _contexto.Siniestros
-                                                                                  .Include(siniestro => siniestro.UsuarioCreado)
-                                                                                  .Include(siniestro => siniestro.Perito)
-                                                                                  .Include(siniestro => siniestro.Aseguradora)
-                                                                                  .Where(siniestro => siniestro.UsuarioCreado.Id == idUsuario || siniestro.Perito.Id == idUsuario)
-                                                                                  .GroupBy(
-                                                                                     siniestro => siniestro.Aseguradora.Nombre,
-                                                                                     siniestro => siniestro.Id,
-                                                                                   (key, g) => new { Aseguradora = key, NumSiniestros = g.Count() })
-                                                                                  .Select(obj => new Tuple<string, int>(obj.Aseguradora, obj.NumSiniestros))
-                                                                                  .ToListAsync();            
+                      
             EstadisticasVm estadisticasVm = new EstadisticasVm()
             {
                 NumSiniestros = totalNumSiniestros,
