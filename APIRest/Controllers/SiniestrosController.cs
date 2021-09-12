@@ -290,23 +290,16 @@ namespace APIRest.Controllers
             else
                 siniestro.ImpValoracionDanios = 0;
 
-            bool estaEditado;
-
             try
             {
                 await _repositorioSiniestros.Actualizar(siniestro);
-
-                estaEditado = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                estaEditado = false;
+                return StatusCode(500, "No se ha podido editar el siniestro");
             }
-
-            if (estaEditado)
-                return Ok(estaEditado);
-
-            return StatusCode(500, "No se ha podido editar el siniestro");
+            
+            return Ok(true);            
         }
 
         [HttpDelete("{id}")]        
