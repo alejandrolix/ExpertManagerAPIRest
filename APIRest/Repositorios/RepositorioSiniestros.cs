@@ -83,5 +83,18 @@ namespace APIRest.Repositorios
                 throw;
             }            
         }
+
+        public async Task Guardar(Siniestro siniestro)
+        {
+            try
+            {
+                _contexto.Add(siniestro);
+                await _contexto.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
