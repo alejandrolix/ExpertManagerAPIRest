@@ -21,9 +21,11 @@ namespace APIRest.Controllers
         private RepositorioAseguradoras _repositorioAseguradoras;
         private RepositorioUsuarios _repositorioUsuarios;
         private RepositorioPeritos _repositorioPeritos;
+        private RepositorioDanios _repositorioDanios;
 
         public SiniestrosController(ExpertManagerContext contexto, RepositorioSiniestros repositorioSiniestros, RepositorioEstados repositorioEstados,
-                                    RepositorioAseguradoras repositorioAseguradoras, RepositorioUsuarios repositorioUsuarios, RepositorioPeritos repositorioPeritos)
+                                    RepositorioAseguradoras repositorioAseguradoras, RepositorioUsuarios repositorioUsuarios, RepositorioPeritos repositorioPeritos,
+                                    RepositorioDanios repositorioDanios)
         {
             _contexto = contexto;
             _repositorioSiniestros = repositorioSiniestros;
@@ -31,6 +33,7 @@ namespace APIRest.Controllers
             _repositorioAseguradoras = repositorioAseguradoras;
             _repositorioUsuarios = repositorioUsuarios;
             _repositorioPeritos = repositorioPeritos;
+            _repositorioDanios = repositorioDanios;
         }
 
         [HttpGet]
@@ -237,11 +240,10 @@ namespace APIRest.Controllers
             Usuario perito = await _repositorioPeritos.ObtenerPorId(crearSiniestroVm.IdPerito);
 
             if (perito is null)            
-                return NotFound($"No existe el perito con id {crearSiniestroVm.IdPerito}");            
+                return NotFound($"No existe el perito con id {crearSiniestroVm.IdPerito}");
 
-            Danio danio = await _contexto.Danios
-                                         .Where(danio => danio.Id == crearSiniestroVm.IdDanio)
-                                         .FirstOrDefaultAsync();
+            Danio danio = await _repositorioDanios.ObtenerPorId(crearSiniestroVm.IdDanio);
+
             if (danio is null)            
                 return NotFound($"No existe el daño con id {crearSiniestroVm.IdDanio}");            
 
@@ -298,9 +300,8 @@ namespace APIRest.Controllers
             if (perito is null)
                 return NotFound($"No existe el perito con id {siniestroVm.IdPerito}");
 
-            Danio danio = await _contexto.Danios
-                                         .Where(danio => danio.Id == siniestroVm.IdDanio)
-                                         .FirstOrDefaultAsync();
+            Danio danio = await _repositorioDanios.ObtenerPorId(siniestroVm.IdDanio);
+
             if (danio is null)
                 return NotFound($"No existe el daño con id {siniestroVm.IdDanio}");
 
