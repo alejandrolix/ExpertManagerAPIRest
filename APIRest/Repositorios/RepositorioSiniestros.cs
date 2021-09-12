@@ -96,5 +96,18 @@ namespace APIRest.Repositorios
                 throw;
             }
         }
+        
+        public async Task Eliminar(Siniestro siniestro)
+        {
+            try
+            {
+                _contexto.Remove(siniestro);
+                await _contexto.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
