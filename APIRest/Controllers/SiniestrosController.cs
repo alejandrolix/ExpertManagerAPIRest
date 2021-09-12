@@ -143,33 +143,22 @@ namespace APIRest.Controllers
         public async Task<ActionResult> Cerrar(int id)
         {
             Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);
-            Estado estadoCerrado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.Cerrado);
+            Estado estadoCerrado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.Cerrado);                                   
 
-            string mensajeError = null;
-            bool estaCerrado = false;            
-
-            if (siniestro is null)
-            {
-                mensajeError = $"No existe el siniestro con id {id}";
-                return NotFound(mensajeError);            
-            }                     
+            if (siniestro is null)                            
+                return NotFound($"No existe el siniestro con id {id}");                        
                 
             try
             {
                 siniestro.Estado = estadoCerrado;
-                await _repositorioSiniestros.Actualizar(siniestro);
-
-                estaCerrado = true;
+                await _repositorioSiniestros.Actualizar(siniestro);                
             }
             catch (Exception)
-            {
-                mensajeError = $"No se ha podido cerrar el siniestro con id {id}";                
+            {                
+                return StatusCode(500, $"No se ha podido cerrar el siniestro con id {id}");
             }
-
-            if (estaCerrado)
-                return Ok(estaCerrado);
-
-            return StatusCode(500, mensajeError);
+            
+            return Ok(true);            
         }
 
         [HttpGet("{id}")]
