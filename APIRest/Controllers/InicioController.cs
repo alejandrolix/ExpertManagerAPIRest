@@ -17,11 +17,13 @@ namespace APIRest.Controllers
     {
         private ExpertManagerContext _contexto;
         private RepositorioUsuarios _repositorioUsuarios;
+        private RepositorioPeritos _repositorioPeritos;
 
-        public InicioController(ExpertManagerContext contexto, RepositorioUsuarios repositorioUsuarios)
+        public InicioController(ExpertManagerContext contexto, RepositorioUsuarios repositorioUsuarios, RepositorioPeritos repositorioPeritos)
         {
             _contexto = contexto;
             _repositorioUsuarios = repositorioUsuarios;
+            _repositorioPeritos = repositorioPeritos;
         }
 
         [HttpGet("{idUsuario}")]
@@ -32,11 +34,9 @@ namespace APIRest.Controllers
             if (usuario is null)
                 return NotFound($"No existe el usuario con id {idUsuario}");
 
-            int numSiniestros = await _contexto.Siniestros
-                                               .Include(siniestro => siniestro.UsuarioCreado)
-                                               .Include(siniestro => siniestro.Perito)
-                                               .Where(siniestro => siniestro.UsuarioCreado.Id == idUsuario || siniestro.Perito.Id == idUsuario)
-                                               .CountAsync();
+            int numSiniestrosUsuario = await _repositorioUsuarios.ObtenerNumSiniestrosPorIdUsuario(idUsuario);
+            int numSiniestrosPerito = await _repositorioPeritos.ObtenerNumSiniestrosPorIdPerito(idUsuario);
+            int totalNumSiniestros = numSiniestrosUsuario + numSiniestrosPerito;
 
             List<Tuple<string, int>> numSiniestrosPorAseguradora = await _contexto.Siniestros
                                                                                   .Include(siniestro => siniestro.UsuarioCreado)
@@ -51,7 +51,7 @@ namespace APIRest.Controllers
                                                                                   .ToListAsync();            
             EstadisticasVm estadisticasVm = new EstadisticasVm()
             {
-                NumSiniestros = numSiniestros,
+                NumSiniestros = totalNumSiniestros,
                 NumSiniestrosPorAseguradora = numSiniestrosPorAseguradora
             };
 
