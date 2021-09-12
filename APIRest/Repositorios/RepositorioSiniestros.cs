@@ -71,7 +71,7 @@ namespace APIRest.Repositorios
             return siniestros;
         }
 
-        public async void Actualizar(Siniestro siniestro)
+        public async Task Actualizar(Siniestro siniestro)
         {
             try
             {

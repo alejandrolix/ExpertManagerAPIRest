@@ -146,7 +146,7 @@ namespace APIRest.Controllers
             Estado estadoCerrado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.Cerrado);
 
             string mensajeError = null;
-            bool estaCerrado;            
+            bool estaCerrado = false;            
 
             if (siniestro is null)
             {
@@ -157,16 +157,13 @@ namespace APIRest.Controllers
             try
             {
                 siniestro.Estado = estadoCerrado;
-
-                _contexto.Update(siniestro);
-                await _contexto.SaveChangesAsync();
+                await _repositorioSiniestros.Actualizar(siniestro);
 
                 estaCerrado = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                mensajeError = $"No se ha podido cerrar el siniestro con id {id}";
-                estaCerrado = false;
+                mensajeError = $"No se ha podido cerrar el siniestro con id {id}";                
             }
 
             if (estaCerrado)
