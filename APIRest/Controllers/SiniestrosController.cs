@@ -218,9 +218,8 @@ namespace APIRest.Controllers
             if (estado is null)
                 return NotFound("No existe el estado con id 2");
 
-            Aseguradora aseguradora = await _contexto.Aseguradoras
-                                                     .Where(aseguradora => aseguradora.Id == crearSiniestroVm.IdAseguradora)
-                                                     .FirstOrDefaultAsync();
+            Aseguradora aseguradora = await _repositorioAseguradoras.ObtenerPorId(crearSiniestroVm.IdAseguradora);
+
             if (aseguradora is null)            
                 return NotFound($"No existe la aseguradora con id {crearSiniestroVm.IdAseguradora}");            
 
@@ -285,9 +284,8 @@ namespace APIRest.Controllers
             if (estado is null)
                 return NotFound($"No existe el estado con id {siniestroVm.IdEstado}");
 
-            Aseguradora aseguradora = await _contexto.Aseguradoras
-                                                     .Where(aseguradora => aseguradora.Id == siniestroVm.IdAseguradora)
-                                                     .FirstOrDefaultAsync();
+            Aseguradora aseguradora = await _repositorioAseguradoras.ObtenerPorId(siniestroVm.IdAseguradora);
+
             if (aseguradora is null)
                 return NotFound($"No existe la aseguradora con id {siniestroVm.IdAseguradora}");
 
