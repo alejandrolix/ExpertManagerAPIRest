@@ -70,5 +70,18 @@ namespace APIRest.Repositorios
                                                         .ToListAsync();
             return siniestros;
         }
+
+        public async void Actualizar(Siniestro siniestro)
+        {
+            try
+            {
+                _contexto.Update(siniestro);
+                await _contexto.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }            
+        }
     }
 }
