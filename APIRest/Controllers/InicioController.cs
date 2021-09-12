@@ -29,16 +29,12 @@ namespace APIRest.Controllers
         [HttpGet("{idUsuario}")]
         public async Task<ActionResult> ObtenerEstadisticas(int idUsuario)
         {
-            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(idUsuario);
-            
-            if (usuario is null)
-                return NotFound($"No existe el usuario con id {idUsuario}");
-
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(idUsuario);                       
             Usuario perito = await _repositorioPeritos.ObtenerPorId(idUsuario);
 
-            if (perito is null && usuario is null)
-                return NotFound($"No existe el perito con id {idUsuario}");
-            
+            if (usuario is null && perito is null)                                       
+                return NotFound($"No existe el usuario o perito con id {idUsuario}");                            
+
             int totalNumSiniestros = 0;
             List<EstadisticaInicioVm> numSiniestrosPorAseguradora = null;
 
