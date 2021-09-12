@@ -8,6 +8,13 @@ using System.Threading.Tasks;
 
 namespace APIRest.Repositorios
 {
+    public enum TipoPermiso
+    {
+        Administracion = 1,
+        PeritoResponsable = 2,
+        PeritoNoResponsable = 3
+    }
+
     public class RepositorioPermisos
     {
         private ExpertManagerContext _contexto;
