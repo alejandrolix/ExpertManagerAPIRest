@@ -1,5 +1,4 @@
-﻿using APIRest.Context;
-using APIRest.Models;
+﻿using APIRest.Models;
 using APIRest.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,7 +13,6 @@ namespace APIRest.Controllers
     [ApiController]
     public class SiniestrosController : ControllerBase
     {
-        private ExpertManagerContext _contexto;
         private RepositorioSiniestros _repositorioSiniestros;
         private RepositorioEstados _repositorioEstados;
         private RepositorioAseguradoras _repositorioAseguradoras;
@@ -22,11 +20,9 @@ namespace APIRest.Controllers
         private RepositorioPeritos _repositorioPeritos;
         private RepositorioDanios _repositorioDanios;
 
-        public SiniestrosController(ExpertManagerContext contexto, RepositorioSiniestros repositorioSiniestros, RepositorioEstados repositorioEstados,
-                                    RepositorioAseguradoras repositorioAseguradoras, RepositorioUsuarios repositorioUsuarios, RepositorioPeritos repositorioPeritos,
-                                    RepositorioDanios repositorioDanios)
+        public SiniestrosController(RepositorioSiniestros repositorioSiniestros, RepositorioEstados repositorioEstados, RepositorioAseguradoras repositorioAseguradoras,
+                                    RepositorioUsuarios repositorioUsuarios, RepositorioPeritos repositorioPeritos, RepositorioDanios repositorioDanios)
         {
-            _contexto = contexto;
             _repositorioSiniestros = repositorioSiniestros;
             _repositorioEstados = repositorioEstados;
             _repositorioAseguradoras = repositorioAseguradoras;
