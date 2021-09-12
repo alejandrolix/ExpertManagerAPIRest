@@ -313,31 +313,21 @@ namespace APIRest.Controllers
         [HttpDelete("{id}")]        
         public async Task<ActionResult> Delete(int id)
         {
-            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);
-            string mensaje = null;
-            bool estaEliminado;            
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);            
 
-            if (siniestro is null)
-            {
-                mensaje = $"No existe el siniestro con id {id}";
-                return NotFound(mensaje);
-            }
+            if (siniestro is null)                            
+                return NotFound($"No existe el siniestro con id {id}");            
 
             try
             {
-                await _repositorioSiniestros.Eliminar(siniestro);
-                estaEliminado = true;
+                await _repositorioSiniestros.Eliminar(siniestro);                
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                mensaje = $"No se ha podido eliminar el siniestro con id {id}";
-                estaEliminado = false;
+                return StatusCode(500, $"No se ha podido eliminar el siniestro con id {id}");
             }
 
-            if (estaEliminado)
-                return Ok(estaEliminado);
-
-            return StatusCode(500, mensaje);
+            return Ok(true);
         }
     }
 }
