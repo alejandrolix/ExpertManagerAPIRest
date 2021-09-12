@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APIRest.ViewModels;
 
 namespace APIRest.Repositorios
 {
@@ -32,6 +33,25 @@ namespace APIRest.Repositorios
                                                .Where(siniestro => siniestro.UsuarioCreado.Id == id)
                                                .CountAsync();
             return numSiniestros;
+        }
+
+        public async Task<List<EstadisticaInicioVm>> ObtenerEstadisticasPorIdUsuario(int id)
+        {
+            List<EstadisticaInicioVm> estadisticasInicio = await _contexto.Siniestros
+                                                                        .Include(siniestro => siniestro.UsuarioCreado)                                                                        
+                                                                        .Include(siniestro => siniestro.Aseguradora)
+                                                                        .Where(siniestro => siniestro.UsuarioCreado.Id == id)
+                                                                        .GroupBy(
+                                                                            siniestro => siniestro.Aseguradora.Nombre,
+                                                                            siniestro => siniestro.Id,
+                                                                        (key, g) => new { Aseguradora = key, NumSiniestros = g.Count() })
+                                                                        .Select(obj => new EstadisticaInicioVm()
+                                                                        {
+                                                                            NombreAseguradora = obj.Aseguradora,
+                                                                            NumSiniestros = obj.NumSiniestros
+                                                                        })
+                                                                        .ToListAsync();
+            return estadisticasInicio;
         }
     }
 }
