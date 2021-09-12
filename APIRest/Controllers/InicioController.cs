@@ -36,12 +36,20 @@ namespace APIRest.Controllers
 
             Usuario perito = await _repositorioPeritos.ObtenerPorId(idUsuario);
 
-            if (perito is null)
+            if (perito is null && usuario is null)
                 return NotFound($"No existe el perito con id {idUsuario}");
+            
+            int totalNumSiniestros = 0;
 
-            int numSiniestrosUsuario = await _repositorioUsuarios.ObtenerNumSiniestrosPorIdUsuario(idUsuario);
-            int numSiniestrosPerito = await _repositorioPeritos.ObtenerNumSiniestrosPorIdPerito(idUsuario);
-            int totalNumSiniestros = numSiniestrosUsuario + numSiniestrosPerito;
+            if (usuario != null)
+            {
+                totalNumSiniestros = await _repositorioUsuarios.ObtenerNumSiniestrosPorIdUsuario(idUsuario);
+            }
+
+            if (perito != null)
+            {
+                totalNumSiniestros = await _repositorioPeritos.ObtenerNumSiniestrosPorIdPerito(idUsuario);
+            }                                    
 
             List<Tuple<string, int>> numSiniestrosPorAseguradora = await _contexto.Siniestros
                                                                                   .Include(siniestro => siniestro.UsuarioCreado)
