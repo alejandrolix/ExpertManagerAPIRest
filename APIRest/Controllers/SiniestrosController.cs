@@ -18,12 +18,15 @@ namespace APIRest.Controllers
         private ExpertManagerContext _contexto;
         private RepositorioSiniestros _repositorioSiniestros;
         private RepositorioEstados _repositorioEstados;
+        private RepositorioAseguradoras _repositorioAseguradoras;
 
-        public SiniestrosController(ExpertManagerContext contexto, RepositorioSiniestros repositorioSiniestros, RepositorioEstados repositorioEstados)
+        public SiniestrosController(ExpertManagerContext contexto, RepositorioSiniestros repositorioSiniestros, RepositorioEstados repositorioEstados,
+                                    RepositorioAseguradoras repositorioAseguradoras)
         {
             _contexto = contexto;
             _repositorioSiniestros = repositorioSiniestros;
             _repositorioEstados = repositorioEstados;
+            _repositorioAseguradoras = repositorioAseguradoras;
         }
 
         [HttpGet]

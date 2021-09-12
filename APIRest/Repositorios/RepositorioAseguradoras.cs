@@ -16,5 +16,13 @@ namespace APIRest.Repositorios
         {
             _contexto = contexto;
         }
+
+        public async Task<Aseguradora> ObtenerPorId(int id)
+        {
+            Aseguradora aseguradora = await _contexto.Aseguradoras
+                                                     .Where(aseguradora => aseguradora.Id == id)
+                                                     .FirstOrDefaultAsync();
+            return aseguradora;
+        }
     }
 }
