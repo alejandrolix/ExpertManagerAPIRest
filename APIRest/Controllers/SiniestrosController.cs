@@ -325,9 +325,7 @@ namespace APIRest.Controllers
 
             try
             {
-                _contexto.Remove(siniestro);
-                await _contexto.SaveChangesAsync();
-
+                await _repositorioSiniestros.Eliminar(siniestro);
                 estaEliminado = true;
             }
             catch (Exception ex)
