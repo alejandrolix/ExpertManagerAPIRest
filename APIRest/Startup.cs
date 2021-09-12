@@ -49,6 +49,7 @@ namespace APIRest
             services.AddScoped<RepositorioAseguradoras>();
             services.AddScoped<RepositorioUsuarios>();
             services.AddScoped<RepositorioPeritos>();
+            services.AddScoped<RepositorioDanios>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
