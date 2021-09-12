@@ -276,10 +276,9 @@ namespace APIRest.Controllers
 
         [HttpPut("{id}")]        
         public async Task<ActionResult> Edit(int id, SiniestroVm siniestroVm)
-        {
-            Estado estado = await _contexto.Estados
-                                           .Where(estado => estado.Id == siniestroVm.IdEstado)
-                                           .FirstOrDefaultAsync();
+        {            
+            Estado estado = await _repositorioEstados.ObtenerPorId(siniestroVm.IdEstado);
+
             if (estado is null)
                 return NotFound($"No existe el estado con id {siniestroVm.IdEstado}");
 
