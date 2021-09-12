@@ -17,11 +17,13 @@ namespace APIRest.Controllers
     {
         private ExpertManagerContext _contexto;
         private RepositorioSiniestros _repositorioSiniestros;
+        private RepositorioEstados _repositorioEstados;
 
-        public SiniestrosController(ExpertManagerContext contexto, RepositorioSiniestros repositorioSiniestros)
+        public SiniestrosController(ExpertManagerContext contexto, RepositorioSiniestros repositorioSiniestros, RepositorioEstados repositorioEstados)
         {
             _contexto = contexto;
             _repositorioSiniestros = repositorioSiniestros;
+            _repositorioEstados = repositorioEstados;
         }
 
         [HttpGet]
@@ -143,9 +145,8 @@ namespace APIRest.Controllers
         public async Task<ActionResult> Cerrar(int id)
         {
             Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);
+            Estado estadoCerrado = await _repositorioEstados.ObtenerPorTipo(RepositorioEstados.Tipo.Cerrado);
 
-            Estado estadoCerrado = await _contexto.Estados
-                                                  .FirstOrDefaultAsync(estado => estado.Id == 4);
             string mensajeError = null;
             bool estaCerrado;            
 
