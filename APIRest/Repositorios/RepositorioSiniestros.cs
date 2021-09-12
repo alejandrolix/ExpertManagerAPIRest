@@ -53,5 +53,22 @@ namespace APIRest.Repositorios
                                                         .ToListAsync();
             return siniestros;
         }
+
+        public async Task<List<Siniestro>> ObtenerPorIdPeritoResponsable(int id)
+        {
+            // Obtiene los siniestros del perito responsable más los siniestros de los no responsables.
+
+            int idTipoPermiso = (int)TipoPermiso.PeritoNoResponsable;
+            List<Siniestro> siniestros = await _contexto.Siniestros
+                                                        .Include(siniestro => siniestro.Aseguradora)
+                                                        .Include(siniestro => siniestro.Estado)
+                                                        .Include(siniestro => siniestro.UsuarioCreado)
+                                                        .Include(siniestro => siniestro.Perito)
+                                                        .Include(siniestro => siniestro.Perito.Permiso)
+                                                        .Include(siniestro => siniestro.Danio)
+                                                        .Where(siniestro => siniestro.Perito.Id == id || siniestro.Perito.Permiso.Id == idTipoPermiso)
+                                                        .ToListAsync();
+            return siniestros;
+        }
     }
 }
