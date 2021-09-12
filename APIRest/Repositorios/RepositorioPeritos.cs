@@ -16,5 +16,13 @@ namespace APIRest.Repositorios
         {
             _contexto = contexto;
         }
+
+        public async Task<Usuario> ObtenerPorId(int id)
+        {
+            Usuario usuario = await _contexto.Usuarios
+                                             .Where(usuario => usuario.Id == id)
+                                             .FirstOrDefaultAsync();
+            return usuario;
+        }
     }
 }
