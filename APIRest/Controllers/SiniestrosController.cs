@@ -80,7 +80,8 @@ namespace APIRest.Controllers
             List<Siniestro> siniestros = await _repositorioSiniestros.ObtenerPorIdPerito(idPerito);
 
             if (idAseguradora != 0)
-                siniestros = ObtenerSiniestrosPorIdAseguradora(idAseguradora, siniestros);
+                siniestros = siniestros.Where(siniestro => siniestro.Aseguradora.Id == idAseguradora)
+                                       .ToList();
 
             siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
                                    .ToList();                        
@@ -119,7 +120,8 @@ namespace APIRest.Controllers
                                                         .Where(siniestro => siniestro.Perito.Id == idPerito || siniestro.Perito.Permiso.Id == 3)
                                                         .ToListAsync();
             if (idAseguradora != 0)
-                siniestros = ObtenerSiniestrosPorIdAseguradora(idAseguradora, siniestros);
+                siniestros = siniestros.Where(siniestro => siniestro.Aseguradora.Id == idAseguradora)
+                                       .ToList();
 
             siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
                                    .ToList();                       
@@ -143,12 +145,6 @@ namespace APIRest.Controllers
             .ToList();                            
 
             return Ok(siniestrosVms);
-        }
-
-        private List<Siniestro> ObtenerSiniestrosPorIdAseguradora(int idAseguradora, List<Siniestro> siniestros)
-        {
-            return siniestros.Where(siniestro => siniestro.Aseguradora.Id == idAseguradora)
-                             .ToList();
         }
 
         [HttpPut("Cerrar/{id}")]
