@@ -33,5 +33,13 @@ namespace APIRest.Repositorios
                                            .FirstOrDefaultAsync();
             return estado;
         }
+        
+        public async Task<Estado> ObtenerPorId(int id)
+        {            
+            Estado estado = await _contexto.Estados
+                                           .Where(estado => estado.Id == id)
+                                           .FirstOrDefaultAsync();
+            return estado;
+        }
     }
 }
