@@ -45,6 +45,7 @@ namespace APIRest
                 options.UseSqlServer(Configuration.GetConnectionString("ExpertManagerContext")));
 
             services.AddScoped<RepositorioSiniestros>();
+            services.AddScoped<RepositorioEstados>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
