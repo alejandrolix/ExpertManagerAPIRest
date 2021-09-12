@@ -19,14 +19,16 @@ namespace APIRest.Controllers
         private RepositorioSiniestros _repositorioSiniestros;
         private RepositorioEstados _repositorioEstados;
         private RepositorioAseguradoras _repositorioAseguradoras;
+        private RepositorioUsuarios _repositorioUsuarios;
 
         public SiniestrosController(ExpertManagerContext contexto, RepositorioSiniestros repositorioSiniestros, RepositorioEstados repositorioEstados,
-                                    RepositorioAseguradoras repositorioAseguradoras)
+                                    RepositorioAseguradoras repositorioAseguradoras, RepositorioUsuarios repositorioUsuarios)
         {
             _contexto = contexto;
             _repositorioSiniestros = repositorioSiniestros;
             _repositorioEstados = repositorioEstados;
             _repositorioAseguradoras = repositorioAseguradoras;
+            _repositorioUsuarios = repositorioUsuarios;
         }
 
         [HttpGet]
@@ -221,11 +223,10 @@ namespace APIRest.Controllers
             Aseguradora aseguradora = await _repositorioAseguradoras.ObtenerPorId(crearSiniestroVm.IdAseguradora);
 
             if (aseguradora is null)            
-                return NotFound($"No existe la aseguradora con id {crearSiniestroVm.IdAseguradora}");            
+                return NotFound($"No existe la aseguradora con id {crearSiniestroVm.IdAseguradora}");
 
-            Usuario usuarioCreado = await _contexto.Usuarios
-                                                   .Where(usuario => usuario.Id == crearSiniestroVm.IdUsuarioAlta)
-                                                   .FirstOrDefaultAsync();
+            Usuario usuarioCreado = await _repositorioUsuarios.ObtenerPorId(crearSiniestroVm.IdUsuarioAlta);
+
             if (usuarioCreado is null)
                 return NotFound($"No existe el usuario con id {crearSiniestroVm.IdUsuarioAlta}");
 
