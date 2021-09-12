@@ -210,9 +210,8 @@ namespace APIRest.Controllers
         [HttpPost]        
         public async Task<ActionResult> Create(CrearSiniestroVm crearSiniestroVm)
         {
-            Estado estado = await _contexto.Estados
-                                           .Where(estado => estado.Id == 2)
-                                           .FirstOrDefaultAsync();
+            Estado estado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.SinValorar);
+
             if (estado is null)
                 return NotFound("No existe el estado con id 2");
 
