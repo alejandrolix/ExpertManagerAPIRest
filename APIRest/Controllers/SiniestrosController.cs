@@ -238,9 +238,7 @@ namespace APIRest.Controllers
 
             try
             {
-                _contexto.Add(siniestro);
-                await _contexto.SaveChangesAsync();
-
+                await _repositorioSiniestros.Guardar(siniestro);
                 estaCreado = true;
             }
             catch (Exception ex)
