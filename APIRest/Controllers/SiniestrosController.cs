@@ -20,15 +20,17 @@ namespace APIRest.Controllers
         private RepositorioEstados _repositorioEstados;
         private RepositorioAseguradoras _repositorioAseguradoras;
         private RepositorioUsuarios _repositorioUsuarios;
+        private RepositorioPeritos _repositorioPeritos;
 
         public SiniestrosController(ExpertManagerContext contexto, RepositorioSiniestros repositorioSiniestros, RepositorioEstados repositorioEstados,
-                                    RepositorioAseguradoras repositorioAseguradoras, RepositorioUsuarios repositorioUsuarios)
+                                    RepositorioAseguradoras repositorioAseguradoras, RepositorioUsuarios repositorioUsuarios, RepositorioPeritos repositorioPeritos)
         {
             _contexto = contexto;
             _repositorioSiniestros = repositorioSiniestros;
             _repositorioEstados = repositorioEstados;
             _repositorioAseguradoras = repositorioAseguradoras;
             _repositorioUsuarios = repositorioUsuarios;
+            _repositorioPeritos = repositorioPeritos;
         }
 
         [HttpGet]
@@ -232,9 +234,8 @@ namespace APIRest.Controllers
 
             SujetoAfectado sujetoAfectado = (SujetoAfectado)crearSiniestroVm.IdSujetoAfectado;
 
-            Usuario perito = await _contexto.Usuarios
-                                            .Where(usuario => usuario.Id == crearSiniestroVm.IdPerito)
-                                            .FirstOrDefaultAsync();
+            Usuario perito = await _repositorioPeritos.ObtenerPorId(crearSiniestroVm.IdPerito);
+
             if (perito is null)            
                 return NotFound($"No existe el perito con id {crearSiniestroVm.IdPerito}");            
 
@@ -292,9 +293,8 @@ namespace APIRest.Controllers
 
             SujetoAfectado sujetoAfectado = (SujetoAfectado)siniestroVm.IdSujetoAfectado;
 
-            Usuario perito = await _contexto.Usuarios
-                                            .Where(usuario => usuario.Id == siniestroVm.IdPerito)
-                                            .FirstOrDefaultAsync();
+            Usuario perito = await _repositorioPeritos.ObtenerPorId(siniestroVm.IdPerito);
+
             if (perito is null)
                 return NotFound($"No existe el perito con id {siniestroVm.IdPerito}");
 
