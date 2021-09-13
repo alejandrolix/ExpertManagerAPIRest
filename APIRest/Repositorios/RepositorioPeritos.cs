@@ -20,8 +20,11 @@ namespace APIRest.Repositorios
 
         public async Task<Usuario> ObtenerPorId(int id)
         {
+            int idPermPeritoNoResponsable = (int)TipoPermiso.PeritoNoResponsable;
+            int idPermPeritoResponsable = (int)TipoPermiso.PeritoResponsable;
             Usuario perito = await _contexto.Usuarios
-                                            .Where(usuario => usuario.Id == id && usuario.EsPerito)
+                                            .Include(usuario => usuario.Permiso)
+                                            .Where(usuario => usuario.Id == id && usuario.Permiso.Id >= idPermPeritoNoResponsable && usuario.Permiso.Id <= idPermPeritoResponsable)
                                             .FirstOrDefaultAsync();
             return perito;
         }
