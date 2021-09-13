@@ -56,7 +56,6 @@ namespace APIRest.Controllers
                 NumSiniestrosPorAseguradora = numSiniestrosPorAseguradora
             };            
 
-            // El usuario es un perito
             if (perito != null)
             {
                 List<Tuple<string, int>> numSiniestrosCerrar = await _contexto.Siniestros
