@@ -1,8 +1,6 @@
-﻿using APIRest.Context;
-using APIRest.Models;
+﻿using APIRest.Models;
 using APIRest.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +13,11 @@ namespace APIRest.Controllers
     [ApiController]
     public class InicioController : ControllerBase
     {
-        private ExpertManagerContext _contexto;
         private RepositorioUsuarios _repositorioUsuarios;
         private RepositorioPeritos _repositorioPeritos;
 
-        public InicioController(ExpertManagerContext contexto, RepositorioUsuarios repositorioUsuarios, RepositorioPeritos repositorioPeritos)
+        public InicioController(RepositorioUsuarios repositorioUsuarios, RepositorioPeritos repositorioPeritos)
         {
-            _contexto = contexto;
             _repositorioUsuarios = repositorioUsuarios;
             _repositorioPeritos = repositorioPeritos;
         }
