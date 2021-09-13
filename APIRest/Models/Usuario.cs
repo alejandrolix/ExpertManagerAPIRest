@@ -19,9 +19,6 @@ namespace APIRest.Models
 
         [Column(TypeName = "decimal(5,2)")]
         public decimal ImpRepacionDanios { get; set; }
-
-        [Required]
-        public bool EsPerito { get; set; }
         
         public int PermisoId { get; set; }
         public Permiso Permiso { get; set; }
