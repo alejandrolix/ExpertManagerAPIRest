@@ -9,6 +9,6 @@ namespace APIRest.ViewModels
     {
         public int NumSiniestros { get; set; }
         public List<EstadisticaInicioVm> NumSiniestrosPorAseguradora { get; set; }
-        public List<Tuple<string, int>> NumSiniestrosCerrarPorAseguradora { get; set; }
+        public List<EstadisticaInicioVm> NumSiniestrosCerrarPorAseguradora { get; set; }
     }
 }
