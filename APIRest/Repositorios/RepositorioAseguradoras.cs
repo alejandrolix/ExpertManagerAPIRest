@@ -24,5 +24,12 @@ namespace APIRest.Repositorios
                                                      .FirstOrDefaultAsync();
             return aseguradora;
         }
+
+        public async Task<List<Aseguradora>> ObtenerTodas()
+        {
+            List<Aseguradora> aseguradoras = await _contexto.Aseguradoras
+                                                            .ToListAsync();
+            return aseguradoras;
+        }
     }
 }
