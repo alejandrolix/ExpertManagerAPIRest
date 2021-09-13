@@ -54,15 +54,10 @@ namespace APIRest.Controllers
             {
                 NumSiniestros = totalNumSiniestros,
                 NumSiniestrosPorAseguradora = numSiniestrosPorAseguradora
-            };
-
-            // Comprobamos si el usuario a buscar es perito.
-            Usuario perito1 = await _contexto.Usuarios
-                                            .Include(usuario => usuario.Permiso)
-                                            .FirstOrDefaultAsync(usuario => usuario.Id == idUsuario && usuario.Permiso.Id != 1);
+            };            
 
             // El usuario es un perito
-            if (perito1 != null)
+            if (perito != null)
             {
                 List<Tuple<string, int>> numSiniestrosCerrar = await _contexto.Siniestros
                                                                               .Include(siniestro => siniestro.UsuarioCreado)
