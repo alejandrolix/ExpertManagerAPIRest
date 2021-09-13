@@ -21,15 +21,15 @@ namespace APIRest.Controllers
             _contexto = contexto;
         }
 
-        // GET: PeritosController
         [HttpGet]
         public async Task<ActionResult> Index()
         {
             List<Usuario> peritos = await _contexto.Usuarios
                                                    .Include(usuario => usuario.Permiso)
                                                    .Where(usuario => usuario.Permiso.Id != 1)
-                                                   .ToListAsync();            
-            if (peritos.Count == 0)                            
+                                                   .ToListAsync();     
+            
+            if (peritos is null || peritos.Count == 0)                            
                 return StatusCode(500, "No existen peritos");            
             
             List<PeritoVm> peritosVms = peritos.Select(perito => new PeritoVm()

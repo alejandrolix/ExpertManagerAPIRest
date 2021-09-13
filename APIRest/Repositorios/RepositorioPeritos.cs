@@ -29,6 +29,16 @@ namespace APIRest.Repositorios
             return perito;
         }
 
+        public async Task<List<Usuario>> ObtenerTodos()
+        {
+            int idPermisoAdministracion = (int)TipoPermiso.Administracion;
+            List<Usuario> peritos = await _contexto.Usuarios
+                                                   .Include(usuario => usuario.Permiso)
+                                                   .Where(usuario => usuario.Permiso.Id != idPermisoAdministracion)
+                                                   .ToListAsync();
+            return peritos;
+        }
+
         public async Task<int> ObtenerNumSiniestrosPorIdPerito(int id)
         {
             int numSiniestros = await _contexto.Siniestros
