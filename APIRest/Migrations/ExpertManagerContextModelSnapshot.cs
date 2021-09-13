@@ -223,9 +223,6 @@ namespace APIRest.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("EsPerito")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("ImpRepacionDanios")
                         .HasColumnType("decimal(5,2)");
 
