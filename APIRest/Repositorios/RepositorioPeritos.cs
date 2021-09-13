@@ -63,8 +63,7 @@ namespace APIRest.Repositorios
             List<EstadisticaInicioVm> numSiniestrosCerrar = await _contexto.Siniestros
                                                                            .Include(siniestro => siniestro.Perito)
                                                                            .Include(siniestro => siniestro.Estado)
-                                                                           .Where(siniestro => (siniestro.Perito.Id == id) &&
-                                                                                  siniestro.Estado.Id == idEstadoValorado)
+                                                                           .Where(siniestro => siniestro.Perito.Id == id && siniestro.Estado.Id == idEstadoValorado)
                                                                            .GroupBy(
                                                                                siniestro => siniestro.Aseguradora.Nombre,
                                                                                siniestro => siniestro.Id,
