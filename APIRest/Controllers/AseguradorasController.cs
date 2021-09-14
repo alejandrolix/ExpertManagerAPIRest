@@ -24,7 +24,7 @@ namespace APIRest.Controllers
         {
             List<Aseguradora> aseguradoras = await _repositorioAseguradoras.ObtenerTodas();
 
-            if (aseguradoras.Count == 0)                
+            if (aseguradoras is null || aseguradoras.Count == 0)                
                 return StatusCode(500, "No existen aseguradoras");                                    
 
             return Ok(aseguradoras);
