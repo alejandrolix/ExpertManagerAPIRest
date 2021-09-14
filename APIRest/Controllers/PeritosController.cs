@@ -1,8 +1,6 @@
-﻿using APIRest.Context;
-using APIRest.Models;
+﻿using APIRest.Models;
 using APIRest.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +12,11 @@ namespace APIRest.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class PeritosController : ControllerBase
-    {
-        private ExpertManagerContext _contexto;
+    {        
         private RepositorioPeritos _repositorioPeritos;
 
-        public PeritosController(ExpertManagerContext contexto, RepositorioPeritos repositorioPeritos)
-        {
-            _contexto = contexto;
+        public PeritosController(RepositorioPeritos repositorioPeritos)
+        {            
             _repositorioPeritos = repositorioPeritos;
         }
 
