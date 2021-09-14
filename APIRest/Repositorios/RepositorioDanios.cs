@@ -24,5 +24,12 @@ namespace APIRest.Repositorios
                                          .FirstOrDefaultAsync();
             return danio;
         }
+
+        public async Task<List<Danio>> ObtenerTodos()
+        {
+            List<Danio> danios = await _contexto.Danios
+                                                .ToListAsync();
+            return danios;
+        }
     }
 }

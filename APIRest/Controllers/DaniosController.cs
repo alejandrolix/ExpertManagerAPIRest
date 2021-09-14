@@ -22,8 +22,7 @@ namespace APIRest.Controllers
         {
             _contexto = contexto;
         }
-
-        // GET: DaniosController
+        
         [HttpGet]
         public async Task<List<Danio>> Index()
         {
