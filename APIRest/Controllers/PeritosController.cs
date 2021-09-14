@@ -45,9 +45,7 @@ namespace APIRest.Controllers
         [HttpGet("ImporteReparacionDanios/{idPerito}")]
         public async Task<ActionResult> ObtenerImpReparacionDaniosPorIdPerito(int idPerito)
         {
-            Usuario perito = await _contexto.Usuarios
-                                            .Include(usuario => usuario.Permiso)
-                                            .FirstOrDefaultAsync(usuario => usuario.Permiso.Id != 1 && usuario.Id == idPerito);
+            Usuario perito = await _repositorioPeritos.ObtenerPorId(idPerito);
             string mensaje = null;
 
             if (perito is null)
