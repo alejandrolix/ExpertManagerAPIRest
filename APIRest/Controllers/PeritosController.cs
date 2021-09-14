@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APIRest.Repositorios;
 
 namespace APIRest.Controllers
 {    
@@ -15,19 +16,18 @@ namespace APIRest.Controllers
     public class PeritosController : ControllerBase
     {
         private ExpertManagerContext _contexto;
+        private RepositorioPeritos _repositorioPeritos;
 
-        public PeritosController(ExpertManagerContext contexto)
+        public PeritosController(ExpertManagerContext contexto, RepositorioPeritos repositorioPeritos)
         {
             _contexto = contexto;
+            _repositorioPeritos = repositorioPeritos;
         }
 
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            List<Usuario> peritos = await _contexto.Usuarios
-                                                   .Include(usuario => usuario.Permiso)
-                                                   .Where(usuario => usuario.Permiso.Id != 1)
-                                                   .ToListAsync();     
+            List<Usuario> peritos = await _repositorioPeritos.ObtenerTodos();
             
             if (peritos is null || peritos.Count == 0)                            
                 return StatusCode(500, "No existen peritos");            
