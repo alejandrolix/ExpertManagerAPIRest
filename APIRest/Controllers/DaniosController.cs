@@ -1,5 +1,4 @@
-﻿using APIRest.Context;
-using APIRest.Models;
+﻿using APIRest.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
