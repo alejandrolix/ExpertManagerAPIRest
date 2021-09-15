@@ -1,7 +1,6 @@
 ﻿using APIRest.Context;
 using APIRest.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,12 +12,10 @@ namespace APIRest.Controllers
     [ApiController]
     public class DaniosController : ControllerBase
     {
-        private ExpertManagerContext _contexto;
         private RepositorioDanios _repositorioDanios;
 
-        public DaniosController(ExpertManagerContext contexto, RepositorioDanios repositorioDanios)
+        public DaniosController(RepositorioDanios repositorioDanios)
         {
-            _contexto = contexto;
             _repositorioDanios = repositorioDanios;
         }
         
