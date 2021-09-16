@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using APIRest.ViewModels;
 using APIRest.Models;
 using Microsoft.EntityFrameworkCore;
+using APIRest.Repositorios;
 
 namespace APIRest.Controllers
 {
@@ -15,31 +16,22 @@ namespace APIRest.Controllers
     public class UsuariosController : ControllerBase
     {
         private ExpertManagerContext _contexto;
+        private RepositorioUsuarios _repositorioUsuarios;
 
-        public UsuariosController(ExpertManagerContext contexto)
+        public UsuariosController(ExpertManagerContext contexto, RepositorioUsuarios repositorioUsuarios)
         {
             _contexto = contexto;
+            _repositorioUsuarios = repositorioUsuarios;
         }
 
         [HttpGet]
         public async Task<ActionResult> ObtenerTodos()
         {
-            List<Usuario> usuarios = await _contexto.Usuarios
-                                                    .Include(usuario => usuario.Permiso)
-                                                    .OrderBy(usuario => usuario.Nombre)
-                                                    .ToListAsync();
-
-            RespuestaApi respuestaApi = new RespuestaApi();
+            List<Usuario> usuarios = await _repositorioUsuarios.ObtenerTodos();
 
             if (usuarios is null || usuarios.Count == 0)
-            {
-                respuestaApi.CodigoRespuesta = 500;
-                respuestaApi.Mensaje = "No existen usuarios";
-
-                return respuestaApi;
-            }
-
-            respuestaApi.CodigoRespuesta = 200;
+                return NotFound("No existen usuarios");
+            
             List<UsuarioVm> usuariosVms = usuarios.Select(usuario => new UsuarioVm()
             {
                 Id = usuario.Id,
@@ -50,9 +42,7 @@ namespace APIRest.Controllers
             })
             .ToList();
 
-            respuestaApi.Datos = usuariosVms;
-
-            return respuestaApi;
+            return Ok(usuariosVms);
         }
 
         private string EsPerito(int idPermiso)
