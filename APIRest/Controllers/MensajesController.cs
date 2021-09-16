@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APIRest.Repositorios;
 
 namespace APIRest.Controllers
 {    
@@ -15,20 +16,21 @@ namespace APIRest.Controllers
     public class MensajesController : ControllerBase
     {
         private ExpertManagerContext _contexto;
+        private RepositorioMensajes _repositorioMensajes;
 
-        public MensajesController(ExpertManagerContext contexto)
+        public MensajesController(ExpertManagerContext contexto, RepositorioMensajes repositorioMensajes)
         {
             _contexto = contexto;
+            _repositorioMensajes = repositorioMensajes;
         }
 
         [HttpGet("{idSiniestro}")]
-        public async Task<List<MensajeVm>> ObtenerPorIdSiniestro(int idSiniestro)
+        public async Task<ActionResult> ObtenerPorIdSiniestro(int idSiniestro)
         {
-            List<Mensaje> mensajes = await _contexto.Mensajes
-                                                    .Include(mensaje => mensaje.Siniestro)
-                                                    .Include(mensaje => mensaje.Usuario)
-                                                    .Where(mensaje => mensaje.Siniestro.Id == idSiniestro)
-                                                    .ToListAsync();
+            List<Mensaje> mensajes = await _repositorioMensajes.ObtenerTodosPorIdSiniestro(idSiniestro);
+
+            if (mensajes is null || mensajes.Count == 0)
+                return NotFound("No existen mensajes");
 
             List<MensajeVm> mensajesVms = mensajes.Select(mensaje => new MensajeVm()
             {
@@ -38,7 +40,7 @@ namespace APIRest.Controllers
             })
             .ToList();
 
-            return mensajesVms;
+            return Ok(mensajesVms);
         }
 
         [HttpPost]
