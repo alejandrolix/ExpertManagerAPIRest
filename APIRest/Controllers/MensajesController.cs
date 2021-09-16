@@ -17,11 +17,15 @@ namespace APIRest.Controllers
     {
         private ExpertManagerContext _contexto;
         private RepositorioMensajes _repositorioMensajes;
+        private RepositorioUsuarios _repositorioUsuarios;
+        private RepositorioSiniestros _repositorioSiniestros;
 
-        public MensajesController(ExpertManagerContext contexto, RepositorioMensajes repositorioMensajes)
+        public MensajesController(ExpertManagerContext contexto, RepositorioMensajes repositorioMensajes, RepositorioUsuarios repositorioUsuarios, RepositorioSiniestros repositorioSiniestros)
         {
             _contexto = contexto;
             _repositorioMensajes = repositorioMensajes;
+            _repositorioUsuarios = repositorioUsuarios;
+            _repositorioSiniestros = repositorioSiniestros;
         }
 
         [HttpGet("{idSiniestro}")]
@@ -46,46 +50,33 @@ namespace APIRest.Controllers
         [HttpPost]
         public async Task<ActionResult> Crear(MensajeVm mensajeVm)
         {
-            Usuario usuarioCreacion = await _contexto.Usuarios
-                                                     .FirstOrDefaultAsync(usuario => usuario.Id == mensajeVm.IdUsuarioCreado);
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(mensajeVm.IdUsuarioCreado);
 
-            Siniestro siniestro = await _contexto.Siniestros
-                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == mensajeVm.IdSiniestro);
-            string mensajeError = null;
+            if (usuario is null)
+                return NotFound($"No existe el usuario con id {mensajeVm.IdUsuarioCreado}");
 
-            if (usuarioCreacion is null)
-                mensajeError = $"No existe el usuario con id {mensajeVm.IdUsuarioCreado}";
-            else if (siniestro is null)
-                mensajeError = $"No existe el siniestro con id {mensajeVm.IdSiniestro}";
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(mensajeVm.IdSiniestro);
 
-            if (!string.IsNullOrEmpty(mensajeError))
-                return StatusCode(500, mensajeError);
+            if (siniestro is null)            
+                return NotFound($"No existe el siniestro con id {mensajeVm.IdSiniestro}");                                    
             
             Mensaje mensaje = new Mensaje()
             {
                 Descripcion = mensajeVm.Descripcion,
-                Usuario = usuarioCreacion,
+                Usuario = usuario,
                 Siniestro = siniestro
             };
 
-            bool estaGuardado;
-
             try
             {
-                _contexto.Add(mensaje);
-                await _contexto.SaveChangesAsync();
-
-                estaGuardado = true;                
+                await _repositorioMensajes.Guardar(mensaje);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                estaGuardado = false;                
+                return StatusCode(500, "Ha habido un error al crear el mensaje");
             }        
-            
-            if (estaGuardado)
-                return Ok(estaGuardado);
-
-            return StatusCode(500, estaGuardado);
+                        
+            return Ok(true);            
         }
 
         [HttpPost("RevisarCierre")]

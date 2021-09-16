@@ -26,5 +26,18 @@ namespace APIRest.Repositorios
                                                     .ToListAsync();
             return mensajes;
         }        
+
+        public async Task Guardar(Mensaje mensaje)
+        {
+            try
+            {
+                _contexto.Add(mensaje);
+                await _contexto.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }            
+        }
     }
 }
