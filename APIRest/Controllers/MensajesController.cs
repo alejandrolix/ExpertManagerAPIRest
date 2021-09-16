@@ -69,7 +69,7 @@ namespace APIRest.Controllers
 
             try
             {
-                await _repositorioMensajes.Guardar(mensaje);
+                await _repositorioMensajes.Guardar(mensaje);                
             }
             catch (Exception)
             {
@@ -80,53 +80,35 @@ namespace APIRest.Controllers
         }
 
         [HttpPost("RevisarCierre")]
-        public async Task<RespuestaApi> CrearMensajeRevisarCierre(MensajeVm mensajeVm)
+        public async Task<ActionResult> CrearMensajeRevisarCierre(MensajeVm mensajeVm)
         {
-            Usuario usuarioCreacion = await _contexto.Usuarios
-                                                     .FirstOrDefaultAsync(usuario => usuario.Id == mensajeVm.IdUsuarioCreado);
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(mensajeVm.IdUsuarioCreado);
 
-            Siniestro siniestro = await _contexto.Siniestros
-                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == mensajeVm.IdSiniestro);            
-            int codigoRespuesta = 500;
-            string mensajeError = null;
-            object datos = false;
+            if (usuario is null)
+                return NotFound($"No existe el usuario con id {mensajeVm.IdUsuarioCreado}");
 
-            if (usuarioCreacion is null)
-                mensajeError = $"No existe el usuario con id {mensajeVm.IdUsuarioCreado}";
-            else if (siniestro is null)
-                mensajeError = $"No existe el siniestro con id {mensajeVm.IdSiniestro}";
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(mensajeVm.IdSiniestro);
 
-            RespuestaApi respuestaApi = new RespuestaApi
-            {
-                CodigoRespuesta = codigoRespuesta,
-                Mensaje = mensajeError,
-                Datos = datos
-            };
-
-            if (!string.IsNullOrEmpty(mensajeError))
-                return respuestaApi;
+            if (siniestro is null)
+                return NotFound($"No existe el siniestro con id {mensajeVm.IdSiniestro}");                                    
 
             Mensaje mensaje = new Mensaje()
             {
                 Descripcion = "Revisar cierre",
-                Usuario = usuarioCreacion,
+                Usuario = usuario,
                 Siniestro = siniestro
             };
 
             try
             {
-                _contexto.Add(mensaje);
-                await _contexto.SaveChangesAsync();
-
-                codigoRespuesta = 200;
-                datos = true;
+                await _repositorioMensajes.Guardar(mensaje);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                datos = false;
+                return StatusCode(500, "Ha habido un error al crear el mensaje de revisar cierre");
             }
 
-            return respuestaApi;
+            return Ok(true);
         }
 
         [HttpDelete("{id}")]
