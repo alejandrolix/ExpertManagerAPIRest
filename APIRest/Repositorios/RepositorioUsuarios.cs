@@ -64,5 +64,18 @@ namespace APIRest.Repositorios
                                                                           .ToListAsync();
             return estadisticasInicio;
         }
+
+        public async Task Guardar(Usuario usuario)
+        {
+            try
+            {
+                _contexto.Add(usuario);
+                await _contexto.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

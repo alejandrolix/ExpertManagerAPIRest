@@ -17,11 +17,13 @@ namespace APIRest.Controllers
     {
         private ExpertManagerContext _contexto;
         private RepositorioUsuarios _repositorioUsuarios;
+        private RepositorioPermisos _repositorioPermisos;
 
-        public UsuariosController(ExpertManagerContext contexto, RepositorioUsuarios repositorioUsuarios)
+        public UsuariosController(ExpertManagerContext contexto, RepositorioUsuarios repositorioUsuarios, RepositorioPermisos repositorioPermisos)
         {
             _contexto = contexto;
             _repositorioUsuarios = repositorioUsuarios;
+            _repositorioPermisos = repositorioPermisos;
         }
 
         [HttpGet]
@@ -81,34 +83,35 @@ namespace APIRest.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Create(CrearUsuarioVm crearUsuarioVm)
+        public async Task<ActionResult> Create(CrearUsuarioVm crearUsuarioVm)
         {
-            try
-            {                                
-                Permiso permiso = await _contexto.Permisos
-                                                 .FirstOrDefaultAsync(permiso => permiso.Id == crearUsuarioVm.IdPermiso);
+            Permiso permiso = await _repositorioPermisos.ObtenerPorId(crearUsuarioVm.IdPermiso);
 
-                Usuario usuario = new Usuario()
-                {
-                    Nombre = crearUsuarioVm.Nombre,
-                    Contrasenia = crearUsuarioVm.HashContrasenia,
-                    Permiso = permiso
-                };
+            if (permiso is null)
+                return NotFound($"No existe el permiso con id {crearUsuarioVm.IdPermiso}");
 
-                if (EsPeritoNoResponsable(permiso.Id))
-                    usuario.ImpRepacionDanios = crearUsuarioVm.ImpReparacionDanios;
-                else
-                    usuario.ImpRepacionDanios = 0;
-
-                _contexto.Add(usuario);
-                await _contexto.SaveChangesAsync();
-
-                return new JsonResult(true);
-            }
-            catch (Exception ex)
+            Usuario usuario = new Usuario()
             {
-                return new JsonResult(false);
+                Nombre = crearUsuarioVm.Nombre,
+                Contrasenia = crearUsuarioVm.HashContrasenia,
+                Permiso = permiso
+            };
+
+            if (EsPeritoNoResponsable(permiso.Id))
+                usuario.ImpRepacionDanios = crearUsuarioVm.ImpReparacionDanios;
+            else
+                usuario.ImpRepacionDanios = 0;
+
+            try
+            {
+                await _repositorioUsuarios.Guardar(usuario);
             }
+            catch (Exception)
+            {
+                return StatusCode(500, "Ha habido un error al crear el usuario");
+            }
+
+            return Ok(true);
         }
 
         [HttpPost("IniciarSesion")]

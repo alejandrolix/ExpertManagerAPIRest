@@ -23,5 +23,12 @@ namespace APIRest.Repositorios
         {
             _contexto = contexto;
         }
+
+        public async Task<Permiso> ObtenerPorId(int id)
+        {
+            Permiso permiso = await _contexto.Permisos
+                                             .FirstOrDefaultAsync(permiso => permiso.Id == id);
+            return permiso;
+        }
     }
 }
