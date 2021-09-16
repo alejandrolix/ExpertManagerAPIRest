@@ -28,6 +28,15 @@ namespace APIRest.Repositorios
             return usuario;
         }
 
+        public async Task<List<Usuario>> ObtenerTodos()
+        {
+            List<Usuario> usuarios = await _contexto.Usuarios
+                                                    .Include(usuario => usuario.Permiso)
+                                                    .OrderBy(usuario => usuario.Nombre)
+                                                    .ToListAsync();
+            return usuarios;
+        }
+
         public async Task<int> ObtenerNumSiniestrosPorIdUsuario(int id)
         {
             int numSiniestros = await _contexto.Siniestros

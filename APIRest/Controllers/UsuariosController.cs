@@ -22,7 +22,7 @@ namespace APIRest.Controllers
         }
 
         [HttpGet]
-        public async Task<RespuestaApi> ObtenerTodos()
+        public async Task<ActionResult> ObtenerTodos()
         {
             List<Usuario> usuarios = await _contexto.Usuarios
                                                     .Include(usuario => usuario.Permiso)
