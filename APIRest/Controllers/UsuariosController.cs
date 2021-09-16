@@ -117,42 +117,24 @@ namespace APIRest.Controllers
         }
 
         [HttpPost("IniciarSesion")]
-        public async Task<RespuestaApi> IniciarSesion(UsuarioVm usuarioVm)
+        public async Task<ActionResult> IniciarSesion(UsuarioVm usuarioVm)
         {
-            Usuario usuario = await _contexto.Usuarios
-                                             .Include(usuario => usuario.Permiso)
-                                             .FirstOrDefaultAsync(usuario => usuario.Nombre == usuarioVm.Nombre &&
-                                                                  usuario.Contrasenia == usuarioVm.HashContrasenia);
-            int codigoRespuesta = 500;
-            string mensaje = null;
-            object datos = null;
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorNombreYHashContrasenia(usuarioVm.Nombre, usuarioVm.HashContrasenia);
 
             if (usuario is null)
-                mensaje = $"No existe el usuario {usuarioVm.Nombre} o la contraseña es incorrecta";
-            else
+                return NotFound($"No existe el usuario {usuarioVm.Nombre} o la contraseña es incorrecta");
+                            
+            string token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
+            UsuarioVm respuesta = new UsuarioVm()
             {
-                codigoRespuesta = 200;
-                string token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
-
-                UsuarioVm respuesta = new UsuarioVm()
-                {
-                    Nombre = usuario.Nombre,
-                    Id = usuario.Id,
-                    IdPermiso = usuario.Permiso.Id,
-                    Token = token
-                };
-
-                datos = respuesta;
-            }
-
-            RespuestaApi respuestaApi = new RespuestaApi
-            {
-                CodigoRespuesta = codigoRespuesta,
-                Mensaje = mensaje,
-                Datos = datos
+                Nombre = usuario.Nombre,
+                Id = usuario.Id,
+                IdPermiso = usuario.Permiso.Id,
+                Token = token
             };
 
-            return respuestaApi;            
+            return Ok(respuesta);
         }
 
         private bool EsPeritoNoResponsable(int idPermiso)

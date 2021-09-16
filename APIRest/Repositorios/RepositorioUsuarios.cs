@@ -28,6 +28,14 @@ namespace APIRest.Repositorios
             return usuario;
         }
 
+        public async Task<Usuario> ObtenerPorNombreYHashContrasenia(string nombre, string hashContrasenia)
+        {
+            Usuario usuario = await _contexto.Usuarios
+                                             .Include(usuario => usuario.Permiso)
+                                             .FirstOrDefaultAsync(usuario => usuario.Nombre == nombre && usuario.Contrasenia == hashContrasenia);
+            return usuario;
+        }
+
         public async Task<List<Usuario>> ObtenerTodos()
         {
             List<Usuario> usuarios = await _contexto.Usuarios
