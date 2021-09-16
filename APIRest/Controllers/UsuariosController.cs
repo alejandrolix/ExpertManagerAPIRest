@@ -167,7 +167,7 @@ namespace APIRest.Controllers
             Usuario perito = await _repositorioPeritos.ObtenerPorId(id);
 
             if (usuario is null && perito is null)
-                return NotFound($"No existe el usuario con id {id}");
+                return NotFound($"No existe el usuario o perito con id {id}");
 
             usuario = perito;
             usuario.Nombre = usuarioVm.Nombre;
@@ -198,24 +198,26 @@ namespace APIRest.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<JsonResult> Delete(int id)
-        {
+        public async Task<ActionResult> Delete(int id)
+        {            
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(id);
+            Usuario perito = await _repositorioPeritos.ObtenerPorId(id);
+
+            if (usuario is null && perito is null)
+                return NotFound($"No existe el usuario o perito con id {id}");
+
+            usuario = perito;
+
             try
             {
-                Usuario usuario = await _contexto.Usuarios
-                                                 .FirstOrDefaultAsync(usuario => usuario.Id == id);
-                if (usuario is null)
-                    return new JsonResult(false);
-
-                _contexto.Remove(usuario);
-                await _contexto.SaveChangesAsync();
-
-                return new JsonResult(true);
+                await _repositorioUsuarios.Eliminar(usuario);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new JsonResult(false);
+                return StatusCode(500, "Ha habido un error al eliminar el usuario o el perito");
             }
+
+            return Ok(true);
         }
     }
 }
