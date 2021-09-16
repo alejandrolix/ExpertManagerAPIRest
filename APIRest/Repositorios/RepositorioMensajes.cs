@@ -25,7 +25,14 @@ namespace APIRest.Repositorios
                                                     .Where(mensaje => mensaje.Siniestro.Id == id)
                                                     .ToListAsync();
             return mensajes;
-        }        
+        }
+
+        public async Task<Mensaje> ObtenerPorId(int id)
+        {
+            Mensaje mensaje = await _contexto.Mensajes
+                                             .FirstOrDefaultAsync(mensaje => mensaje.Id == id);
+            return mensaje;
+        }
 
         public async Task Guardar(Mensaje mensaje)
         {
