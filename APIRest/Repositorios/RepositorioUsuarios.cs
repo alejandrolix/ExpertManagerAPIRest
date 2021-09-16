@@ -77,5 +77,18 @@ namespace APIRest.Repositorios
                 throw;
             }
         }
+
+        public async Task Actualizar(Usuario usuario)
+        {
+            try
+            {
+                _contexto.Update(usuario);
+                await _contexto.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

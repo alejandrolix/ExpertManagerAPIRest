@@ -18,12 +18,14 @@ namespace APIRest.Controllers
         private ExpertManagerContext _contexto;
         private RepositorioUsuarios _repositorioUsuarios;
         private RepositorioPermisos _repositorioPermisos;
+        private RepositorioPeritos _repositorioPeritos;
 
-        public UsuariosController(ExpertManagerContext contexto, RepositorioUsuarios repositorioUsuarios, RepositorioPermisos repositorioPermisos)
+        public UsuariosController(ExpertManagerContext contexto, RepositorioUsuarios repositorioUsuarios, RepositorioPermisos repositorioPermisos, RepositorioPeritos repositorioPeritos)
         {
             _contexto = contexto;
             _repositorioUsuarios = repositorioUsuarios;
             _repositorioPermisos = repositorioPermisos;
+            _repositorioPeritos = repositorioPeritos;
         }
 
         [HttpGet]
@@ -159,36 +161,40 @@ namespace APIRest.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<JsonResult> Edit(int id, UsuarioVm usuarioVm)
+        public async Task<ActionResult> Edit(int id, UsuarioVm usuarioVm)
         {
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(id);
+            Usuario perito = await _repositorioPeritos.ObtenerPorId(id);
+
+            if (usuario is null && perito is null)
+                return NotFound($"No existe el usuario con id {id}");
+
+            usuario = perito;
+            usuario.Nombre = usuarioVm.Nombre;
+            usuario.Contrasenia = usuarioVm.HashContrasenia;
+
+            Permiso permiso = await _repositorioPermisos.ObtenerPorId(usuarioVm.IdPermiso);
+
+            if (permiso is null)
+                return NotFound($"No existe el permiso con id {usuarioVm.IdPermiso}");
+
+            usuario.Permiso = permiso;
+
+            if (EsPeritoNoResponsable(permiso.Id))        // Permiso Perito no responsable
+                usuario.ImpRepacionDanios = usuarioVm.ImpReparacionDanios;
+            else
+                usuario.ImpRepacionDanios = 0;
+
             try
             {
-                Usuario usuario = await _contexto.Usuarios
-                                                 .Include(usuario => usuario.Permiso)
-                                                 .FirstOrDefaultAsync(usuario => usuario.Id == id);
-
-                usuario.Nombre = usuarioVm.Nombre;
-                usuario.Contrasenia = usuarioVm.HashContrasenia;              
-
-                Permiso permiso = await _contexto.Permisos
-                                                 .FirstOrDefaultAsync(permiso => permiso.Id == usuarioVm.IdPermiso);
-
-                usuario.Permiso = permiso;
-
-                if (EsPeritoNoResponsable(permiso.Id))        // Permiso Perito no responsable
-                    usuario.ImpRepacionDanios = usuarioVm.ImpReparacionDanios;
-                else
-                    usuario.ImpRepacionDanios = 0;
-
-                _contexto.Update(usuario);
-                await _contexto.SaveChangesAsync();
-
-                return new JsonResult(true);
+                await _repositorioUsuarios.Actualizar(usuario);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new JsonResult(false);
+                return StatusCode(500, "Ha habido un error al editar el usuario");
             }
+
+            return Ok(true);
         }
 
         [HttpDelete("{id}")]
