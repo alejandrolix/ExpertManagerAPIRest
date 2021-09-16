@@ -112,24 +112,23 @@ namespace APIRest.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<JsonResult> Eliminar(int id)
-        {
+        public async Task<ActionResult> Eliminar(int id)
+        {            
+            Mensaje mensaje = await _repositorioMensajes.ObtenerPorId(id);
+
+            if (mensaje is null)
+                return NotFound($"No existe el mensaje con id {id}");
+
             try
             {
-                Mensaje mensaje = await _contexto.Mensajes
-                                                 .FirstOrDefaultAsync(mensaje => mensaje.Id == id);
-                if (mensaje is null)
-                    return new JsonResult(false);
-
-                _contexto.Remove(mensaje);
-                await _contexto.SaveChangesAsync();
-
-                return new JsonResult(true);
+                await _repositorioMensajes.Eliminar(mensaje);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new JsonResult(false);
-            }
+                return StatusCode(500, "Ha habido un error al eliminar el mensaje");
+            }            
+
+            return Ok(true);            
         }
     }
 }
