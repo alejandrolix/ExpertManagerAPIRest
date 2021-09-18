@@ -28,6 +28,18 @@ namespace APIRest.Repositorios
             return peritos;
         }
 
+        public string ObtenerTextoEsPerito(int idPermiso)
+        {
+            string textoEsPerito;
+
+            if (idPermiso == 1)
+                textoEsPerito = "No";
+            else
+                textoEsPerito = "Sí";
+
+            return textoEsPerito;
+        }
+
         public async Task<int> ObtenerNumSiniestrosPorIdPerito(int id)
         {
             int numSiniestros = await _contexto.Siniestros
