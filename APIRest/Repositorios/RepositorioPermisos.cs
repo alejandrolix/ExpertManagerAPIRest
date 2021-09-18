@@ -31,11 +31,11 @@ namespace APIRest.Repositorios
             return permiso;
         }
 
-        public bool TienePermisoAdministracion(Usuario usuario)
+        public bool TienePermisoAdministracion(int idPermiso)
         {
             int idPermisoAdministracion = (int)TipoPermiso.Administracion;
 
-            if (usuario.Permiso.Id == idPermisoAdministracion)
+            if (idPermiso == idPermisoAdministracion)
                 return true;
 
             return false;

@@ -35,7 +35,7 @@ namespace APIRest.Controllers
             int totalNumSiniestros;
             List<EstadisticaInicioVm> numSiniestrosPorAseguradora;
             List<EstadisticaInicioVm> siniestrosCerrarPorAseguradora = null;
-            bool tienePermisoAdministracion = _repositorioPermisos.TienePermisoAdministracion(usuario);
+            bool tienePermisoAdministracion = _repositorioPermisos.TienePermisoAdministracion(usuario.Permiso.Id);
 
             if (tienePermisoAdministracion)
             {
