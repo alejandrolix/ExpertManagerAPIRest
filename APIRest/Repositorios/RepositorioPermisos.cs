@@ -40,5 +40,12 @@ namespace APIRest.Repositorios
 
             return false;
         }
+
+        public bool EsPeritoNoResponsable(int idPermiso)
+        {
+            int idPermisoPeritoNoResponsable = (int)TipoPermiso.PeritoNoResponsable;
+
+            return idPermiso == idPermisoPeritoNoResponsable;
+        }
     }
 }

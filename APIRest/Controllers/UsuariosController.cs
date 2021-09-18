@@ -123,12 +123,7 @@ namespace APIRest.Controllers
             };
 
             return Ok(respuesta);
-        }
-
-        private bool EsPeritoNoResponsable(int idPermiso)
-        {
-            return idPermiso == 3;
-        }
+        }        
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Edit(int id, UsuarioVm usuarioVm)
