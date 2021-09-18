@@ -1,8 +1,6 @@
-﻿using APIRest.Context;
-using APIRest.Models;
+﻿using APIRest.Models;
 using APIRest.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +13,12 @@ namespace APIRest.Controllers
     [ApiController]
     public class MensajesController : ControllerBase
     {
-        private ExpertManagerContext _contexto;
         private RepositorioMensajes _repositorioMensajes;
         private RepositorioUsuarios _repositorioUsuarios;
         private RepositorioSiniestros _repositorioSiniestros;
 
-        public MensajesController(ExpertManagerContext contexto, RepositorioMensajes repositorioMensajes, RepositorioUsuarios repositorioUsuarios, RepositorioSiniestros repositorioSiniestros)
+        public MensajesController(RepositorioMensajes repositorioMensajes, RepositorioUsuarios repositorioUsuarios, RepositorioSiniestros repositorioSiniestros)
         {
-            _contexto = contexto;
             _repositorioMensajes = repositorioMensajes;
             _repositorioUsuarios = repositorioUsuarios;
             _repositorioSiniestros = repositorioSiniestros;
