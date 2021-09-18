@@ -25,28 +25,26 @@ namespace APIRest.Controllers
         [HttpGet("{idUsuario}")]
         public async Task<ActionResult> ObtenerEstadisticas(int idUsuario)
         {
-            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(idUsuario);                       
-            Usuario perito = await _repositorioPeritos.ObtenerPorId(idUsuario);
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(idUsuario);                                   
 
-            if (usuario is null && perito is null)                                       
-                return NotFound($"No existe el usuario o perito con id {idUsuario}");                            
+            if (usuario is null)                                       
+                return NotFound($"No existe el usuario con id {idUsuario}");                            
 
-            int totalNumSiniestros = 0;
-            List<EstadisticaInicioVm> numSiniestrosPorAseguradora = null;
+            int totalNumSiniestros;
+            List<EstadisticaInicioVm> numSiniestrosPorAseguradora;
             List<EstadisticaInicioVm> siniestrosCerrarPorAseguradora = null;
 
-            if (usuario != null)
+            if (_repositorioUsuarios.EsUsuario(usuario))
             {
                 totalNumSiniestros = await _repositorioUsuarios.ObtenerNumSiniestrosPorIdUsuario(idUsuario);
                 numSiniestrosPorAseguradora = await _repositorioUsuarios.ObtenerEstadisticasPorIdUsuario(idUsuario);
             }
-
-            if (perito != null)
+            else
             {
                 totalNumSiniestros = await _repositorioPeritos.ObtenerNumSiniestrosPorIdPerito(idUsuario);
                 numSiniestrosPorAseguradora = await _repositorioPeritos.ObtenerEstadisticasPorIdPerito(idUsuario);
                 siniestrosCerrarPorAseguradora = await _repositorioPeritos.ObtenerSiniestrosCerrarPorIdPerito(idUsuario);
-            }                                    
+            }                                               
                       
             EstadisticasVm estadisticasVm = new EstadisticasVm()
             {

@@ -27,6 +27,16 @@ namespace APIRest.Repositorios
             return usuario;
         }
 
+        public bool EsUsuario(Usuario usuario)
+        {
+            int idPermisoAdministracion = (int)TipoPermiso.Administracion;
+
+            if (usuario.Permiso.Id == idPermisoAdministracion)
+                return true;
+
+            return false;
+        }
+
         public async Task<Usuario> ObtenerPorNombreYHashContrasenia(string nombre, string hashContrasenia)
         {
             Usuario usuario = await _contexto.Usuarios
