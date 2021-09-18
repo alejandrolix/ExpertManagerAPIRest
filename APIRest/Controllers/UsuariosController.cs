@@ -50,12 +50,12 @@ namespace APIRest.Controllers
         }        
 
         [HttpGet("{id}")]
-        public async Task<UsuarioVm> ObtenerPorId(int id)
+        public async Task<ActionResult> ObtenerPorId(int id)
         {
-            Usuario usuario = await _contexto.Usuarios
-                                            .Include(usuario => usuario.Permiso)
-                                            .OrderBy(usuario => usuario.Nombre)
-                                            .FirstOrDefaultAsync(usuario => usuario.Id == id);
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(id);
+
+            if (usuario is null)
+                return NotFound($"No existe el usuario con id {id}");
 
             UsuarioVm usuarioVm = new UsuarioVm()
             {
@@ -69,7 +69,7 @@ namespace APIRest.Controllers
             if (EsPeritoNoResponsable(usuario.Permiso.Id))
                 usuarioVm.ImpReparacionDanios = usuario.ImpRepacionDanios;
 
-            return usuarioVm;
+            return Ok(usuarioVm);
         }
 
         [HttpPost]
