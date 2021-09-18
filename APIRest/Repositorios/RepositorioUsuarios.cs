@@ -18,7 +18,7 @@ namespace APIRest.Repositorios
             _contexto = contexto;
         }
 
-        protected async Task<Usuario> ObtenerPorId(int id)
+        public async Task<Usuario> ObtenerPorId(int id)
         {            
             Usuario usuario = await _contexto.Usuarios
                                              .Include(usuario => usuario.Permiso)
