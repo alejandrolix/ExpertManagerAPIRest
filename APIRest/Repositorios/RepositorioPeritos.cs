@@ -9,27 +9,16 @@ using System.Threading.Tasks;
 
 namespace APIRest.Repositorios
 {
-    public class RepositorioPeritos
+    public class RepositorioPeritos : RepositorioUsuarios
     {
         private ExpertManagerContext _contexto;
 
-        public RepositorioPeritos(ExpertManagerContext contexto)
+        public RepositorioPeritos(ExpertManagerContext contexto) : base(contexto)
         {
             _contexto = contexto;
         }
 
-        public async Task<Usuario> ObtenerPorId(int id)
-        {
-            int idPermPeritoResponsable = (int)TipoPermiso.PeritoResponsable;
-            int idPermPeritoNoResponsable = (int)TipoPermiso.PeritoNoResponsable;            
-            Usuario perito = await _contexto.Usuarios
-                                            .Include(usuario => usuario.Permiso)
-                                            .Where(usuario => usuario.Id == id && usuario.Permiso.Id >= idPermPeritoResponsable && usuario.Permiso.Id <= idPermPeritoNoResponsable)
-                                            .FirstOrDefaultAsync();
-            return perito;
-        }
-
-        public async Task<List<Usuario>> ObtenerTodos()
+        protected override async Task<List<Usuario>> ObtenerTodos()
         {
             int idPermisoAdministracion = (int)TipoPermiso.Administracion;
             List<Usuario> peritos = await _contexto.Usuarios

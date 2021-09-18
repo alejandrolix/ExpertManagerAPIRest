@@ -18,12 +18,11 @@ namespace APIRest.Repositorios
             _contexto = contexto;
         }
 
-        public async Task<Usuario> ObtenerPorId(int id)
-        {
-            int idPermisoAdministracion = (int)TipoPermiso.Administracion;
+        protected async Task<Usuario> ObtenerPorId(int id)
+        {            
             Usuario usuario = await _contexto.Usuarios
                                              .Include(usuario => usuario.Permiso)
-                                             .Where(usuario => usuario.Id == id && usuario.Permiso.Id == idPermisoAdministracion)
+                                             .Where(usuario => usuario.Id == id)
                                              .FirstOrDefaultAsync();
             return usuario;
         }
@@ -36,10 +35,13 @@ namespace APIRest.Repositorios
             return usuario;
         }
 
-        public async Task<List<Usuario>> ObtenerTodos()
+        protected virtual async Task<List<Usuario>> ObtenerTodos()
         {
+            int idPermisoAdministracion = (int)TipoPermiso.Administracion;
+
             List<Usuario> usuarios = await _contexto.Usuarios
                                                     .Include(usuario => usuario.Permiso)
+                                                    .Where(usuario => usuario.Permiso.Id == idPermisoAdministracion)
                                                     .OrderBy(usuario => usuario.Nombre)
                                                     .ToListAsync();
             return usuarios;
