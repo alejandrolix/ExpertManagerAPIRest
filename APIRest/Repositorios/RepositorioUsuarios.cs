@@ -35,7 +35,7 @@ namespace APIRest.Repositorios
             return usuario;
         }
 
-        protected virtual async Task<List<Usuario>> ObtenerTodos()
+        public virtual async Task<List<Usuario>> ObtenerTodos()
         {
             int idPermisoAdministracion = (int)TipoPermiso.Administracion;
 

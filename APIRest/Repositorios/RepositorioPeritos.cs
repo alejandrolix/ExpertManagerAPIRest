@@ -18,7 +18,7 @@ namespace APIRest.Repositorios
             _contexto = contexto;
         }
 
-        protected override async Task<List<Usuario>> ObtenerTodos()
+        public override async Task<List<Usuario>> ObtenerTodos()
         {
             int idPermisoAdministracion = (int)TipoPermiso.Administracion;
             List<Usuario> peritos = await _contexto.Usuarios
