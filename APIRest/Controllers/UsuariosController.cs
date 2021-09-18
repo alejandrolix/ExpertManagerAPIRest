@@ -161,13 +161,10 @@ namespace APIRest.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {            
-            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(id);
-            Usuario perito = await _repositorioPeritos.ObtenerPorId(id);
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(id);            
 
-            if (usuario is null && perito is null)
-                return NotFound($"No existe el usuario o perito con id {id}");
-
-            usuario = perito;
+            if (usuario is null)
+                return NotFound($"No existe el usuario con id {id}");            
 
             try
             {
@@ -175,7 +172,7 @@ namespace APIRest.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(500, "Ha habido un error al eliminar el usuario o el perito");
+                return StatusCode(500, "Ha habido un error al eliminar el usuario");
             }
 
             return Ok(true);
