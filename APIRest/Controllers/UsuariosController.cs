@@ -128,13 +128,11 @@ namespace APIRest.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Edit(int id, UsuarioVm usuarioVm)
         {
-            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(id);
-            Usuario perito = await _repositorioPeritos.ObtenerPorId(id);
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(id);            
 
-            if (usuario is null && perito is null)
-                return NotFound($"No existe el usuario o perito con id {id}");
-
-            usuario = perito;
+            if (usuario is null)
+                return NotFound($"No existe el usuario con id {id}");
+            
             usuario.Nombre = usuarioVm.Nombre;
             usuario.Contrasenia = usuarioVm.HashContrasenia;
 
@@ -145,10 +143,8 @@ namespace APIRest.Controllers
 
             usuario.Permiso = permiso;
 
-            if (EsPeritoNoResponsable(permiso.Id))        // Permiso Perito no responsable
-                usuario.ImpRepacionDanios = usuarioVm.ImpReparacionDanios;
-            else
-                usuario.ImpRepacionDanios = 0;
+            if (_repositorioPermisos.EsPeritoNoResponsable(permiso.Id))
+                usuario.ImpRepacionDanios = usuarioVm.ImpReparacionDanios;            
 
             try
             {
