@@ -28,10 +28,14 @@ namespace APIRest.Controllers
         public async Task<ActionResult> ObtenerTodos()
         {
             List<Usuario> usuarios = await _repositorioUsuarios.ObtenerTodos();
+            List<Usuario> peritos = await _repositorioPeritos.ObtenerTodos();
 
             if (usuarios is null || usuarios.Count == 0)
                 return NotFound("No existen usuarios");
-            
+
+            if (peritos is null || peritos.Count == 0)
+                return NotFound("No existen peritos");
+
             List<UsuarioVm> usuariosVms = usuarios.Select(usuario => new UsuarioVm()
             {
                 Id = usuario.Id,
@@ -42,6 +46,17 @@ namespace APIRest.Controllers
             })
             .ToList();
 
+            List<UsuarioVm> peritosVms = peritos.Select(perito => new UsuarioVm()
+            {
+                Id = perito.Id,
+                Nombre = perito.Nombre,
+                IdPermiso = perito.Permiso.Id,
+                EsPerito = _repositorioPeritos.ObtenerTextoEsPerito(perito.Permiso.Id),
+                Permiso = perito.Permiso.Nombre
+            })
+            .ToList();
+
+            usuariosVms = usuariosVms.Concat(peritosVms).ToList();
             return Ok(usuariosVms);
         }        
 
