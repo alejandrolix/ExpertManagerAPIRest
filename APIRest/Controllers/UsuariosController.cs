@@ -87,7 +87,7 @@ namespace APIRest.Controllers
                 Permiso = permiso
             };
 
-            if (EsPeritoNoResponsable(permiso.Id))
+            if (_repositorioPermisos.EsPeritoNoResponsable(permiso.Id))
                 usuario.ImpRepacionDanios = crearUsuarioVm.ImpReparacionDanios;
             else
                 usuario.ImpRepacionDanios = 0;
