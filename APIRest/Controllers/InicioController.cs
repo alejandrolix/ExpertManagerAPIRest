@@ -15,11 +15,13 @@ namespace APIRest.Controllers
     {
         private RepositorioUsuarios _repositorioUsuarios;
         private RepositorioPeritos _repositorioPeritos;
+        private RepositorioPermisos _repositorioPermisos;
 
-        public InicioController(RepositorioUsuarios repositorioUsuarios, RepositorioPeritos repositorioPeritos)
+        public InicioController(RepositorioUsuarios repositorioUsuarios, RepositorioPeritos repositorioPeritos, RepositorioPermisos repositorioPermisos)
         {
             _repositorioUsuarios = repositorioUsuarios;
             _repositorioPeritos = repositorioPeritos;
+            _repositorioPermisos = repositorioPermisos;
         }
 
         [HttpGet("{idUsuario}")]
@@ -33,8 +35,9 @@ namespace APIRest.Controllers
             int totalNumSiniestros;
             List<EstadisticaInicioVm> numSiniestrosPorAseguradora;
             List<EstadisticaInicioVm> siniestrosCerrarPorAseguradora = null;
+            bool tienePermisoAdministracion = _repositorioPermisos.TienePermisoAdministracion(usuario);
 
-            if (_repositorioUsuarios.EsUsuario(usuario))
+            if (tienePermisoAdministracion)
             {
                 totalNumSiniestros = await _repositorioUsuarios.ObtenerNumSiniestrosPorIdUsuario(idUsuario);
                 numSiniestrosPorAseguradora = await _repositorioUsuarios.ObtenerEstadisticasPorIdUsuario(idUsuario);

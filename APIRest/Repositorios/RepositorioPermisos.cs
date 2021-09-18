@@ -30,5 +30,15 @@ namespace APIRest.Repositorios
                                              .FirstOrDefaultAsync(permiso => permiso.Id == id);
             return permiso;
         }
+
+        public bool TienePermisoAdministracion(Usuario usuario)
+        {
+            int idPermisoAdministracion = (int)TipoPermiso.Administracion;
+
+            if (usuario.Permiso.Id == idPermisoAdministracion)
+                return true;
+
+            return false;
+        }
     }
 }

@@ -25,17 +25,7 @@ namespace APIRest.Repositorios
                                              .Where(usuario => usuario.Id == id)
                                              .FirstOrDefaultAsync();
             return usuario;
-        }
-
-        public bool EsUsuario(Usuario usuario)
-        {
-            int idPermisoAdministracion = (int)TipoPermiso.Administracion;
-
-            if (usuario.Permiso.Id == idPermisoAdministracion)
-                return true;
-
-            return false;
-        }
+        }        
 
         public async Task<Usuario> ObtenerPorNombreYHashContrasenia(string nombre, string hashContrasenia)
         {
