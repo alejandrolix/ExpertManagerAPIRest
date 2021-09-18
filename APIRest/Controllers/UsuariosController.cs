@@ -1,12 +1,10 @@
-﻿using APIRest.Context;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIRest.ViewModels;
 using APIRest.Models;
-using Microsoft.EntityFrameworkCore;
 using APIRest.Repositorios;
 
 namespace APIRest.Controllers
@@ -14,15 +12,13 @@ namespace APIRest.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class UsuariosController : ControllerBase
-    {
-        private ExpertManagerContext _contexto;
+    {        
         private RepositorioUsuarios _repositorioUsuarios;
         private RepositorioPermisos _repositorioPermisos;
         private RepositorioPeritos _repositorioPeritos;
 
-        public UsuariosController(ExpertManagerContext contexto, RepositorioUsuarios repositorioUsuarios, RepositorioPermisos repositorioPermisos, RepositorioPeritos repositorioPeritos)
-        {
-            _contexto = contexto;
+        public UsuariosController(RepositorioUsuarios repositorioUsuarios, RepositorioPermisos repositorioPermisos, RepositorioPeritos repositorioPeritos)
+        {            
             _repositorioUsuarios = repositorioUsuarios;
             _repositorioPermisos = repositorioPermisos;
             _repositorioPeritos = repositorioPeritos;
