@@ -66,7 +66,7 @@ namespace APIRest.Controllers
                 HashContrasenia = usuario.Contrasenia
             };
 
-            if (EsPeritoNoResponsable(usuario.Permiso.Id))
+            if (_repositorioPermisos.EsPeritoNoResponsable(usuario.Permiso.Id))
                 usuarioVm.ImpReparacionDanios = usuario.ImpRepacionDanios;
 
             return Ok(usuarioVm);
