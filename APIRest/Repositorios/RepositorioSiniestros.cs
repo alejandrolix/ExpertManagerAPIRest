@@ -133,6 +133,12 @@ namespace APIRest.Repositorios
             if (crearSiniestroVm.IdDanio <= 0)
                 throw new Exception("El daño seleccionado no es válido");
 
+            if (crearSiniestroVm.Direccion is null || crearSiniestroVm.Direccion.Length == 0)
+                throw new Exception("La dirección está vacía");
+
+            if (crearSiniestroVm.Descripcion is null || crearSiniestroVm.Descripcion.Length == 0)
+                throw new Exception("La descripción está vacía");
+
             return true;
         }
     }
