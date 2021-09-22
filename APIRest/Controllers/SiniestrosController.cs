@@ -188,11 +188,11 @@ namespace APIRest.Controllers
         }
 
         [HttpPost]        
-        public async Task<ActionResult> Create(CrearSiniestroVm crearSiniestroVm)
+        public async Task<ActionResult> Create(SiniestroVm siniestroVm)
         {
             try
             {
-                _repositorioSiniestros.EsValido(crearSiniestroVm);
+                _repositorioSiniestros.EsValido(siniestroVm);
             }
             catch (Exception ex)
             {
@@ -200,34 +200,34 @@ namespace APIRest.Controllers
             }
 
             Estado estado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.SinValorar);
-            Aseguradora aseguradora = await _repositorioAseguradoras.ObtenerPorId(crearSiniestroVm.IdAseguradora);
+            Aseguradora aseguradora = await _repositorioAseguradoras.ObtenerPorId(siniestroVm.IdAseguradora);
 
             if (aseguradora is null)            
-                return NotFound($"No existe la aseguradora con id {crearSiniestroVm.IdAseguradora}");
+                return NotFound($"No existe la aseguradora con id {siniestroVm.IdAseguradora}");
 
-            Usuario usuarioCreado = await _repositorioUsuarios.ObtenerPorId(crearSiniestroVm.IdUsuarioAlta);
+            Usuario usuarioCreado = await _repositorioUsuarios.ObtenerPorId(siniestroVm.IdUsuarioAlta);
 
             if (usuarioCreado is null)
-                return NotFound($"No existe el usuario con id {crearSiniestroVm.IdUsuarioAlta}");
+                return NotFound($"No existe el usuario con id {siniestroVm.IdUsuarioAlta}");
 
-            SujetoAfectado sujetoAfectado = (SujetoAfectado)crearSiniestroVm.IdSujetoAfectado;
+            SujetoAfectado sujetoAfectado = (SujetoAfectado)siniestroVm.IdSujetoAfectado;
 
-            Usuario perito = await _repositorioPeritos.ObtenerPorId(crearSiniestroVm.IdPerito);
+            Usuario perito = await _repositorioPeritos.ObtenerPorId(siniestroVm.IdPerito);
 
             if (perito is null)            
-                return NotFound($"No existe el perito con id {crearSiniestroVm.IdPerito}");
+                return NotFound($"No existe el perito con id {siniestroVm.IdPerito}");
 
-            Danio danio = await _repositorioDanios.ObtenerPorId(crearSiniestroVm.IdDanio);
+            Danio danio = await _repositorioDanios.ObtenerPorId(siniestroVm.IdDanio);
 
             if (danio is null)            
-                return NotFound($"No existe el daño con id {crearSiniestroVm.IdDanio}");            
+                return NotFound($"No existe el daño con id {siniestroVm.IdDanio}");            
 
             Siniestro siniestro = new Siniestro()
             {
                 Estado = estado,
                 Aseguradora = aseguradora,
-                Direccion = crearSiniestroVm.Direccion,
-                Descripcion = crearSiniestroVm.Descripcion,
+                Direccion = siniestroVm.Direccion,
+                Descripcion = siniestroVm.Descripcion,
                 UsuarioCreado = usuarioCreado,
                 FechaHoraAlta = DateTime.Now,
                 SujetoAfectado = sujetoAfectado,

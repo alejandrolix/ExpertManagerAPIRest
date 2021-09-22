@@ -111,32 +111,32 @@ namespace APIRest.Repositorios
             }
         }
 
-        public bool EsValido(CrearSiniestroVm crearSiniestroVm)
+        public bool EsValido(SiniestroVm siniestroVm)
         {
-            if (crearSiniestroVm.IdAseguradora <= 0)
+            if (siniestroVm.IdAseguradora <= 0)
                 throw new Exception("La aseguradora seleccionada no es válida");
 
-            if (crearSiniestroVm.IdUsuarioAlta <= 0)
+            if (siniestroVm.IdUsuarioAlta <= 0)
                 throw new Exception("El usuario de alta no es válido");
 
             List<int> idsSujetoAfectado = Enum.GetValues(typeof(SujetoAfectado)).Cast<int>()
                                                                                 .ToList();
 
-            bool existeIdSujetoAfectado = Array.Exists(idsSujetoAfectado.ToArray(), id => id == crearSiniestroVm.IdSujetoAfectado);
+            bool existeIdSujetoAfectado = Array.Exists(idsSujetoAfectado.ToArray(), id => id == siniestroVm.IdSujetoAfectado);
 
             if (!existeIdSujetoAfectado)
                 throw new Exception("El sujeto afectado seleccionado no es válido");
 
-            if (crearSiniestroVm.IdPerito <= 0)
+            if (siniestroVm.IdPerito <= 0)
                 throw new Exception("El perito seleccionado no es válido");
 
-            if (crearSiniestroVm.IdDanio <= 0)
+            if (siniestroVm.IdDanio <= 0)
                 throw new Exception("El daño seleccionado no es válido");
 
-            if (crearSiniestroVm.Direccion is null || crearSiniestroVm.Direccion.Length == 0)
+            if (siniestroVm.Direccion is null || siniestroVm.Direccion.Length == 0)
                 throw new Exception("La dirección está vacía");
 
-            if (crearSiniestroVm.Descripcion is null || crearSiniestroVm.Descripcion.Length == 0)
+            if (siniestroVm.Descripcion is null || siniestroVm.Descripcion.Length == 0)
                 throw new Exception("La descripción está vacía");
 
             return true;
