@@ -1,5 +1,6 @@
 ﻿using APIRest.Context;
 using APIRest.Models;
+using APIRest.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -108,6 +109,31 @@ namespace APIRest.Repositorios
             {
                 throw;
             }
+        }
+
+        public bool EsValido(CrearSiniestroVm crearSiniestroVm)
+        {
+            if (crearSiniestroVm.IdAseguradora <= 0)
+                throw new Exception("La aseguradora seleccionada no es válida");
+
+            if (crearSiniestroVm.IdUsuarioAlta <= 0)
+                throw new Exception("El usuario de alta no es válido");
+
+            List<int> idsSujetoAfectado = Enum.GetValues(typeof(SujetoAfectado)).Cast<int>()
+                                                                                .ToList();
+
+            bool existeIdSujetoAfectado = Array.Exists(idsSujetoAfectado.ToArray(), id => id == crearSiniestroVm.IdSujetoAfectado);
+
+            if (!existeIdSujetoAfectado)
+                throw new Exception("El sujeto afectado seleccionado no es válido");
+
+            if (crearSiniestroVm.IdPerito <= 0)
+                throw new Exception("El perito seleccionado no es válido");
+
+            if (crearSiniestroVm.IdDanio <= 0)
+                throw new Exception("El daño seleccionado no es válido");
+
+            return true;
         }
     }
 }

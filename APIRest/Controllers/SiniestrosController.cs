@@ -190,6 +190,15 @@ namespace APIRest.Controllers
         [HttpPost]        
         public async Task<ActionResult> Create(CrearSiniestroVm crearSiniestroVm)
         {
+            try
+            {
+                _repositorioSiniestros.EsValido(crearSiniestroVm);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
             Estado estado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.SinValorar);
 
             if (estado is null)
