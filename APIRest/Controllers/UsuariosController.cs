@@ -84,22 +84,22 @@ namespace APIRest.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CrearUsuarioVm crearUsuarioVm)
+        public async Task<ActionResult> Create(UsuarioVm usuarioVm)
         {
-            Permiso permiso = await _repositorioPermisos.ObtenerPorId(crearUsuarioVm.IdPermiso);
+            Permiso permiso = await _repositorioPermisos.ObtenerPorId(usuarioVm.IdPermiso);
 
             if (permiso is null)
-                return NotFound($"No existe el permiso con id {crearUsuarioVm.IdPermiso}");
+                return NotFound($"No existe el permiso con id {usuarioVm.IdPermiso}");
 
             Usuario usuario = new Usuario()
             {
-                Nombre = crearUsuarioVm.Nombre,
-                Contrasenia = crearUsuarioVm.HashContrasenia,
+                Nombre = usuarioVm.Nombre,
+                Contrasenia = usuarioVm.HashContrasenia,
                 Permiso = permiso
             };
 
             if (_repositorioPermisos.EsPeritoNoResponsable(permiso.Id))
-                usuario.ImpRepacionDanios = crearUsuarioVm.ImpReparacionDanios;
+                usuario.ImpRepacionDanios = usuarioVm.ImpReparacionDanios;
             else
                 usuario.ImpRepacionDanios = 0;
 
