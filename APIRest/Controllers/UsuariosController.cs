@@ -86,6 +86,15 @@ namespace APIRest.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(UsuarioVm usuarioVm)
         {
+            try
+            {
+                _repositorioUsuarios.EsValido(usuarioVm);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
             Permiso permiso = await _repositorioPermisos.ObtenerPorId(usuarioVm.IdPermiso);
 
             if (permiso is null)
