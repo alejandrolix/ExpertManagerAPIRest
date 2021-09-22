@@ -250,7 +250,16 @@ namespace APIRest.Controllers
 
         [HttpPut("{id}")]        
         public async Task<ActionResult> Edit(int id, SiniestroVm siniestroVm)
-        {            
+        {
+            try
+            {
+                _repositorioSiniestros.EsValido(siniestroVm);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
             Estado estado = await _repositorioEstados.ObtenerPorId(siniestroVm.IdEstado);
 
             if (estado is null)
