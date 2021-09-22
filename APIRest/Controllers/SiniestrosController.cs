@@ -200,10 +200,6 @@ namespace APIRest.Controllers
             }
 
             Estado estado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.SinValorar);
-
-            if (estado is null)
-                return NotFound("No existe el estado con id 2");
-
             Aseguradora aseguradora = await _repositorioAseguradoras.ObtenerPorId(crearSiniestroVm.IdAseguradora);
 
             if (aseguradora is null)            
