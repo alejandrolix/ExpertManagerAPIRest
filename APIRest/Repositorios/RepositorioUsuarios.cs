@@ -113,5 +113,19 @@ namespace APIRest.Repositorios
                 throw;
             }
         }
+
+        public bool EsValido(UsuarioVm usuarioVm)
+        {
+            if (usuarioVm.IdPermiso <= 0)
+                throw new Exception("El permiso seleccionado no es válido");
+
+            if (usuarioVm.Nombre is null || usuarioVm.Nombre.Length == 0)
+                throw new Exception("El nombre está vacío");
+
+            if (usuarioVm.HashContrasenia is null || usuarioVm.HashContrasenia.Length == 0)
+                throw new Exception("La contraseña está vacía");
+
+            return true;
+        }
     }
 }
