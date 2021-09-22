@@ -7,6 +7,6 @@ namespace APIRest.ViewModels
 {
     public class CrearSiniestroVm : SiniestroVm
     {
-        public int IdUsuarioAlta { get; set; }               
+                       
     }
 }

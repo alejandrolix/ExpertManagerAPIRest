@@ -22,5 +22,6 @@ namespace APIRest.ViewModels
         public int IdDanio { get; set; }
         public string Danio { get; set; }
         public string ImpValoracionDanios { get; set; }
+        public int IdUsuarioAlta { get; set; }
     }
 }
