@@ -148,6 +148,15 @@ namespace APIRest.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Edit(int id, UsuarioVm usuarioVm)
         {
+            try
+            {
+                _repositorioUsuarios.EsValido(usuarioVm);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
             Usuario usuario = await _repositorioUsuarios.ObtenerPorId(id);            
 
             if (usuario is null)
