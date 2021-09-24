@@ -110,36 +110,5 @@ namespace APIRest.Repositorios
                 throw;
             }
         }
-
-        public bool EsValido(SiniestroVm siniestroVm)
-        {
-            if (siniestroVm.IdAseguradora <= 0)
-                throw new Exception("La aseguradora seleccionada no es válida");
-
-            if (siniestroVm.IdUsuarioAlta <= 0)
-                throw new Exception("El usuario de alta no es válido");
-
-            List<int> idsSujetoAfectado = Enum.GetValues(typeof(SujetoAfectado)).Cast<int>()
-                                                                                .ToList();
-
-            bool existeIdSujetoAfectado = Array.Exists(idsSujetoAfectado.ToArray(), id => id == siniestroVm.IdSujetoAfectado);
-
-            if (!existeIdSujetoAfectado)
-                throw new Exception("El sujeto afectado seleccionado no es válido");
-
-            if (siniestroVm.IdPerito <= 0)
-                throw new Exception("El perito seleccionado no es válido");
-
-            if (siniestroVm.IdDanio <= 0)
-                throw new Exception("El daño seleccionado no es válido");
-
-            if (siniestroVm.Direccion is null || siniestroVm.Direccion.Length == 0)
-                throw new Exception("La dirección está vacía");
-
-            if (siniestroVm.Descripcion is null || siniestroVm.Descripcion.Length == 0)
-                throw new Exception("La descripción está vacía");
-
-            return true;
-        }
     }
 }
