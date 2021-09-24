@@ -83,6 +83,7 @@ namespace APIRest.Controllers
             return Ok(usuarioVm);
         }
 
+        [NonAction]
         public void ValidarUsuario(UsuarioVm usuarioVm)
         {
             if (usuarioVm.IdPermiso <= 0)
