@@ -283,7 +283,7 @@ namespace APIRest.Controllers
         {
             try
             {
-                _repositorioSiniestros.EsValido(siniestroVm);
+                ValidarSiniestro(siniestroVm);
             }
             catch (Exception ex)
             {
