@@ -83,12 +83,24 @@ namespace APIRest.Controllers
             return Ok(usuarioVm);
         }
 
+        public void ValidarUsuario(UsuarioVm usuarioVm)
+        {
+            if (usuarioVm.IdPermiso <= 0)
+                throw new Exception("El permiso seleccionado no es válido");
+
+            if (usuarioVm.Nombre is null || usuarioVm.Nombre.Length == 0)
+                throw new Exception("El nombre está vacío");
+
+            if (usuarioVm.HashContrasenia is null || usuarioVm.HashContrasenia.Length == 0)
+                throw new Exception("La contraseña está vacía");            
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create(UsuarioVm usuarioVm)
         {
             try
             {
-                _repositorioUsuarios.EsValido(usuarioVm);
+                ValidarUsuario(usuarioVm);
             }
             catch (Exception ex)
             {
