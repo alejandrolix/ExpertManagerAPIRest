@@ -162,7 +162,7 @@ namespace APIRest.Controllers
         {
             try
             {
-                _repositorioUsuarios.EsValido(usuarioVm);
+                ValidarUsuario(usuarioVm);
             }
             catch (Exception ex)
             {
