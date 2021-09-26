@@ -17,11 +17,13 @@ namespace APIRest.Controllers
     {        
         private RepositorioDocumentaciones _repositorioDocumentaciones;
         private RepositorioSiniestros _repositorioSiniestros;
+        private RepositorioTiposArchivos _repositorioTiposArchivos;
 
-        public DocumentacionesController(RepositorioDocumentaciones repositorioDocumentaciones, RepositorioSiniestros repositorioSiniestros)
+        public DocumentacionesController(RepositorioDocumentaciones repositorioDocumentaciones, RepositorioSiniestros repositorioSiniestros, RepositorioTiposArchivos repositorioTiposArchivos)
         {            
             _repositorioDocumentaciones = repositorioDocumentaciones;
             _repositorioSiniestros = repositorioSiniestros;
+            _repositorioTiposArchivos = repositorioTiposArchivos;
         }
         
         [HttpGet("ObtenerPorIdSiniestro/{idSiniestro}")]
@@ -79,12 +81,8 @@ namespace APIRest.Controllers
             
             string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/documentacion", documentacionVm.Archivo.FileName);
             rutaPdf = rutaPdf.Replace("\\", "/");
-
-            TipoArchivo tipoArchivo = new TipoArchivo()
-            {
-                Tipo = TiposArchivo.Documentacion.ToString()
-            };
-
+            
+            TipoArchivo tipoArchivo = await _repositorioTiposArchivos.ObtenerPorTipo(TiposArchivo.Documentacion);
             Archivo documentacion = new Archivo()
             {
                 Descripcion = documentacionVm.Descripcion,
