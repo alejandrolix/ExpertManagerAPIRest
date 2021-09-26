@@ -23,5 +23,6 @@ namespace APIRest.Context
         public DbSet<Documentacion> Documentaciones { get; set; }  
         public DbSet<Imagen> Imagenes { get; set; }
         public DbSet<TipoArchivo> TiposArchivo { get; set; }
+        public DbSet<Archivo> Archivos { get; set; }
     }
 }
