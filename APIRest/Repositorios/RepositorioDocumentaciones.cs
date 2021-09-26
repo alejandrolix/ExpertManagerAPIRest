@@ -36,5 +36,18 @@ namespace APIRest.Repositorios
                                                    .FirstOrDefaultAsync();
             return documentacion;
         }
+
+        public async Task Eliminar(Archivo documentacion)
+        {
+            try
+            {
+                _contexto.Remove(documentacion);
+                await _contexto.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }                        
+        }
     }
 }
