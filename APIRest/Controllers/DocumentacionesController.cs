@@ -26,9 +26,13 @@ namespace APIRest.Controllers
         }
         
         [HttpGet("ObtenerPorIdSiniestro/{idSiniestro}")]
-        public async Task<List<ArchivoVm>> ObtenerPorIdSiniestro(int idSiniestro)
+        public async Task<ActionResult> ObtenerPorIdSiniestro(int idSiniestro)
         {
             List<Archivo> documentaciones = await _repositorioDocumentaciones.ObtenerPorIdSiniestro(idSiniestro);
+
+            if (documentaciones is null)
+                return NotFound($"No existen documentaciones con id de siniestro {idSiniestro}");
+
             List<ArchivoVm> documentacionesVm = documentaciones.Select(documentacion => new ArchivoVm()
             {
                 Id = documentacion.Id,
@@ -36,7 +40,7 @@ namespace APIRest.Controllers
             })
             .ToList();
 
-            return documentacionesVm;
+            return Ok(documentacionesVm);
         }
 
         [HttpGet("{id}")]
