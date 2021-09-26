@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using APIRest.Repositorios;
+using APIRest.Enumeraciones;
 
 namespace APIRest.Controllers
 {    
@@ -18,11 +19,13 @@ namespace APIRest.Controllers
     {
         private ExpertManagerContext _contexto;
         private RepositorioDocumentaciones _repositorioDocumentaciones;
+        private RepositorioSiniestros _repositorioSiniestros;
 
-        public DocumentacionesController(ExpertManagerContext contexto, RepositorioDocumentaciones repositorioDocumentaciones)
+        public DocumentacionesController(ExpertManagerContext contexto, RepositorioDocumentaciones repositorioDocumentaciones, RepositorioSiniestros repositorioSiniestros)
         {
             _contexto = contexto;
             _repositorioDocumentaciones = repositorioDocumentaciones;
+            _repositorioSiniestros = repositorioSiniestros;
         }
         
         [HttpGet("ObtenerPorIdSiniestro/{idSiniestro}")]
@@ -65,37 +68,48 @@ namespace APIRest.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Subir([FromForm] DocumentacionVm documentacionVm)
+        public async Task<ActionResult> Subir([FromForm] DocumentacionVm documentacionVm)
         {
-            Siniestro siniestro = await _contexto.Siniestros
-                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == documentacionVm.IdSiniestro);
+            if (documentacionVm.Descripcion is null || documentacionVm.Descripcion.Length == 0)
+                return StatusCode(500, "La descripción está vacía");
+
+            if (documentacionVm.Archivo is null)
+                return StatusCode(500, "No se ha seleccionado ningún archivo");
+
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(documentacionVm.IdSiniestro);
+
+            if (siniestro is null)
+                return NotFound($"No existe el siniestro con id {documentacionVm.IdSiniestro}");            
             
             string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/documentacion", documentacionVm.Archivo.FileName);
             rutaPdf = rutaPdf.Replace("\\", "/");
 
-            Documentacion documentacion = new Documentacion()
+            TipoArchivo tipoArchivo = new TipoArchivo()
             {
-                Descripcion = documentacionVm.Descripcion,                
-                Siniestro = siniestro,
-                UrlArchivo = rutaPdf
+                Tipo = TiposArchivo.Documentacion.ToString()
             };
+
+            Archivo documentacion = new Archivo()
+            {
+                Descripcion = documentacionVm.Descripcion,
+                Siniestro = siniestro,
+                UrlArchivo = rutaPdf,
+                TipoArchivo = tipoArchivo
+            };
+
+            using (var stream = System.IO.File.Create(rutaPdf))            
+                await documentacionVm.Archivo.CopyToAsync(stream);            
 
             try
             {
-                using (var stream = System.IO.File.Create(rutaPdf))
-                {
-                    await documentacionVm.Archivo.CopyToAsync(stream);
-                }
-
-                _contexto.Add(documentacion);
-                await _contexto.SaveChangesAsync();
-
-                return new JsonResult(true);
+                await _repositorioDocumentaciones.Guardar(documentacion);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new JsonResult(false);
+                return StatusCode(500, "Ha habido un error al crear la documentación");
             }
+
+            return Ok(true);
         }
 
         [HttpDelete("{id}")]

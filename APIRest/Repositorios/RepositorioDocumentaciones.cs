@@ -49,5 +49,18 @@ namespace APIRest.Repositorios
                 throw;
             }                        
         }
+
+        public async Task Guardar(Archivo documentacion)
+        {
+            try
+            {
+                _contexto.Add(documentacion);
+                await _contexto.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
