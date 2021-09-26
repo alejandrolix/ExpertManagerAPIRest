@@ -40,10 +40,12 @@ namespace APIRest.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<FileStreamResult> Obtener(int id)
+        public async Task<ActionResult> Obtener(int id)
         {
-            Documentacion documentacion = await _contexto.Documentaciones
-                                                         .FirstOrDefaultAsync(documentacion => documentacion.Id == id);
+            Archivo documentacion = await _repositorioDocumentaciones.ObtenerPorId(id);
+
+            if (documentacion is null)
+                return NotFound($"No existe la documentación con id {id}");
 
             string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", documentacion.UrlArchivo);
             rutaPdf = rutaPdf.Replace("\\", "/");

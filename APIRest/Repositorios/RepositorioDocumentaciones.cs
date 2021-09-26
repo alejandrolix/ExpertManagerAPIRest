@@ -28,5 +28,13 @@ namespace APIRest.Repositorios
                                                            .ToListAsync();
             return documentaciones;
         }
+
+        public async Task<Archivo> ObtenerPorId(int id)
+        {
+            Archivo documentacion = await _contexto.Archivos                                                                                                      
+                                                   .Where(archivo => archivo.Id == id)
+                                                   .FirstOrDefaultAsync();
+            return documentacion;
+        }
     }
 }
