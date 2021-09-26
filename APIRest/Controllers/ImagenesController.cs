@@ -1,59 +1,61 @@
-﻿using APIRest.Context;
-using APIRest.Models;
+﻿using APIRest.Models;
 using APIRest.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using APIRest.Repositorios;
+using APIRest.Enumeraciones;
 
 namespace APIRest.Controllers
 {    
     [Route("api/[controller]")]
     [ApiController]
     public class ImagenesController : ControllerBase
-    {
-        private ExpertManagerContext _contexto;        
+    {        
+        private RepositorioImagenes _repositorioImagenes;
+        private RepositorioSiniestros _repositorioSiniestros;
 
-        public ImagenesController(ExpertManagerContext contexto)
-        {
-            _contexto = contexto;
+        public ImagenesController(RepositorioImagenes repositorioImagenes, RepositorioSiniestros repositorioSiniestros)
+        {            
+            _repositorioImagenes = repositorioImagenes;
+            _repositorioSiniestros = repositorioSiniestros;
         }
 
-        // GET: ImagenesController
         [HttpGet("ObtenerPorIdSiniestro/{idSiniestro}")]
-        public async Task<List<ImagenVm>> ObtenerPorIdSiniestro(int idSiniestro)
+        public async Task<ActionResult> ObtenerPorIdSiniestro(int idSiniestro)
         {
-            List<Imagen> imagenes = await _contexto.Imagenes
-                                                    .Where(imagen => imagen.SiniestroId == idSiniestro)
-                                                    .ToListAsync();
+            List<Archivo> imagenes = await _repositorioImagenes.ObtenerPorIdSiniestro(idSiniestro);
 
-            List<ImagenVm> imagenesVm = imagenes.Select(imagen => new ImagenVm()
+            if (imagenes is null)
+                return NotFound($"No existen imágenes con id de siniestro {idSiniestro}");
+
+            List<ArchivoVm> imagenesVm = imagenes.Select(imagen => new ArchivoVm()
             {
                 Id = imagen.Id,
                 Descripcion = imagen.Descripcion
             })
             .ToList();
 
-            return imagenesVm;
+            return Ok(imagenesVm);
         }
 
         [HttpGet("{id}")]
-        public async Task<FileStreamResult> Obtener(int id)
+        public async Task<ActionResult> Obtener(int id)
         {
-            Imagen imagen = await _contexto.Imagenes
-                                           .FirstOrDefaultAsync(imagen => imagen.Id == id);
+            Archivo imagen = await _repositorioImagenes.ObtenerPorId(id);
+
+            if (imagen is null)
+                return NotFound($"No existe la imagen con id de siniestro {id}");
 
             string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagen.UrlArchivo);
             rutaPdf = rutaPdf.Replace("\\", "/");
 
             var memory = new MemoryStream();
-            using (var stream = new FileStream(rutaPdf, FileMode.Open))
-            {
-                await stream.CopyToAsync(memory);
-            }
+            using (var stream = new FileStream(rutaPdf, FileMode.Open))            
+                await stream.CopyToAsync(memory);            
 
             memory.Position = 0;
 
@@ -65,8 +67,7 @@ namespace APIRest.Controllers
         [HttpGet("ObtenerContentType/{idImagen}")]
         public async Task<string> ObtenerContentTypeArchivo(int idImagen)
         {
-            Imagen imagen = await _contexto.Imagenes
-                                           .FirstOrDefaultAsync(imagen => imagen.Id == idImagen);
+            Archivo imagen = await _repositorioImagenes.ObtenerPorId(idImagen);            
 
             string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagen.UrlArchivo);
             rutaPdf = rutaPdf.Replace("\\", "/");
@@ -85,58 +86,80 @@ namespace APIRest.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Subir([FromForm] ImagenVm imagenVm)
+        public async Task<ActionResult> Subir([FromForm] ArchivoVm imagenVm)
         {
-            Siniestro siniestro = await _contexto.Siniestros
-                                                 .FirstOrDefaultAsync(siniestro => siniestro.Id == imagenVm.IdSiniestro);
-            
-            string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagenes", imagenVm.Imagen.FileName);
+            if (imagenVm.Descripcion is null || imagenVm.Descripcion.Length == 0)
+                return StatusCode(500, "La descripción está vacía");
+
+            if (imagenVm.Archivo is null)
+                return StatusCode(500, "No se ha seleccionado ningún archivo");
+
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(imagenVm.IdSiniestro);
+
+            if (siniestro is null)
+                return NotFound($"No existe el siniestro con id {imagenVm.IdSiniestro}");
+
+            string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagenes", imagenVm.Archivo.FileName);
             rutaPdf = rutaPdf.Replace("\\", "/");
 
-            Imagen imagen = new Imagen()
+            TipoArchivo tipoArchivo = new TipoArchivo()
             {
-                Descripcion = imagenVm.Descripcion,                
-                Siniestro = siniestro,
-                UrlArchivo = rutaPdf
+                Tipo = TiposArchivo.Imagen.ToString()
             };
+
+            Archivo imagen = new Archivo()
+            {
+                Descripcion = imagenVm.Descripcion,
+                Siniestro = siniestro,
+                UrlArchivo = rutaPdf,
+                TipoArchivo = tipoArchivo
+            };
+
+            using (var stream = System.IO.File.Create(rutaPdf))
+                await imagenVm.Archivo.CopyToAsync(stream);
 
             try
             {
-                using (var stream = System.IO.File.Create(rutaPdf))
-                {
-                    await imagenVm.Imagen.CopyToAsync(stream);
-                }
-
-                _contexto.Add(imagen);
-                await _contexto.SaveChangesAsync();
-
-                return new JsonResult(true);
+                await _repositorioImagenes.Guardar(imagen);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new JsonResult(false);
+                return StatusCode(500, "Ha habido un error al crear la imagen");
             }
+
+            return Ok(true);
         }
 
         [HttpDelete("{id}")]
-        public async Task<JsonResult> Eliminar(int id)
+        public async Task<ActionResult> Eliminar(int id)
         {
-            Imagen imagen = await _contexto.Imagenes
-                                           .FirstOrDefaultAsync(imagen => imagen.Id == id);
+            Archivo imagen = await _repositorioImagenes.ObtenerPorId(id);
+
+            if (imagen is null)
+                return NotFound($"No existe la imagen con id {id}");
+
+            if (System.IO.File.Exists(imagen.UrlArchivo))
+            {
+                try
+                {
+                    System.IO.File.Delete(imagen.UrlArchivo);
+                }
+                catch (Exception)
+                {
+                    return StatusCode(500, "Ha habido un error al eliminar el archivo");
+                }
+            }
+
             try
             {
-                if (System.IO.File.Exists(imagen.UrlArchivo))                
-                    System.IO.File.Delete(imagen.UrlArchivo);                
-                
-                _contexto.Remove(imagen);
-
-                await _contexto.SaveChangesAsync();
-                return new JsonResult(true);
+                await _repositorioImagenes.Eliminar(imagen);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new JsonResult(false);
+                return StatusCode(500, "Ha habido un error al eliminar la imagen");
             }
+
+            return Ok(true);
         }
     }
 }
