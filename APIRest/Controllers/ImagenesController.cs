@@ -17,11 +17,13 @@ namespace APIRest.Controllers
     {        
         private RepositorioImagenes _repositorioImagenes;
         private RepositorioSiniestros _repositorioSiniestros;
+        private RepositorioTiposArchivos _repositorioTiposArchivos;
 
-        public ImagenesController(RepositorioImagenes repositorioImagenes, RepositorioSiniestros repositorioSiniestros)
+        public ImagenesController(RepositorioImagenes repositorioImagenes, RepositorioSiniestros repositorioSiniestros, RepositorioTiposArchivos repositorioTiposArchivos)
         {            
             _repositorioImagenes = repositorioImagenes;
             _repositorioSiniestros = repositorioSiniestros;
+            _repositorioTiposArchivos = repositorioTiposArchivos;
         }
 
         [HttpGet("ObtenerPorIdSiniestro/{idSiniestro}")]
@@ -102,11 +104,7 @@ namespace APIRest.Controllers
             string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagenes", imagenVm.Archivo.FileName);
             rutaPdf = rutaPdf.Replace("\\", "/");
 
-            TipoArchivo tipoArchivo = new TipoArchivo()
-            {
-                Tipo = TiposArchivo.Imagen.ToString()
-            };
-
+            TipoArchivo tipoArchivo = await _repositorioTiposArchivos.ObtenerPorTipo(TiposArchivo.Imagen);
             Archivo imagen = new Archivo()
             {
                 Descripcion = imagenVm.Descripcion,
