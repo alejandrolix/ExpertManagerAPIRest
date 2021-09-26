@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 
 namespace APIRest.Enumeraciones
 {
-    public class Enumeraciones
+    public enum TiposArchivo
     {
-        public enum TiposArchivo
-        {
-            Imagen = 1,
-            Documentacion = 2
-        }
+        Imagen = 1,
+        Documentacion = 2
     }
 }

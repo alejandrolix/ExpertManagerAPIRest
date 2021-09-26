@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using APIRest.Repositorios;
 
 namespace APIRest.Controllers
 {    
@@ -15,22 +16,20 @@ namespace APIRest.Controllers
     [ApiController]
     public class DocumentacionesController : ControllerBase
     {
-        private ExpertManagerContext _contexto;        
+        private ExpertManagerContext _contexto;
+        private RepositorioDocumentaciones _repositorioDocumentaciones;
 
-        public DocumentacionesController(ExpertManagerContext contexto)
+        public DocumentacionesController(ExpertManagerContext contexto, RepositorioDocumentaciones repositorioDocumentaciones)
         {
             _contexto = contexto;
+            _repositorioDocumentaciones = repositorioDocumentaciones;
         }
-
-        // GET: DocumentacionesController
+        
         [HttpGet("ObtenerPorIdSiniestro/{idSiniestro}")]
-        public async Task<List<DocumentacionVm>> ObtenerPorIdSiniestro(int idSiniestro)
+        public async Task<List<ArchivoVm>> ObtenerPorIdSiniestro(int idSiniestro)
         {
-            List<Documentacion> documentaciones = await _contexto.Documentaciones
-                                                                 .Where(documentacion => documentacion.SiniestroId == idSiniestro)
-                                                                 .ToListAsync();
-
-            List<DocumentacionVm> documentacionesVm = documentaciones.Select(documentacion => new DocumentacionVm()
+            List<Archivo> documentaciones = await _repositorioDocumentaciones.ObtenerPorIdSiniestro(idSiniestro);
+            List<ArchivoVm> documentacionesVm = documentaciones.Select(documentacion => new ArchivoVm()
             {
                 Id = documentacion.Id,
                 Descripcion = documentacion.Descripcion

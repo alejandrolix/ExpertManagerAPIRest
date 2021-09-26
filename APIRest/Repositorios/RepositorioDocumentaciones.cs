@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using APIRest.Models;
+using APIRest.Enumeraciones;
 
 namespace APIRest.Repositorios
 {
@@ -15,6 +16,17 @@ namespace APIRest.Repositorios
         public RepositorioDocumentaciones(ExpertManagerContext contexto)
         {
             _contexto = contexto;
+        }
+
+        public async Task<List<Archivo>> ObtenerPorIdSiniestro(int id)
+        {
+            int idTipoArchDocumentacion = (int)TiposArchivo.Documentacion;
+            List<Archivo> documentaciones = await _contexto.Archivos
+                                                           .Include(archivo => archivo.Siniestro)
+                                                           .Include(archivo => archivo.TipoArchivo)
+                                                           .Where(archivo => archivo.Siniestro.Id == id && archivo.TipoArchivo.Id == idTipoArchDocumentacion)
+                                                           .ToListAsync();
+            return documentaciones;
         }
     }
 }
