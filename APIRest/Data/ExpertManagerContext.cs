@@ -19,8 +19,7 @@ namespace APIRest.Context
         public DbSet<Permiso> Permisos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Mensaje> Mensajes { get; set; }        
-        public DbSet<Siniestro> Siniestros { get; set; }                
-        public DbSet<Imagen> Imagenes { get; set; }
+        public DbSet<Siniestro> Siniestros { get; set; }                        
         public DbSet<TipoArchivo> TiposArchivo { get; set; }
         public DbSet<Archivo> Archivos { get; set; }
     }
