@@ -38,7 +38,6 @@ namespace APIRest.Models
         public Usuario Perito { get; set; }
         public int? DanioId { get; set; }
         public Danio Danio { get; set; }
-        public List<Documentacion> Documentaciones { get; set; }
     }
 
     public enum SujetoAfectado
