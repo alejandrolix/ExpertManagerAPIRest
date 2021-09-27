@@ -66,7 +66,7 @@ namespace APIRest.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Subir([FromForm] DocumentacionVm documentacionVm)
+        public async Task<ActionResult> Subir([FromForm] ArchivoVm documentacionVm)
         {
             if (documentacionVm.Descripcion is null || documentacionVm.Descripcion.Length == 0)
                 return StatusCode(500, "La descripción está vacía");
