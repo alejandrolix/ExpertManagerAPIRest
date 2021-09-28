@@ -52,37 +52,30 @@ namespace APIRest.Controllers
             if (imagen is null)
                 return NotFound($"No existe la imagen con id de siniestro {id}");
 
-            string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagen.UrlArchivo);
-            rutaPdf = rutaPdf.Replace("\\", "/");
+            string rutaImagen = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagen.UrlArchivo);
+            rutaImagen = rutaImagen.Replace("\\", "/");
 
             var memory = new MemoryStream();
-            using (var stream = new FileStream(rutaPdf, FileMode.Open))            
+            using (var stream = new FileStream(rutaImagen, FileMode.Open))            
                 await stream.CopyToAsync(memory);            
 
             memory.Position = 0;
 
-            string contentType = await ObtenerContentTypeArchivo(id);
+            string contentType = ObtenerContentTypeImagen(rutaImagen);
 
-            return File(memory, contentType, Path.GetFileName(rutaPdf));
+            return File(memory, contentType, Path.GetFileName(rutaImagen));
         }
 
-        [HttpGet("ObtenerContentType/{idImagen}")]
-        public async Task<string> ObtenerContentTypeArchivo(int idImagen)
+        [NonAction]
+        public string ObtenerContentTypeImagen(string rutaImagen)
         {
-            Archivo imagen = await _repositorioImagenes.ObtenerPorId(idImagen);            
-
-            string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagen.UrlArchivo);
-            rutaPdf = rutaPdf.Replace("\\", "/");
-
-            string extension = Path.GetExtension(rutaPdf).Replace(".", "");
-            string contentType;
+            string extension = Path.GetExtension(rutaImagen).Replace(".", "");
+            string contentType = "image/png";
 
             if (extension == ".jpeg")
                 contentType = "image/jpeg";
             else if (extension == "jpg")
-                contentType = "image/jpg";
-            else
-                contentType = "image/png";
+                contentType = "image/jpg";            
 
             return contentType;
         }
