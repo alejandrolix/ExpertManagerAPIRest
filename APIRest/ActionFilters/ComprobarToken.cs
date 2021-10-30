@@ -18,14 +18,14 @@ namespace APIRest
         {
             string urlPeticion = context.HttpContext.Request.Path.Value;
 
-            if (urlPeticion.Contains("api/Usuarios/IniciarSesion"))     // Ignoramos la ruta de iniciar sesión. Es decir, no se comprueba si existe token.
+            if (urlPeticion.Contains("api/Usuarios/IniciarSesion"))     // Ignoramos la ruta de iniciar sesión.
                 return;            
 
             string cabeceraAutorizacion = context.HttpContext.Request.Headers["Authorization"];
             string token = cabeceraAutorizacion?.Split(" ")[1];
 
             if (string.IsNullOrEmpty(token))
-                context.Result = new BadRequestObjectResult("no token");
+                context.Result = new BadRequestObjectResult(null);
         }
     }
 }
