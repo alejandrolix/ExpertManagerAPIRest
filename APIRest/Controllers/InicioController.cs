@@ -33,30 +33,35 @@ namespace APIRest.Controllers
                 return NotFound($"No existe el usuario con id {idUsuario}");                            
 
             int totalNumSiniestros;
-            List<EstadisticaInicioVm> numSiniestrosPorAseguradora;
-            List<EstadisticaInicioVm> siniestrosCerrarPorAseguradora = null;
+            List<EstadisticaInicioVm> numSiniestrosPorAseguradora;            
             bool tienePermisoAdministracion = _repositorioPermisos.TienePermisoAdministracion(usuario.Permiso.Id);
 
             if (tienePermisoAdministracion)
             {
                 totalNumSiniestros = await _repositorioUsuarios.ObtenerNumSiniestrosPorIdUsuario(idUsuario);
                 numSiniestrosPorAseguradora = await _repositorioUsuarios.ObtenerEstadisticasPorIdUsuario(idUsuario);
+                EstadisticasUsuarioVm estadisticasUsuarioVm = new EstadisticasUsuarioVm()
+                {
+                    NumSiniestros = totalNumSiniestros,
+                    NumSiniestrosPorAseguradora = numSiniestrosPorAseguradora
+                };
+
+                return Ok(estadisticasUsuarioVm);
             }
             else
             {
                 totalNumSiniestros = await _repositorioPeritos.ObtenerNumSiniestrosPorIdPerito(idUsuario);
                 numSiniestrosPorAseguradora = await _repositorioPeritos.ObtenerEstadisticasPorIdPerito(idUsuario);
-                siniestrosCerrarPorAseguradora = await _repositorioPeritos.ObtenerSiniestrosCerrarPorIdPerito(idUsuario);
-            }                                               
-                      
-            EstadisticasVm estadisticasVm = new EstadisticasVm()
-            {
-                NumSiniestros = totalNumSiniestros,
-                NumSiniestrosPorAseguradora = numSiniestrosPorAseguradora,
-                NumSiniestrosCerrarPorAseguradora = siniestrosCerrarPorAseguradora
-            };                        
-            
-            return Ok(estadisticasVm);
+                List<EstadisticaInicioVm> numSiniestrosCerrarPorAseguradora = await _repositorioPeritos.ObtenerSiniestrosCerrarPorIdPerito(idUsuario);
+                EstadisticasPeritoVm estadisticasPeritoVm = new EstadisticasPeritoVm()
+                {
+                    NumSiniestros = totalNumSiniestros,
+                    NumSiniestrosPorAseguradora = numSiniestrosPorAseguradora,
+                    NumSiniestrosCerrarPorAseguradora = numSiniestrosCerrarPorAseguradora
+                };
+
+                return Ok(estadisticasPeritoVm);
+            }                                                                                                                     
         }
     }
 }
