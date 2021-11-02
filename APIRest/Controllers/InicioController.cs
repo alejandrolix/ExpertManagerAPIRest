@@ -33,7 +33,7 @@ namespace APIRest.Controllers
                 return NotFound($"No existe el usuario con id {idUsuario}");                            
 
             int totalNumSiniestros;
-            List<EstadisticaInicioVm> numSiniestrosPorAseguradora;            
+            List<DetalleEstadisticaVm> numSiniestrosPorAseguradora;            
             bool tienePermisoAdministracion = _repositorioPermisos.TienePermisoAdministracion(usuario.Permiso.Id);
 
             if (tienePermisoAdministracion)
@@ -52,7 +52,7 @@ namespace APIRest.Controllers
             {
                 totalNumSiniestros = await _repositorioPeritos.ObtenerNumSiniestrosPorIdPerito(idUsuario);
                 numSiniestrosPorAseguradora = await _repositorioPeritos.ObtenerEstadisticasPorIdPerito(idUsuario);
-                List<EstadisticaInicioVm> numSiniestrosCerrarPorAseguradora = await _repositorioPeritos.ObtenerSiniestrosCerrarPorIdPerito(idUsuario);
+                List<DetalleEstadisticaVm> numSiniestrosCerrarPorAseguradora = await _repositorioPeritos.ObtenerSiniestrosCerrarPorIdPerito(idUsuario);
                 EstadisticasPeritoVm estadisticasPeritoVm = new EstadisticasPeritoVm()
                 {
                     NumSiniestros = totalNumSiniestros,

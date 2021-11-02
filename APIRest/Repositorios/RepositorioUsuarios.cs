@@ -56,9 +56,9 @@ namespace APIRest.Repositorios
             return numSiniestros;
         }
 
-        public async Task<List<EstadisticaInicioVm>> ObtenerEstadisticasPorIdUsuario(int id)
+        public async Task<List<DetalleEstadisticaVm>> ObtenerEstadisticasPorIdUsuario(int id)
         {
-            List<EstadisticaInicioVm> estadisticasInicio = await _contexto.Siniestros
+            List<DetalleEstadisticaVm> estadisticasInicio = await _contexto.Siniestros
                                                                           .Include(siniestro => siniestro.UsuarioCreado)                                                                        
                                                                           .Include(siniestro => siniestro.Aseguradora)
                                                                           .Where(siniestro => siniestro.UsuarioCreado.Id == id)
@@ -66,7 +66,7 @@ namespace APIRest.Repositorios
                                                                               siniestro => siniestro.Aseguradora.Nombre,
                                                                               siniestro => siniestro.Id,
                                                                           (key, g) => new { Aseguradora = key, NumSiniestros = g.Count() })
-                                                                          .Select(obj => new EstadisticaInicioVm()
+                                                                          .Select(obj => new DetalleEstadisticaVm()
                                                                           {
                                                                               NombreAseguradora = obj.Aseguradora,
                                                                               NumSiniestros = obj.NumSiniestros

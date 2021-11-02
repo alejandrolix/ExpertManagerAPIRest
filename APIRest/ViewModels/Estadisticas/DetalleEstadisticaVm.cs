@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace APIRest.ViewModels
 {
-    public class EstadisticaInicioVm
+    public class DetalleEstadisticaVm
     {
         public string NombreAseguradora { get; set; }
         public int NumSiniestros { get; set; }

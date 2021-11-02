@@ -7,6 +7,6 @@ namespace APIRest.ViewModels
 {
     public class EstadisticasPeritoVm : EstadisticasUsuarioVm
     {        
-        public List<EstadisticaInicioVm> NumSiniestrosCerrarPorAseguradora { get; set; }
+        public List<DetalleEstadisticaVm> NumSiniestrosCerrarPorAseguradora { get; set; }
     }
 }

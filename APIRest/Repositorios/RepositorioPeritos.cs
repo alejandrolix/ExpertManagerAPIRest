@@ -49,9 +49,9 @@ namespace APIRest.Repositorios
             return numSiniestros;
         }
 
-        public async Task<List<EstadisticaInicioVm>> ObtenerEstadisticasPorIdPerito(int id)
+        public async Task<List<DetalleEstadisticaVm>> ObtenerEstadisticasPorIdPerito(int id)
         {
-            List<EstadisticaInicioVm> estadisticasInicio = await _contexto.Siniestros
+            List<DetalleEstadisticaVm> estadisticasInicio = await _contexto.Siniestros
                                                                           .Include(siniestro => siniestro.Perito)
                                                                           .Include(siniestro => siniestro.Aseguradora)
                                                                           .Where(siniestro => siniestro.Perito.Id == id)
@@ -59,7 +59,7 @@ namespace APIRest.Repositorios
                                                                               siniestro => siniestro.Aseguradora.Nombre,
                                                                               siniestro => siniestro.Id,
                                                                           (key, g) => new { Aseguradora = key, NumSiniestros = g.Count() })
-                                                                          .Select(obj => new EstadisticaInicioVm()
+                                                                          .Select(obj => new DetalleEstadisticaVm()
                                                                           {
                                                                               NombreAseguradora = obj.Aseguradora,
                                                                               NumSiniestros = obj.NumSiniestros
@@ -68,10 +68,10 @@ namespace APIRest.Repositorios
             return estadisticasInicio;
         }
 
-        public async Task<List<EstadisticaInicioVm>> ObtenerSiniestrosCerrarPorIdPerito(int id)
+        public async Task<List<DetalleEstadisticaVm>> ObtenerSiniestrosCerrarPorIdPerito(int id)
         {
             int idEstadoValorado = (int)TipoEstado.Valorado;
-            List<EstadisticaInicioVm> numSiniestrosCerrar = await _contexto.Siniestros
+            List<DetalleEstadisticaVm> numSiniestrosCerrar = await _contexto.Siniestros
                                                                            .Include(siniestro => siniestro.Perito)
                                                                            .Include(siniestro => siniestro.Estado)
                                                                            .Where(siniestro => siniestro.Perito.Id == id && siniestro.Estado.Id == idEstadoValorado)
@@ -79,7 +79,7 @@ namespace APIRest.Repositorios
                                                                                siniestro => siniestro.Aseguradora.Nombre,
                                                                                siniestro => siniestro.Id,
                                                                            (key, g) => new { Aseguradora = key, NumSiniestros = g.Count() })
-                                                                           .Select(obj => new EstadisticaInicioVm()
+                                                                           .Select(obj => new DetalleEstadisticaVm()
                                                                            {
                                                                                NombreAseguradora = obj.Aseguradora,
                                                                                NumSiniestros = obj.NumSiniestros
