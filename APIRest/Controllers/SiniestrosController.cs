@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIRest.Repositorios;
+using APIRest.Excepciones;
 
 namespace APIRest.Controllers
 {    
@@ -19,9 +20,10 @@ namespace APIRest.Controllers
         private RepositorioUsuarios _repositorioUsuarios;
         private RepositorioPeritos _repositorioPeritos;
         private RepositorioDanios _repositorioDanios;
+        private RepositorioPermisos _repositorioPermisos;
 
-        public SiniestrosController(RepositorioSiniestros repositorioSiniestros, RepositorioEstados repositorioEstados, RepositorioAseguradoras repositorioAseguradoras,
-                                    RepositorioUsuarios repositorioUsuarios, RepositorioPeritos repositorioPeritos, RepositorioDanios repositorioDanios)
+        public SiniestrosController(RepositorioSiniestros repositorioSiniestros, RepositorioEstados repositorioEstados, RepositorioAseguradoras repositorioAseguradoras, RepositorioUsuarios repositorioUsuarios,
+                                    RepositorioPeritos repositorioPeritos, RepositorioDanios repositorioDanios, RepositorioPermisos repositorioPermisos)
         {
             _repositorioSiniestros = repositorioSiniestros;
             _repositorioEstados = repositorioEstados;
@@ -29,6 +31,7 @@ namespace APIRest.Controllers
             _repositorioUsuarios = repositorioUsuarios;
             _repositorioPeritos = repositorioPeritos;
             _repositorioDanios = repositorioDanios;
+            _repositorioPermisos = repositorioPermisos;
         }
 
         [HttpGet]
@@ -133,17 +136,23 @@ namespace APIRest.Controllers
             .ToList();                            
 
             return Ok(siniestrosVms);
-        }
+        }                
 
-        [HttpPut("Cerrar/{id}")]
-        public async Task<ActionResult> Cerrar(int id)
+        [HttpPut("Cerrar")]
+        public async Task<ActionResult> Cerrar(CerrarSiniestroVm cerrarSiniestroVm)
         {
-            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);
-            Estado estadoCerrado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.Cerrado);                                   
+            try
+            {
+                await SePuedeCerrar(cerrarSiniestroVm);
+            }
+            catch (CodigoErrorHttpException ex)
+            {
+                return StatusCode(ex.CodigoErrorHttp, ex.Message);
+            }
 
-            if (siniestro is null)                            
-                return NotFound($"No existe el siniestro con id {id}");                        
-                
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(cerrarSiniestroVm.IdSiniestro);
+            Estado estadoCerrado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.Cerrado);            
+
             try
             {
                 siniestro.Estado = estadoCerrado;
@@ -151,10 +160,46 @@ namespace APIRest.Controllers
             }
             catch (Exception)
             {                
-                return StatusCode(500, $"No se ha podido cerrar el siniestro con id {id}");
+                return StatusCode(500, $"No se ha podido cerrar el siniestro con id {cerrarSiniestroVm.IdSiniestro}");
             }
             
             return Ok(true);            
+        }
+
+        private async Task<bool> SePuedeCerrar(CerrarSiniestroVm cerrarSiniestroVm)
+        {
+            if (cerrarSiniestroVm.IdPermiso <= 0)
+                throw new CodigoErrorHttpException("El permiso no es correcto", 500);
+
+            bool sePuedeCerrar = false;
+            bool esPeritoResponsable = _repositorioPermisos.EsPeritoResponsable(cerrarSiniestroVm.IdPermiso);
+
+            if (esPeritoResponsable)
+                sePuedeCerrar = true;
+            else
+            {
+                bool esPeritoNoResponsable = _repositorioPermisos.EsPeritoNoResponsable(cerrarSiniestroVm.IdPermiso);
+
+                if (!esPeritoNoResponsable)
+                    throw new CodigoErrorHttpException("El usuario tiene permiso de administración", 500);
+
+                Usuario perito = await _repositorioPeritos.ObtenerPorId(cerrarSiniestroVm.IdUsuario);
+
+                if (perito is null)
+                    throw new CodigoErrorHttpException($"No existe el perito con id {perito.Id}", 404);
+
+                Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(cerrarSiniestroVm.IdSiniestro);
+
+                if (siniestro is null)
+                    throw new CodigoErrorHttpException($"No existe el siniestro con id {siniestro.Id}", 404);
+
+                if (siniestro.ImpValoracionDanios < perito.ImpRepacionDanios)
+                    sePuedeCerrar = true;
+                else
+                    throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el importe de valoración de daños supera el establecido al perito", 500);
+            }
+
+            return sePuedeCerrar;
         }
 
         [HttpGet("{id}")]
