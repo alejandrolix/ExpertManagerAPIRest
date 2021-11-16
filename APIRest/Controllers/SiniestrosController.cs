@@ -171,6 +171,12 @@ namespace APIRest.Controllers
             if (cerrarSiniestroVm.IdPermiso <= 0)
                 throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el permiso no es correcto", 500);
 
+            if (cerrarSiniestroVm.IdSiniestro <= 0)
+                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el siniestro no es correcto", 500);
+
+            if (cerrarSiniestroVm.IdUsuario <= 0)
+                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el usuario no es correcto", 500);
+
             bool sePuedeCerrar = false;
             bool esPeritoResponsable = _repositorioPermisos.EsPeritoResponsable(cerrarSiniestroVm.IdPermiso);
 
