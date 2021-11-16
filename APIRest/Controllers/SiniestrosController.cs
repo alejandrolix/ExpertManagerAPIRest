@@ -177,6 +177,11 @@ namespace APIRest.Controllers
             if (cerrarSiniestroVm.IdUsuario <= 0)
                 throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el usuario no es correcto", 500);
 
+            Permiso permiso = await _repositorioPermisos.ObtenerPorId(cerrarSiniestroVm.IdPermiso);
+
+            if (permiso is null)
+                throw new CodigoErrorHttpException($"No existe el permiso con id {cerrarSiniestroVm.IdPermiso}", 404);
+
             bool sePuedeCerrar = false;
             bool esPeritoResponsable = _repositorioPermisos.EsPeritoResponsable(cerrarSiniestroVm.IdPermiso);
 
