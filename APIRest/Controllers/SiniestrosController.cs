@@ -169,7 +169,7 @@ namespace APIRest.Controllers
         private async Task<bool> SePuedeCerrar(CerrarSiniestroVm cerrarSiniestroVm)
         {
             if (cerrarSiniestroVm.IdPermiso <= 0)
-                throw new CodigoErrorHttpException("El permiso no es correcto", 500);
+                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el permiso no es correcto", 500);
 
             bool sePuedeCerrar = false;
             bool esPeritoResponsable = _repositorioPermisos.EsPeritoResponsable(cerrarSiniestroVm.IdPermiso);
@@ -181,7 +181,7 @@ namespace APIRest.Controllers
                 bool esPeritoNoResponsable = _repositorioPermisos.EsPeritoNoResponsable(cerrarSiniestroVm.IdPermiso);
 
                 if (!esPeritoNoResponsable)
-                    throw new CodigoErrorHttpException("El usuario tiene permiso de administración", 500);
+                    throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el usuario tiene permiso de administración", 500);
 
                 Usuario perito = await _repositorioPeritos.ObtenerPorId(cerrarSiniestroVm.IdUsuario);
 
