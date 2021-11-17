@@ -168,15 +168,6 @@ namespace APIRest.Controllers
 
         private async Task<bool> SePuedeCerrar(CerrarSiniestroVm cerrarSiniestroVm)
         {
-            if (cerrarSiniestroVm.IdPermiso <= 0)
-                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el permiso no es correcto", 500);
-
-            if (cerrarSiniestroVm.IdSiniestro <= 0)
-                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el siniestro no es correcto", 500);
-
-            if (cerrarSiniestroVm.IdUsuario <= 0)
-                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el usuario no es correcto", 500);
-
             Permiso permiso = await _repositorioPermisos.ObtenerPorId(cerrarSiniestroVm.IdPermiso);
 
             if (permiso is null)
@@ -186,31 +177,42 @@ namespace APIRest.Controllers
             bool esPeritoResponsable = _repositorioPermisos.EsPeritoResponsable(cerrarSiniestroVm.IdPermiso);
 
             if (esPeritoResponsable)
-                sePuedeCerrar = true;
-            else
             {
-                bool esPeritoNoResponsable = _repositorioPermisos.EsPeritoNoResponsable(cerrarSiniestroVm.IdPermiso);
-
-                if (!esPeritoNoResponsable)
-                    throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el usuario tiene permiso de administración", 500);
-
-                Usuario perito = await _repositorioPeritos.ObtenerPorId(cerrarSiniestroVm.IdUsuario);
-
-                if (perito is null)
-                    throw new CodigoErrorHttpException($"No existe el perito con id {perito.Id}", 404);
-
-                Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(cerrarSiniestroVm.IdSiniestro);
-
-                if (siniestro is null)
-                    throw new CodigoErrorHttpException($"No existe el siniestro con id {siniestro.Id}", 404);
-
-                if (siniestro.ImpValoracionDanios < perito.ImpRepacionDanios)
-                    sePuedeCerrar = true;
-                else
-                    throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el importe de valoración de daños supera el establecido al perito", 500);
+                sePuedeCerrar = true;
+                return sePuedeCerrar;
             }
+            
+            bool esPeritoNoResponsable = _repositorioPermisos.EsPeritoNoResponsable(cerrarSiniestroVm.IdPermiso);
+
+            if (!esPeritoNoResponsable)
+                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el usuario tiene permiso de administración", 500);
+
+            bool esImpValoracionDaniosSiniestroMayorQueDelPerito = await EsImpValoracionDaniosSiniestroMayorQueDelPerito(cerrarSiniestroVm.IdUsuario, cerrarSiniestroVm.IdSiniestro);
+
+            if (esImpValoracionDaniosSiniestroMayorQueDelPerito)                            
+                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el importe de valoración de daños supera el establecido al perito", 500);
+            else
+                sePuedeCerrar = true;
 
             return sePuedeCerrar;
+        }
+        
+        private async Task<bool> EsImpValoracionDaniosSiniestroMayorQueDelPerito(int idPerito, int idSiniestro)
+        {
+            Usuario perito = await _repositorioPeritos.ObtenerPorId(idPerito);
+
+            if (perito is null)
+                throw new CodigoErrorHttpException($"No existe el perito con id {idPerito}", 404);
+
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(idSiniestro);
+
+            if (siniestro is null)
+                throw new CodigoErrorHttpException($"No existe el siniestro con id {idSiniestro}", 404);
+
+            if (siniestro.ImpValoracionDanios > perito.ImpRepacionDanios)
+                return true;
+
+            return false;
         }
 
         [HttpGet("{id}")]
