@@ -185,9 +185,9 @@ namespace APIRest.Controllers
             bool esPeritoNoResponsable = _repositorioPermisos.EsPeritoNoResponsable(cerrarSiniestroVm.IdPermiso);
 
             if (!esPeritoNoResponsable)
-                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el usuario tiene permiso de administración", 500);
+                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el usuario tiene permiso de administración", 500);            
 
-            bool esImpValoracionDaniosSiniestroMayorQueDelPerito = await EsImpValoracionDaniosSiniestroMayorQueDelPerito(cerrarSiniestroVm.IdUsuario, cerrarSiniestroVm.IdSiniestro);
+            bool esImpValoracionDaniosSiniestroMayorQueDelPerito = await EsImpValoracionDaniosSiniestroMayorQueDelPerito(cerrarSiniestroVm.IdPerito, cerrarSiniestroVm.IdSiniestro);
 
             if (esImpValoracionDaniosSiniestroMayorQueDelPerito)                            
                 throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el importe de valoración de daños supera el establecido al perito", 500);
@@ -196,8 +196,9 @@ namespace APIRest.Controllers
 
             return sePuedeCerrar;
         }
-        
-        private async Task<bool> EsImpValoracionDaniosSiniestroMayorQueDelPerito(int idPerito, int idSiniestro)
+
+        [HttpGet("EsImpValoracionDaniosSiniestroMayorQuePerito")]
+        public async Task<bool> EsImpValoracionDaniosSiniestroMayorQueDelPerito(int idPerito, int idSiniestro)
         {
             Usuario perito = await _repositorioPeritos.ObtenerPorId(idPerito);
 

@@ -16,12 +16,14 @@ namespace APIRest.Controllers
         private RepositorioMensajes _repositorioMensajes;
         private RepositorioUsuarios _repositorioUsuarios;
         private RepositorioSiniestros _repositorioSiniestros;
+        private RepositorioPeritos _repositorioPeritos;
 
-        public MensajesController(RepositorioMensajes repositorioMensajes, RepositorioUsuarios repositorioUsuarios, RepositorioSiniestros repositorioSiniestros)
+        public MensajesController(RepositorioMensajes repositorioMensajes, RepositorioUsuarios repositorioUsuarios, RepositorioSiniestros repositorioSiniestros, RepositorioPeritos repositorioPeritos)
         {
             _repositorioMensajes = repositorioMensajes;
             _repositorioUsuarios = repositorioUsuarios;
             _repositorioSiniestros = repositorioSiniestros;
+            _repositorioPeritos = repositorioPeritos;
         }
 
         [HttpGet("{idSiniestro}")]
@@ -76,17 +78,17 @@ namespace APIRest.Controllers
         }
 
         [HttpPost("RevisarCierre")]
-        public async Task<ActionResult> CrearMensajeRevisarCierre(MensajeVm mensajeVm)
-        {
-            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(mensajeVm.IdUsuarioCreado);
+        public async Task<ActionResult> CrearMensajeRevisarCierre(CrearMensajeRevisarCierreVm crearMensajeRevisarCierreVm)
+        {             
+            Usuario usuario = await _repositorioPeritos.ObtenerPorId(crearMensajeRevisarCierreVm.IdPerito);                        
 
             if (usuario is null)
-                return NotFound($"No existe el usuario con id {mensajeVm.IdUsuarioCreado}");
+                return NotFound($"No existe el usuario con id {crearMensajeRevisarCierreVm.IdPerito}");
 
-            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(mensajeVm.IdSiniestro);
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(crearMensajeRevisarCierreVm.IdSiniestro);
 
             if (siniestro is null)
-                return NotFound($"No existe el siniestro con id {mensajeVm.IdSiniestro}");                                    
+                return NotFound($"No existe el siniestro con id {crearMensajeRevisarCierreVm.IdSiniestro}");                                    
 
             Mensaje mensaje = new Mensaje()
             {
