@@ -1,10 +1,12 @@
 ﻿using APIRest.Context;
+using APIRest.Excepciones;
 using APIRest.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace APIRest.Repositorios
 {
@@ -27,7 +29,10 @@ namespace APIRest.Repositorios
         public async Task<Permiso> ObtenerPorId(int id)
         {
             Permiso permiso = await _contexto.Permisos
-                                             .FirstOrDefaultAsync(permiso => permiso.Id == id);
+                                             .FirstOrDefaultAsync(permiso => permiso.Id == id);            
+            if (permiso is null)
+                throw new CodigoErrorHttpException($"No existe el permiso con id {id}", HttpStatusCode.NotFound);
+
             return permiso;
         }
 
