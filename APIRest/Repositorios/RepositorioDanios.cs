@@ -1,10 +1,12 @@
 ﻿using APIRest.Context;
+using APIRest.Excepciones;
 using APIRest.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace APIRest.Repositorios
 {
@@ -22,6 +24,9 @@ namespace APIRest.Repositorios
             Danio danio = await _contexto.Danios
                                          .Where(danio => danio.Id == id)
                                          .FirstOrDefaultAsync();
+            if (danio is null)
+                throw new CodigoErrorHttpException($"No existe el daño con id {id}", HttpStatusCode.NotFound);
+
             return danio;
         }
 
