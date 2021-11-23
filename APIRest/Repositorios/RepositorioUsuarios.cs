@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using APIRest.ViewModels;
+using APIRest.Excepciones;
+using System.Net;
 
 namespace APIRest.Repositorios
 {
@@ -18,12 +20,15 @@ namespace APIRest.Repositorios
             _contexto = contexto;
         }
 
-        public async Task<Usuario> ObtenerPorId(int id)
+        public virtual async Task<Usuario> ObtenerPorId(int id)
         {            
             Usuario usuario = await _contexto.Usuarios
                                              .Include(usuario => usuario.Permiso)
                                              .Where(usuario => usuario.Id == id)
                                              .FirstOrDefaultAsync();
+            if (usuario is null)
+                throw new CodigoErrorHttpException($"No existe el usuario con id {id}", HttpStatusCode.NotFound);
+
             return usuario;
         }        
 

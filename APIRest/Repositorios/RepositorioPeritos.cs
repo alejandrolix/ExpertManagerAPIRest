@@ -1,4 +1,5 @@
 ﻿using APIRest.Context;
+using APIRest.Excepciones;
 using APIRest.Models;
 using APIRest.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace APIRest.Repositorios
 {
@@ -16,6 +18,18 @@ namespace APIRest.Repositorios
         public RepositorioPeritos(ExpertManagerContext contexto) : base(contexto)
         {
             _contexto = contexto;
+        }
+
+        public override async Task<Usuario> ObtenerPorId(int id)
+        {
+            Usuario perito = await _contexto.Usuarios
+                                             .Include(usuario => usuario.Permiso)
+                                             .Where(usuario => usuario.Id == id)
+                                             .FirstOrDefaultAsync();            
+            if (perito is null)
+                throw new CodigoErrorHttpException($"No existe el perito con id {id}", HttpStatusCode.NotFound);
+
+            return perito;
         }
 
         public override async Task<List<Usuario>> ObtenerTodos()
