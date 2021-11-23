@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using APIRest.Models;
+using APIRest.Excepciones;
+using System.Net;
 
 namespace APIRest.Repositorios
 {
@@ -22,6 +24,9 @@ namespace APIRest.Repositorios
             Aseguradora aseguradora = await _contexto.Aseguradoras
                                                      .Where(aseguradora => aseguradora.Id == id)
                                                      .FirstOrDefaultAsync();
+            if (aseguradora is null)
+                throw new CodigoErrorHttpException($"No existe la aseguradora con id {id}", HttpStatusCode.NotFound);
+
             return aseguradora;
         }
 
