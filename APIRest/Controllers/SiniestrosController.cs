@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using APIRest.Repositorios;
 using APIRest.Excepciones;
+using System.Net;
 
 namespace APIRest.Controllers
 {    
@@ -161,30 +162,24 @@ namespace APIRest.Controllers
 
         private async Task<bool> SePuedeCerrar(CerrarSiniestroVm cerrarSiniestroVm)
         {
-            Permiso permiso = await _repositorioPermisos.ObtenerPorId(cerrarSiniestroVm.IdPermiso);            
-
-            bool sePuedeCerrar = false;
+            await _repositorioPermisos.ObtenerPorId(cerrarSiniestroVm.IdPermiso);            
+            
             bool esPeritoResponsable = _repositorioPermisos.EsPeritoResponsable(cerrarSiniestroVm.IdPermiso);
 
-            if (esPeritoResponsable)
-            {
-                sePuedeCerrar = true;
-                return sePuedeCerrar;
-            }
+            if (esPeritoResponsable)                            
+                return true;            
             
             bool esPeritoNoResponsable = _repositorioPermisos.EsPeritoNoResponsable(cerrarSiniestroVm.IdPermiso);
 
             if (!esPeritoNoResponsable)
-                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el usuario tiene permiso de administración", System.Net.HttpStatusCode.InternalServerError);            
+                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el usuario tiene permiso de administración", HttpStatusCode.InternalServerError);            
 
             bool esImpValoracionDaniosSiniestroMayorQueDelPerito = await EsImpValoracionDaniosSiniestroMayorQueDelPerito(cerrarSiniestroVm.IdPerito, cerrarSiniestroVm.IdSiniestro);
 
             if (esImpValoracionDaniosSiniestroMayorQueDelPerito)                            
-                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el importe de valoración de daños supera el establecido al perito", System.Net.HttpStatusCode.InternalServerError);
-            else
-                sePuedeCerrar = true;
-
-            return sePuedeCerrar;
+                throw new CodigoErrorHttpException("No se puede cerrar el siniestro porque el importe de valoración de daños supera el establecido al perito", HttpStatusCode.InternalServerError);
+            else                
+                return true;            
         }
 
         [HttpGet("EsImpValoracionDaniosSiniestroMayorQuePerito")]
