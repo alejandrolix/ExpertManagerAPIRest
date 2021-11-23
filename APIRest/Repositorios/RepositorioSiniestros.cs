@@ -1,11 +1,12 @@
 ﻿using APIRest.Context;
+using APIRest.Excepciones;
 using APIRest.Models;
-using APIRest.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace APIRest.Repositorios
 {
@@ -27,6 +28,9 @@ namespace APIRest.Repositorios
                                                  .Include(siniestro => siniestro.Perito)
                                                  .Include(siniestro => siniestro.Danio)
                                                  .FirstOrDefaultAsync(siniestro => siniestro.Id == id);
+            if (siniestro is null)
+                throw new CodigoErrorHttpException($"No existe el siniestro con id {id}", HttpStatusCode.NotFound);
+
             return siniestro;
         }
 
