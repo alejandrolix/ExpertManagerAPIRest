@@ -185,11 +185,7 @@ namespace APIRest.Controllers
         [HttpGet("EsImpValoracionDaniosSiniestroMayorQuePerito")]
         public async Task<bool> EsImpValoracionDaniosSiniestroMayorQueDelPerito(int idPerito, int idSiniestro)
         {
-            Usuario perito = await _repositorioPeritos.ObtenerPorId(idPerito);
-
-            if (perito is null)
-                throw new CodigoErrorHttpException($"No existe el perito con id {idPerito}", System.Net.HttpStatusCode.NotFound);
-
+            Usuario perito = await _repositorioPeritos.ObtenerPorId(idPerito);            
             Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(idSiniestro);
 
             if (siniestro is null)
