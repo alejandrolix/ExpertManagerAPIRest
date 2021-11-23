@@ -187,10 +187,7 @@ namespace APIRest.Controllers
         {
             Usuario perito = await _repositorioPeritos.ObtenerPorId(idPerito);            
             Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(idSiniestro);
-
-            if (siniestro is null)
-                throw new CodigoErrorHttpException($"No existe el siniestro con id {idSiniestro}", System.Net.HttpStatusCode.NotFound);
-
+            
             if (siniestro.ImpValoracionDanios > perito.ImpRepacionDanios)
                 return true;
 
