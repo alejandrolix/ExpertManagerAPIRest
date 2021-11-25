@@ -115,13 +115,9 @@ namespace APIRest.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Eliminar(int id)
         {
-            Archivo imagen = await _repositorioImagenes.ObtenerPorId(id);
+            Archivo imagen = await _repositorioImagenes.ObtenerPorId(id);            
 
-            if (imagen is null)
-                return NotFound($"No existe la imagen con id {id}");
-
-            if (System.IO.File.Exists(imagen.UrlArchivo))
-            {
+            if (System.IO.File.Exists(imagen.UrlArchivo))            
                 try
                 {
                     System.IO.File.Delete(imagen.UrlArchivo);
@@ -129,8 +125,7 @@ namespace APIRest.Controllers
                 catch (Exception)
                 {
                     return StatusCode(500, "Ha habido un error al eliminar el archivo");
-                }
-            }
+                }            
 
             try
             {
