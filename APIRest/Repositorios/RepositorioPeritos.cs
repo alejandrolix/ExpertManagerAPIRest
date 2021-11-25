@@ -39,6 +39,9 @@ namespace APIRest.Repositorios
                                                    .Include(usuario => usuario.Permiso)
                                                    .Where(usuario => usuario.Permiso.Id != idPermisoAdministracion)
                                                    .ToListAsync();
+            if (peritos is null)
+                throw new CodigoErrorHttpException("No existen peritos", HttpStatusCode.NotFound);
+
             return peritos;
         }
 
