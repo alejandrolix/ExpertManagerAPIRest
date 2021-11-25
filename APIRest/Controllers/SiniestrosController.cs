@@ -320,11 +320,8 @@ namespace APIRest.Controllers
 
             Usuario perito = await _repositorioPeritos.ObtenerPorId(siniestroVm.IdPerito);            
             Danio danio = await _repositorioDanios.ObtenerPorId(siniestroVm.IdDanio);            
-            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);
-
-            if (siniestro is null)
-                return NotFound($"No existe el siniestro con id {id}");
-
+            
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);            
             siniestro.Estado = estado;
             siniestro.Aseguradora = aseguradora;
             siniestro.Direccion = siniestroVm.Direccion;
