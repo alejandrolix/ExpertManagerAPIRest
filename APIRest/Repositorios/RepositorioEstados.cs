@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using APIRest.Excepciones;
+using System.Net;
 
 namespace APIRest.Repositorios
 {
@@ -39,6 +41,9 @@ namespace APIRest.Repositorios
             Estado estado = await _contexto.Estados
                                            .Where(estado => estado.Id == id)
                                            .FirstOrDefaultAsync();
+            if (estado is null)
+                throw new CodigoErrorHttpException($"No existe el estado con id {id}", HttpStatusCode.NotFound);
+
             return estado;
         }
     }
