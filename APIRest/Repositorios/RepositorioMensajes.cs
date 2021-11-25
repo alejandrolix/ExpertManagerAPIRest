@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using APIRest.Models;
+using APIRest.Excepciones;
+using System.Net;
 
 namespace APIRest.Repositorios
 {
@@ -24,6 +26,9 @@ namespace APIRest.Repositorios
                                                     .Include(mensaje => mensaje.Usuario)
                                                     .Where(mensaje => mensaje.Siniestro.Id == id)
                                                     .ToListAsync();
+            if (mensajes is null)
+                throw new CodigoErrorHttpException("No existen mensajes", HttpStatusCode.NotFound);
+
             return mensajes;
         }
 
