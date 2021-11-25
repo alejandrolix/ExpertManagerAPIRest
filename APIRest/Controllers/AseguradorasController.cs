@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using APIRest.Repositorios;
 
@@ -22,10 +21,7 @@ namespace APIRest.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            List<Aseguradora> aseguradoras = await _repositorioAseguradoras.ObtenerTodas();
-
-            if (aseguradoras is null || aseguradoras.Count == 0)                
-                return StatusCode(500, "No existen aseguradoras");                                    
+            List<Aseguradora> aseguradoras = await _repositorioAseguradoras.ObtenerTodas();                                            
 
             return Ok(aseguradoras);
         }        
