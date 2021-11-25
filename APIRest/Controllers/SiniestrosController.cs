@@ -319,11 +319,7 @@ namespace APIRest.Controllers
             SujetoAfectado sujetoAfectado = (SujetoAfectado)siniestroVm.IdSujetoAfectado;
 
             Usuario perito = await _repositorioPeritos.ObtenerPorId(siniestroVm.IdPerito);            
-            Danio danio = await _repositorioDanios.ObtenerPorId(siniestroVm.IdDanio);
-
-            if (danio is null)
-                return NotFound($"No existe el daño con id {siniestroVm.IdDanio}");
-
+            Danio danio = await _repositorioDanios.ObtenerPorId(siniestroVm.IdDanio);            
             Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);
 
             if (siniestro is null)
