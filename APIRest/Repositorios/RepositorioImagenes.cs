@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using APIRest.Models;
 using APIRest.Enumeraciones;
+using APIRest.Excepciones;
+using System.Net;
 
 namespace APIRest.Repositorios
 {
@@ -26,6 +28,9 @@ namespace APIRest.Repositorios
                                                     .Include(archivo => archivo.TipoArchivo)
                                                     .Where(archivo => archivo.Siniestro.Id == id && archivo.TipoArchivo.Id == idTipoArchImagen)
                                                     .ToListAsync();
+            if (imagenes is null)
+                throw new CodigoErrorHttpException($"No existen imágenes con id de siniestro {id}", HttpStatusCode.NotFound);
+
             return imagenes;
         }
 
