@@ -36,6 +36,10 @@ namespace APIRest.Repositorios
         {
             Mensaje mensaje = await _contexto.Mensajes
                                              .FirstOrDefaultAsync(mensaje => mensaje.Id == id);
+
+            if (mensaje is null)
+                throw new CodigoErrorHttpException($"No existe el mensaje con id {id}", HttpStatusCode.NotFound);
+
             return mensaje;
         }
 
