@@ -70,15 +70,8 @@ namespace APIRest.Controllers
         [HttpPost("RevisarCierre")]
         public async Task<ActionResult> CrearMensajeRevisarCierre(CrearMensajeRevisarCierreVm crearMensajeRevisarCierreVm)
         {             
-            Usuario usuario = await _repositorioPeritos.ObtenerPorId(crearMensajeRevisarCierreVm.IdPerito);                        
-
-            if (usuario is null)
-                return NotFound($"No existe el usuario con id {crearMensajeRevisarCierreVm.IdPerito}");
-
-            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(crearMensajeRevisarCierreVm.IdSiniestro);
-
-            if (siniestro is null)
-                return NotFound($"No existe el siniestro con id {crearMensajeRevisarCierreVm.IdSiniestro}");                                    
+            Usuario usuario = await _repositorioPeritos.ObtenerPorId(crearMensajeRevisarCierreVm.IdPerito);                                    
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(crearMensajeRevisarCierreVm.IdSiniestro);            
 
             Mensaje mensaje = new Mensaje()
             {
