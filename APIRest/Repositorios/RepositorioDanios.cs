@@ -34,6 +34,9 @@ namespace APIRest.Repositorios
         {
             List<Danio> danios = await _contexto.Danios
                                                 .ToListAsync();
+            if (danios is null)
+                throw new CodigoErrorHttpException("No existen daños", HttpStatusCode.NotFound);
+
             return danios;
         }
     }

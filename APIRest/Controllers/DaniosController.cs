@@ -1,7 +1,6 @@
 ﻿using APIRest.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using APIRest.Repositorios;
 
@@ -21,10 +20,7 @@ namespace APIRest.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            List<Danio> danios = await _repositorioDanios.ObtenerTodos();
-
-            if (danios is null || danios.Count == 0)
-                return StatusCode(500, "No existen daños");
+            List<Danio> danios = await _repositorioDanios.ObtenerTodos();            
 
             return Ok(danios);
         }        
