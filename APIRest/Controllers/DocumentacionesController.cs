@@ -100,13 +100,9 @@ namespace APIRest.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Eliminar(int id)
         {
-            Archivo documentacion = await _repositorioDocumentaciones.ObtenerPorId(id);
+            Archivo documentacion = await _repositorioDocumentaciones.ObtenerPorId(id);            
 
-            if (documentacion is null)
-                return NotFound($"No existe la documentación con id {id}");
-
-            if (System.IO.File.Exists(documentacion.UrlArchivo))
-            {
+            if (System.IO.File.Exists(documentacion.UrlArchivo))            
                 try
                 {
                     System.IO.File.Delete(documentacion.UrlArchivo);
@@ -114,8 +110,7 @@ namespace APIRest.Controllers
                 catch (Exception)
                 {
                     return StatusCode(500, "Ha habido un error al eliminar el archivo");
-                }                
-            }
+                }                            
 
             try
             {
