@@ -95,10 +95,7 @@ namespace APIRest.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Eliminar(int id)
         {            
-            Mensaje mensaje = await _repositorioMensajes.ObtenerPorId(id);
-
-            if (mensaje is null)
-                return NotFound($"No existe el mensaje con id {id}");
+            Mensaje mensaje = await _repositorioMensajes.ObtenerPorId(id);            
 
             try
             {
