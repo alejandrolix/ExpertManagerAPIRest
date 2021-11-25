@@ -46,14 +46,7 @@ namespace APIRest.Controllers
         public async Task<ActionResult> Crear(MensajeVm mensajeVm)
         {
             Usuario usuario = await _repositorioUsuarios.ObtenerPorId(mensajeVm.IdUsuarioCreado);
-
-            if (usuario is null)
-                return NotFound($"No existe el usuario con id {mensajeVm.IdUsuarioCreado}");
-
-            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(mensajeVm.IdSiniestro);
-
-            if (siniestro is null)            
-                return NotFound($"No existe el siniestro con id {mensajeVm.IdSiniestro}");                                    
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(mensajeVm.IdSiniestro);                                  
             
             Mensaje mensaje = new Mensaje()
             {
