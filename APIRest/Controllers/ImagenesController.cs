@@ -44,10 +44,7 @@ namespace APIRest.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> Obtener(int id)
         {
-            Archivo imagen = await _repositorioImagenes.ObtenerPorId(id);
-
-            if (imagen is null)
-                return NotFound($"No existe la imagen con id de siniestro {id}");
+            Archivo imagen = await _repositorioImagenes.ObtenerPorId(id);            
 
             string rutaImagen = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagen.UrlArchivo);
             rutaImagen = rutaImagen.Replace("\\", "/");
