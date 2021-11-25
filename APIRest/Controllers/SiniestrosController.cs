@@ -350,10 +350,7 @@ namespace APIRest.Controllers
         [HttpDelete("{id}")]        
         public async Task<ActionResult> Delete(int id)
         {
-            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);            
-
-            if (siniestro is null)                            
-                return NotFound($"No existe el siniestro con id {id}");            
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(id);                                   
 
             try
             {
