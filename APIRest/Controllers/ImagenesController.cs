@@ -83,10 +83,7 @@ namespace APIRest.Controllers
             if (imagenVm.Archivo is null)
                 return StatusCode(500, "No se ha seleccionado ningún archivo");
 
-            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(imagenVm.IdSiniestro);
-
-            if (siniestro is null)
-                return NotFound($"No existe el siniestro con id {imagenVm.IdSiniestro}");
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(imagenVm.IdSiniestro);            
 
             string rutaPdf = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagenes", imagenVm.Archivo.FileName);
             rutaPdf = rutaPdf.Replace("\\", "/");
