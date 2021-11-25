@@ -23,10 +23,7 @@ namespace APIRest.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            List<Usuario> peritos = await _repositorioPeritos.ObtenerTodos();
-            
-            if (peritos is null || peritos.Count == 0)                            
-                return StatusCode(500, "No existen peritos");            
+            List<Usuario> peritos = await _repositorioPeritos.ObtenerTodos();                                 
             
             List<PeritoVm> peritosVms = peritos.Select(perito => new PeritoVm()
             {
