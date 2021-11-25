@@ -39,6 +39,9 @@ namespace APIRest.Repositorios
             Archivo documentacion = await _contexto.Archivos                                                                                                      
                                                    .Where(archivo => archivo.Id == id)
                                                    .FirstOrDefaultAsync();
+            if (documentacion is null)
+                throw new CodigoErrorHttpException($"No existe la documentación con id {id}", HttpStatusCode.NotFound);
+
             return documentacion;
         }
 
