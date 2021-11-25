@@ -34,6 +34,9 @@ namespace APIRest.Repositorios
         {
             List<Aseguradora> aseguradoras = await _contexto.Aseguradoras
                                                             .ToListAsync();
+            if (aseguradoras is null)
+                throw new CodigoErrorHttpException("No existen aseguradoras", HttpStatusCode.NotFound);
+
             return aseguradoras;
         }
     }
