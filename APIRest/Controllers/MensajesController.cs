@@ -29,10 +29,7 @@ namespace APIRest.Controllers
         [HttpGet("{idSiniestro}")]
         public async Task<ActionResult> ObtenerPorIdSiniestro(int idSiniestro)
         {
-            List<Mensaje> mensajes = await _repositorioMensajes.ObtenerTodosPorIdSiniestro(idSiniestro);
-
-            if (mensajes is null || mensajes.Count == 0)
-                return NotFound("No existen mensajes");
+            List<Mensaje> mensajes = await _repositorioMensajes.ObtenerTodosPorIdSiniestro(idSiniestro);            
 
             List<MensajeVm> mensajesVms = mensajes.Select(mensaje => new MensajeVm()
             {
