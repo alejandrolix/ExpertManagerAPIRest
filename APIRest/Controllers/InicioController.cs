@@ -27,10 +27,7 @@ namespace APIRest.Controllers
         [HttpGet("{idUsuario}")]
         public async Task<ActionResult> ObtenerEstadisticas(int idUsuario)
         {
-            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(idUsuario);                                   
-
-            if (usuario is null)                                       
-                return NotFound($"No existe el usuario con id {idUsuario}");                            
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(idUsuario);                                               
 
             int totalNumSiniestros;
             List<DetalleEstadisticaVm> numSiniestrosPorAseguradora;            
