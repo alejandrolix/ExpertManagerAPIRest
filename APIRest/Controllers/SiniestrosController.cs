@@ -313,11 +313,7 @@ namespace APIRest.Controllers
                 return StatusCode(500, ex.Message);
             }
 
-            Estado estado = await _repositorioEstados.ObtenerPorId(siniestroVm.IdEstado);
-
-            if (estado is null)
-                return NotFound($"No existe el estado con id {siniestroVm.IdEstado}");
-
+            Estado estado = await _repositorioEstados.ObtenerPorId(siniestroVm.IdEstado);            
             Aseguradora aseguradora = await _repositorioAseguradoras.ObtenerPorId(siniestroVm.IdAseguradora);
 
             if (aseguradora is null)
