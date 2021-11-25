@@ -29,10 +29,7 @@ namespace APIRest.Controllers
         [HttpGet("ObtenerPorIdSiniestro/{idSiniestro}")]
         public async Task<ActionResult> ObtenerPorIdSiniestro(int idSiniestro)
         {
-            List<Archivo> imagenes = await _repositorioImagenes.ObtenerPorIdSiniestro(idSiniestro);
-
-            if (imagenes is null)
-                return NotFound($"No existen imágenes con id de siniestro {idSiniestro}");
+            List<Archivo> imagenes = await _repositorioImagenes.ObtenerPorIdSiniestro(idSiniestro);            
 
             List<ArchivoVm> imagenesVm = imagenes.Select(imagen => new ArchivoVm()
             {
