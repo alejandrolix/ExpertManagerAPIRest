@@ -39,6 +39,9 @@ namespace APIRest.Repositorios
             Archivo imagen = await _contexto.Archivos                                                                                                      
                                             .Where(archivo => archivo.Id == id)
                                             .FirstOrDefaultAsync();
+            if (imagen is null)
+                throw new CodigoErrorHttpException($"No existe la imagen con id {id}", HttpStatusCode.NotFound);
+
             return imagen;
         }
 
