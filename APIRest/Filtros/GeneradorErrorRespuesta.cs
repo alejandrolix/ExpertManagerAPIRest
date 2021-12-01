@@ -1,4 +1,5 @@
 ﻿using APIRest.Excepciones;
+using APIRest.Filtros.Clases;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
@@ -10,15 +11,15 @@ namespace APIRest
         public void OnException(ExceptionContext context)
         {
             CodigoErrorHttpException excepcion = (CodigoErrorHttpException)context.Exception;
-            var respuesta = new
+            RespuestaExcepcion respuestaExcepcion = new RespuestaExcepcion()
             {
-                error = context.Exception.Message
+                Error = context.Exception.Message
             };
 
             if (excepcion.CodigoErrorHttp == HttpStatusCode.NotFound)            
-                context.Result = new NotFoundObjectResult(respuesta);
+                context.Result = new NotFoundObjectResult(respuestaExcepcion);
             else
-                context.Result = new ObjectResult(respuesta)
+                context.Result = new ObjectResult(respuestaExcepcion)
                 {
                     StatusCode = 500
                 };
