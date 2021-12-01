@@ -28,7 +28,7 @@ namespace APIRest
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(opciones => opciones.Filters.Add(new MyExceptionFilter()));
+            services.AddMvc(opciones => opciones.Filters.Add(new GeneradorErrorRespuesta()));
 
             services.AddCors(options =>
             {

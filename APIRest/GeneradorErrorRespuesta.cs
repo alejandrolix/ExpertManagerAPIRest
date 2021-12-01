@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace APIRest
 {
-    public class MyExceptionFilter : IExceptionFilter
+    public class GeneradorErrorRespuesta : IExceptionFilter
     {
         public void OnException(ExceptionContext context)
         {
