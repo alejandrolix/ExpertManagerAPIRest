@@ -1,6 +1,7 @@
 ﻿using APIRest.Excepciones;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Net;
 
 namespace APIRest
 {
@@ -14,7 +15,7 @@ namespace APIRest
                 error = context.Exception.Message
             };
 
-            if (excepcion.CodigoErrorHttp == System.Net.HttpStatusCode.NotFound)            
+            if (excepcion.CodigoErrorHttp == HttpStatusCode.NotFound)            
                 context.Result = new NotFoundObjectResult(respuesta);
             else
                 context.Result = new ObjectResult(respuesta)
