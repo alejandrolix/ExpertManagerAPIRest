@@ -85,7 +85,7 @@ namespace APIRest.Repositorios
             }
             catch (Exception)
             {
-                throw;
+                throw new CodigoErrorHttpException($"No se ha podido actualizar el siniestro con id {siniestro.Id}", HttpStatusCode.InternalServerError);
             }            
         }
 
