@@ -363,5 +363,25 @@ namespace APIRest.Controllers
 
             return Ok(true);
         }
+
+        [HttpPut("Reabrir")]
+        public async Task<ActionResult> Reabrir(ReabrirSiniestroVm reabrirSiniestroVm)
+        {
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorId(reabrirSiniestroVm.IdUsuario);
+            bool tieneUsuarioPermisoAdministracion = _repositorioPermisos.TienePermisoAdministracion(usuario.Permiso.Id);
+
+            if (!tieneUsuarioPermisoAdministracion)
+                return StatusCode(500, $"El usuario {usuario.Nombre} no tiene permiso de administración");
+
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(reabrirSiniestroVm.IdSiniestro);            
+            Estado estadoSinValorar = await _repositorioEstados.ObtenerPorTipo(TipoEstado.SinValorar);
+
+            siniestro.Estado = estadoSinValorar;
+            siniestro.ImpValoracionDanios = 0;
+
+            await _repositorioSiniestros.Actualizar(siniestro);
+
+            return Ok(true);
+        }
     }
 }
