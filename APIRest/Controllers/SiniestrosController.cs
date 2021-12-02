@@ -144,18 +144,11 @@ namespace APIRest.Controllers
         {
             await SePuedeCerrar(cerrarSiniestroVm);
 
-            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(cerrarSiniestroVm.IdSiniestro);
             Estado estadoCerrado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.Cerrado);            
-
-            try
-            {
-                siniestro.Estado = estadoCerrado;
-                await _repositorioSiniestros.Actualizar(siniestro);                
-            }
-            catch (Exception)
-            {                
-                return StatusCode(500, $"No se ha podido cerrar el siniestro con id {cerrarSiniestroVm.IdSiniestro}");
-            }
+            Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(cerrarSiniestroVm.IdSiniestro);
+            
+            siniestro.Estado = estadoCerrado;
+            await _repositorioSiniestros.Actualizar(siniestro);                
             
             return Ok(true);            
         }
