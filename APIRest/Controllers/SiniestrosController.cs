@@ -327,15 +327,8 @@ namespace APIRest.Controllers
                 siniestro.ImpValoracionDanios = decimal.Parse(siniestroVm.ImpValoracionDanios);
             else
                 siniestro.ImpValoracionDanios = 0;
-
-            try
-            {
-                await _repositorioSiniestros.Actualizar(siniestro);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "No se ha podido editar el siniestro");
-            }
+            
+            await _repositorioSiniestros.Actualizar(siniestro);         
             
             return Ok(true);            
         }
