@@ -1,6 +1,6 @@
 ﻿namespace APIRest.ViewModels
 {
-    public class ReabrirSiniestroVm
+    public class AbrirSiniestroVm
     {
         public int IdSiniestro { get; set; }
         public int IdUsuario { get; set; }

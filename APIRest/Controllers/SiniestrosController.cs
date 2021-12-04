@@ -350,8 +350,8 @@ namespace APIRest.Controllers
             return Ok(true);
         }
 
-        [HttpPut("Reabrir")]
-        public async Task<ActionResult> Reabrir(ReabrirSiniestroVm reabrirSiniestroVm)
+        [HttpPut("Abrir")]
+        public async Task<ActionResult> Abrir(AbrirSiniestroVm reabrirSiniestroVm)
         {
             Usuario usuario = await _repositorioUsuarios.ObtenerPorId(reabrirSiniestroVm.IdUsuario);
             bool tieneUsuarioPermisoAdministracion = _repositorioPermisos.TienePermisoAdministracion(usuario.Permiso.Id);
