@@ -221,10 +221,10 @@ namespace APIRest.Controllers
         public void ValidarSiniestro(SiniestroVm siniestroVm)
         {
             if (siniestroVm.IdAseguradora <= 0)
-                throw new Exception("La aseguradora seleccionada no es válida");
+                throw new CodigoErrorHttpException("La aseguradora seleccionada no es válida", HttpStatusCode.InternalServerError);
 
             if (siniestroVm.IdUsuarioAlta <= 0)
-                throw new Exception("El usuario de alta no es válido");
+                throw new CodigoErrorHttpException("El usuario de alta no es válido", HttpStatusCode.InternalServerError);
 
             List<int> idsSujetoAfectado = Enum.GetValues(typeof(SujetoAfectado)).Cast<int>()
                                                                                 .ToList();
@@ -232,19 +232,19 @@ namespace APIRest.Controllers
             bool existeIdSujetoAfectado = Array.Exists(idsSujetoAfectado.ToArray(), id => id == siniestroVm.IdSujetoAfectado);
 
             if (!existeIdSujetoAfectado)
-                throw new Exception("El sujeto afectado seleccionado no es válido");
+                throw new CodigoErrorHttpException("El sujeto afectado seleccionado no es válido", HttpStatusCode.InternalServerError);
 
             if (siniestroVm.IdPerito <= 0)
-                throw new Exception("El perito seleccionado no es válido");
+                throw new CodigoErrorHttpException("El perito seleccionado no es válido", HttpStatusCode.InternalServerError);
 
             if (siniestroVm.IdDanio <= 0)
-                throw new Exception("El daño seleccionado no es válido");
+                throw new CodigoErrorHttpException("El daño seleccionado no es válido", HttpStatusCode.InternalServerError);
 
             if (siniestroVm.Direccion is null || siniestroVm.Direccion.Length == 0)
-                throw new Exception("La dirección está vacía");
+                throw new CodigoErrorHttpException("La dirección está vacía", HttpStatusCode.InternalServerError);
 
             if (siniestroVm.Descripcion is null || siniestroVm.Descripcion.Length == 0)
-                throw new Exception("La descripción está vacía");            
+                throw new CodigoErrorHttpException("La descripción está vacía", HttpStatusCode.InternalServerError);
         }
 
         [HttpPost]        
@@ -296,15 +296,8 @@ namespace APIRest.Controllers
 
         [HttpPut("{id}")]        
         public async Task<ActionResult> Edit(int id, SiniestroVm siniestroVm)
-        {
-            try
-            {
-                ValidarSiniestro(siniestroVm);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+        {            
+            ValidarSiniestro(siniestroVm);
 
             Estado estado = await _repositorioEstados.ObtenerPorId(siniestroVm.IdEstado);            
             Aseguradora aseguradora = await _repositorioAseguradoras.ObtenerPorId(siniestroVm.IdAseguradora);            
