@@ -250,14 +250,7 @@ namespace APIRest.Controllers
         [HttpPost]        
         public async Task<ActionResult> Create(SiniestroVm siniestroVm)
         {
-            try
-            {
-                ValidarSiniestro(siniestroVm);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            ValidarSiniestro(siniestroVm);
 
             Estado estado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.SinValorar);
             Aseguradora aseguradora = await _repositorioAseguradoras.ObtenerPorId(siniestroVm.IdAseguradora);            
