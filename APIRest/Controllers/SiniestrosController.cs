@@ -144,10 +144,10 @@ namespace APIRest.Controllers
         {
             await SePuedeCerrar(cerrarSiniestroVm);
 
-            Estado estadoCerrado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.Cerrado);            
+            Estado cerrado = await _repositorioEstados.ObtenerPorTipo(TipoEstado.Cerrado);            
             Siniestro siniestro = await _repositorioSiniestros.ObtenerPorId(cerrarSiniestroVm.IdSiniestro);
             
-            siniestro.Estado = estadoCerrado;
+            siniestro.Estado = cerrado;
             await _repositorioSiniestros.Actualizar(siniestro);                
             
             return Ok(true);            
