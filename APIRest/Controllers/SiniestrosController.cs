@@ -72,7 +72,7 @@ namespace APIRest.Controllers
             siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
                                    .ToList();                        
 
-            if (siniestros is null || siniestros.Count == 0)                            
+            if (siniestros.Count == 0)                            
                 return StatusCode(500, "No existen siniestros");            
 
             List<SiniestroVm> siniestrosVms = SiniestroVm.ConvertirASiniestroVm(siniestros);
