@@ -44,6 +44,12 @@ namespace APIRest.Repositorios
                                                         .Include(siniestro => siniestro.Danio)
                                                         .Where(siniestro => siniestro.Perito.Id == idPerito)
                                                         .ToListAsync();
+            if (siniestros.Count == 0)
+                throw new CodigoErrorHttpException($"No existen siniestros con id perito {idPerito}", HttpStatusCode.NotFound);
+
+            siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
+                                   .ToList();
+
             return siniestros;
         }
 
