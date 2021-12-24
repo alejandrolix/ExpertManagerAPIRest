@@ -88,20 +88,7 @@ namespace APIRest.Controllers
             if (siniestros is null || siniestros.Count == 0)                            
                 return StatusCode(500, "No existen siniestros");            
 
-            List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
-            {
-                Id = siniestro.Id,
-                IdEstado = siniestro.Estado.Id,
-                Estado = siniestro.Estado.Nombre,
-                Aseguradora = siniestro.Aseguradora.Nombre,
-                Descripcion = siniestro.Descripcion,
-                Perito = siniestro.Perito.Nombre,
-                FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
-                SujetoAfectado = siniestro.SujetoAfectado.ToString(),
-                Danio = siniestro.Danio.Nombre,
-                ImpValoracionDanios = $"{siniestro.ImpValoracionDanios:F} €"
-            })
-            .ToList();
+            List<SiniestroVm> siniestrosVms = SiniestroVm.ConvertirASiniestroVm(siniestros);
 
             return Ok(siniestrosVms);
         }
