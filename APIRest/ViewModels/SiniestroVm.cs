@@ -1,4 +1,5 @@
-﻿using System;
+﻿using APIRest.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +23,26 @@ namespace APIRest.ViewModels
         public int IdDanio { get; set; }
         public string Danio { get; set; }
         public string ImpValoracionDanios { get; set; }
-        public int IdUsuarioAlta { get; set; }
+        public int IdUsuarioAlta { get; set; }        
+
+        public static List<SiniestroVm> ConvertirASiniestroVm(List<Siniestro> siniestros)
+        {
+            List<SiniestroVm> siniestrosVms = siniestros.Select(siniestro => new SiniestroVm()
+            {
+                Id = siniestro.Id,
+                IdEstado = siniestro.Estado.Id,
+                Estado = siniestro.Estado.Nombre,
+                Aseguradora = siniestro.Aseguradora.Nombre,
+                Descripcion = siniestro.Descripcion,
+                Perito = siniestro.Perito.Nombre,
+                FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
+                SujetoAfectado = siniestro.SujetoAfectado.ToString(),
+                Danio = siniestro.Danio.Nombre,
+                ImpValoracionDanios = $"{siniestro.ImpValoracionDanios:F} €"
+            })
+            .ToList();
+
+            return siniestrosVms;
+        }
     }
 }
