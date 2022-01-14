@@ -38,7 +38,7 @@ namespace APIRest.ViewModels
                 FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
                 SujetoAfectado = siniestro.SujetoAfectado.ToString(),
                 Danio = siniestro.Danio.Nombre,
-                ImpValoracionDanios = $"{siniestro.ImpValoracionDanios:F} €"
+                ImpValoracionDanios = siniestro.ImpValoracionDanios.ToString("C")
             })
             .ToList();
 
