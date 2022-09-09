@@ -180,7 +180,7 @@ namespace APIRest.Controllers
                 return NotFound($"No existe el usuario con id {id}");
             
             usuario.Nombre = usuarioVm.Nombre;
-            usuario.Contrasenia = usuarioVm.HashContrasenia;
+            usuario.Contrasenia = _repositorioUsuarios.ObtenerHashContrasenia(usuarioVm.Contrasenia);
 
             Permiso permiso = await _repositorioPermisos.ObtenerPorId(usuarioVm.IdPermiso);
 
