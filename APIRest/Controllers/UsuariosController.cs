@@ -92,7 +92,7 @@ namespace APIRest.Controllers
             if (usuarioVm.Nombre is null || usuarioVm.Nombre.Length == 0)
                 throw new Exception("El nombre está vacío");
 
-            if (usuarioVm.HashContrasenia is null || usuarioVm.HashContrasenia.Length == 0)
+            if (usuarioVm.Contrasenia is null || usuarioVm.Contrasenia.Length == 0)
                 throw new Exception("La contraseña está vacía");            
         }
 
@@ -113,10 +113,12 @@ namespace APIRest.Controllers
             if (permiso is null)
                 return NotFound($"No existe el permiso con id {usuarioVm.IdPermiso}");
 
+            string hashContrasenia = _repositorioUsuarios.ObtenerHashContrasenia(usuarioVm.Contrasenia);
+
             Usuario usuario = new Usuario()
             {
                 Nombre = usuarioVm.Nombre,
-                Contrasenia = usuarioVm.HashContrasenia,
+                Contrasenia = hashContrasenia,
                 Permiso = permiso
             };
 
