@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using APIRest.ViewModels;
 using APIRest.Excepciones;
 using System.Net;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace APIRest.Repositorios
 {
@@ -31,6 +34,14 @@ namespace APIRest.Repositorios
 
             return usuario;
         }        
+
+        public string ObtenerHashContrasenia(string contrasenia)
+        {
+            byte[] salt = Encoding.ASCII.GetBytes("supercalifragilisticoespialidosomola_123");
+            string hash = Convert.ToBase64String(KeyDerivation.Pbkdf2(contrasenia, salt, KeyDerivationPrf.HMACSHA256, 100000, 256 / 8));
+
+            return hash;
+        }
 
         public async Task<Usuario> ObtenerPorNombreYHashContrasenia(string nombre, string hashContrasenia)
         {

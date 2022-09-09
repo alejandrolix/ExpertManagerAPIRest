@@ -140,7 +140,9 @@ namespace APIRest.Controllers
         [HttpPost("IniciarSesion")]
         public async Task<ActionResult> IniciarSesion(UsuarioVm usuarioVm)
         {
-            Usuario usuario = await _repositorioUsuarios.ObtenerPorNombreYHashContrasenia(usuarioVm.Nombre, usuarioVm.HashContrasenia);
+            string hashContrasenia = _repositorioUsuarios.ObtenerHashContrasenia(usuarioVm.Contrasenia);
+
+            Usuario usuario = await _repositorioUsuarios.ObtenerPorNombreYHashContrasenia(usuarioVm.Nombre, hashContrasenia);
 
             if (usuario is null)
                 return NotFound($"No existe el usuario {usuarioVm.Nombre} o la contraseña es incorrecta");
