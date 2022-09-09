@@ -74,7 +74,7 @@ namespace APIRest.Controllers
                 Nombre = usuario.Nombre,
                 IdPermiso = usuario.Permiso.Id,
                 Permiso = usuario.Permiso.Nombre,
-                HashContrasenia = usuario.Contrasenia
+                Contrasenia = usuario.Contrasenia
             };
 
             if (_repositorioPermisos.EsPeritoNoResponsable(usuario.Permiso.Id))
