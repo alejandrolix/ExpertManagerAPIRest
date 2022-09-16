@@ -35,6 +35,7 @@ namespace APIRest.ViewModels
                 Aseguradora = siniestro.Aseguradora.Nombre,
                 Descripcion = siniestro.Descripcion,
                 Perito = siniestro.Perito.Nombre,
+                IdPerito = siniestro.Perito.Id,
                 FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
                 SujetoAfectado = siniestro.SujetoAfectado.ToString(),
                 Danio = siniestro.Danio.Nombre,
