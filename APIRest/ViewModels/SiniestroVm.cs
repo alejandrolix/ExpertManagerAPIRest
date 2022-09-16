@@ -33,6 +33,7 @@ namespace APIRest.ViewModels
                 IdEstado = siniestro.Estado.Id,
                 Estado = siniestro.Estado.Nombre,
                 Aseguradora = siniestro.Aseguradora.Nombre,
+                IdAseguradora = siniestro.Aseguradora.Id,
                 Descripcion = siniestro.Descripcion,
                 Perito = siniestro.Perito.Nombre,
                 IdPerito = siniestro.Perito.Id,
