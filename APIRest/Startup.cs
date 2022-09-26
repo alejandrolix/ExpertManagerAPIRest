@@ -1,16 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using APIRest.Context;
 using APIRest.Repositorios;
 
@@ -41,8 +36,20 @@ namespace APIRest
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIRest", Version = "v1" });
             });
-            services.AddDbContext<ExpertManagerContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ExpertManagerContext")));
+
+            string esContenedor = Environment.GetEnvironmentVariable("ES_CONTENEDOR");
+            string cadenaConexionBd = "";
+
+            if (esContenedor is null)
+            {
+                cadenaConexionBd = Configuration.GetConnectionString("ExpertManagerContext");
+            }
+            else
+            {
+                cadenaConexionBd = $"Data Source=sql-server-service;Initial Catalog=ExpertManager;Integrated Security=False;Persist Security Info=False;User ID=sa;Password=passwordPrueba1";
+            }
+
+            services.AddDbContext<ExpertManagerContext>(options => options.UseSqlServer(cadenaConexionBd));
 
             services.AddScoped<RepositorioSiniestros>();
             services.AddScoped<RepositorioEstados>();
