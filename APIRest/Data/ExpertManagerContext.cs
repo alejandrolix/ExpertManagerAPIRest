@@ -22,5 +22,6 @@ namespace APIRest.Context
         public DbSet<Siniestro> Siniestros { get; set; }                        
         public DbSet<TipoArchivo> TiposArchivo { get; set; }
         public DbSet<Archivo> Archivos { get; set; }
+        public DbSet<TokenUsuario> TokensUsuario { get; set; }
     }
 }
