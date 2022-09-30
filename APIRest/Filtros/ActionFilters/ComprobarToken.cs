@@ -36,7 +36,9 @@ namespace APIRest
                 return;
             }
 
-            RepositorioTokensUsuario repositorioTokensUsuario = (RepositorioTokensUsuario) context.HttpContext.RequestServices.GetService(typeof(RepositorioTokensUsuario));
+            RepositorioTokensUsuario repositorioTokensUsuario = (RepositorioTokensUsuario) context.HttpContext
+                                                                                                  .RequestServices
+                                                                                                  .GetService(typeof(RepositorioTokensUsuario));
 
             TokenUsuario tokenUsuario = Task.Run(async() => await repositorioTokensUsuario.ObtenerDatosToken(token)).Result;
 
