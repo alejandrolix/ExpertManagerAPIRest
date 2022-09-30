@@ -155,7 +155,15 @@ namespace APIRest.Controllers
                 return NotFound($"No existe el usuario {usuarioVm.Nombre} o la contraseña es incorrecta");
                             
             string token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
-            await _repositorioTokensUsuario.GuardarToken(token, usuario);
+
+            try
+            {
+                await _repositorioTokensUsuario.GuardarToken(token, usuario);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Ha habido un error al guardar el token");
+            }
 
             UsuarioVm respuesta = new UsuarioVm()
             {
