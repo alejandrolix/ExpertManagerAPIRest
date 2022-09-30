@@ -16,12 +16,17 @@ namespace APIRest.Controllers
         private RepositorioUsuarios _repositorioUsuarios;
         private RepositorioPermisos _repositorioPermisos;
         private RepositorioPeritos _repositorioPeritos;
+        private RepositorioTokensUsuario _repositorioTokensUsuario;
 
-        public UsuariosController(RepositorioUsuarios repositorioUsuarios, RepositorioPermisos repositorioPermisos, RepositorioPeritos repositorioPeritos)
+        public UsuariosController(RepositorioUsuarios repositorioUsuarios,
+                                  RepositorioPermisos repositorioPermisos,
+                                  RepositorioPeritos repositorioPeritos,
+                                  RepositorioTokensUsuario repositorioTokensUsuario)
         {            
             _repositorioUsuarios = repositorioUsuarios;
             _repositorioPermisos = repositorioPermisos;
             _repositorioPeritos = repositorioPeritos;
+            _repositorioTokensUsuario = repositorioTokensUsuario;
         }
 
         [HttpGet]
@@ -150,6 +155,7 @@ namespace APIRest.Controllers
                 return NotFound($"No existe el usuario {usuarioVm.Nombre} o la contraseña es incorrecta");
                             
             string token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+            await _repositorioTokensUsuario.GuardarToken(token, usuario);
 
             UsuarioVm respuesta = new UsuarioVm()
             {
