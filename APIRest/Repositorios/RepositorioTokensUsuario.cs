@@ -1,7 +1,11 @@
 ﻿using APIRest.Context;
+using APIRest.Excepciones;
 using APIRest.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace APIRest.Repositorios
@@ -34,6 +38,14 @@ namespace APIRest.Repositorios
             {
                 throw;
             }
+        }
+
+        public async Task<TokenUsuario> ObtenerDatosToken(string token)
+        {
+            TokenUsuario tokenUsuario = await _contexto.TokensUsuario
+                                                       .Where(t => t.Token == token)
+                                                       .FirstOrDefaultAsync();
+            return tokenUsuario;
         }
     }
 }

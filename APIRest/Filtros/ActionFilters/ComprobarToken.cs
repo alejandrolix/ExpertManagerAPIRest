@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Net;
+using APIRest.Repositorios;
+using APIRest.Models;
+using APIRest.Excepciones;
 
 namespace APIRest
 {
@@ -27,10 +30,29 @@ namespace APIRest
             string token = cabeceraAutorizacion?.Split(" ")[1];
 
             if (string.IsNullOrEmpty(token))
-                context.Result = new UnauthorizedObjectResult(new
-                {
-                    mensaje = "No ha iniciado sesión. Por favor, inicie sesión"
-                });
+            {
+                AsignarMensajeRespuesta(context, "No ha iniciado sesión. Por favor, inicie sesión");
+
+                return;
+            }
+
+            RepositorioTokensUsuario repositorioTokensUsuario = (RepositorioTokensUsuario) context.HttpContext.RequestServices.GetService(typeof(RepositorioTokensUsuario));
+
+            TokenUsuario tokenUsuario = Task.Run(async() => await repositorioTokensUsuario.ObtenerDatosToken(token)).Result;
+
+            if (tokenUsuario is null)
+                throw new CodigoErrorHttpException($"No existe el token {token}", HttpStatusCode.NotFound);
+
+            if (DateTime.Now > tokenUsuario.FechaHasta)
+                AsignarMensajeRespuesta(context, "Sesión expirada. Por favor, inicie sesión");
+        }
+
+        private void AsignarMensajeRespuesta(ActionExecutingContext context, string mensaje)
+        {
+            context.Result = new UnauthorizedObjectResult(new
+            {
+                mensaje = mensaje
+            });
         }
     }
 }
