@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sql-server-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sql-server
+  template:
+    metadata:
+      labels:
+        app: sql-server
+    spec:
+      volumes:
+        - name: sql-server-datos
+          persistentVolumeClaim:
+            claimName: sql-server-pv-claim
+      containers:
+        - name: sql-server
+          image: mcr.microsoft.com/azure-sql-edge:latest
+          ports:
+            - containerPort: 1433
+          volumeMounts:
+            - name: "sql-server-datos"
+              mountPath: /var/opt/mssql
+          env:
+            - name: MSSQL_PID
+              value: "Premium"
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: SA_PASSWORD
+              value: "passwordPrueba1"
+            - name: MSSQL_AGENT_ENABLED
+              value: "TRUE"
+            - name: MSSQL_COLLATION
+              value: "SQL_Latin1_General_CP1_CI_AS"
+            - name: MSSQL_LCID
+              value: "1033"
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        fsGroup: 10001

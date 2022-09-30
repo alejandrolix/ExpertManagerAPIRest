@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: em-api-rest-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: em-api-rest
+  template:
+    metadata:
+      labels:
+        app: em-api-rest
+    spec:
+      containers:
+      - name: em-api-rest
+        image: alejandrolix/em-api-rest:15-rp
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+          - name: ES_CONTENEDOR
+            value: "S"
