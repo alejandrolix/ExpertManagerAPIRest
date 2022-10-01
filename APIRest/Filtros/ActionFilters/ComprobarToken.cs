@@ -40,10 +40,7 @@ namespace APIRest
                                                                                                   .RequestServices
                                                                                                   .GetService(typeof(RepositorioTokensUsuario));
 
-            TokenUsuario tokenUsuario = Task.Run(async() => await repositorioTokensUsuario.ObtenerDatosToken(token)).Result;
-
-            if (tokenUsuario is null)
-                throw new CodigoErrorHttpException($"No existe el token {token}", HttpStatusCode.NotFound);
+            TokenUsuario tokenUsuario = repositorioTokensUsuario.ObtenerDatosToken(token).GetAwaiter().GetResult();                                
 
             if (DateTime.Now > tokenUsuario.FechaHasta)
                 AsignarMensajeRespuesta(context, "Sesión expirada. Por favor, inicie sesión");
