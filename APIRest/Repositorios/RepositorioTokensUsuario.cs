@@ -45,6 +45,9 @@ namespace APIRest.Repositorios
             TokenUsuario tokenUsuario = await _contexto.TokensUsuario
                                                        .Where(t => t.Token == token)
                                                        .FirstOrDefaultAsync();
+            if (tokenUsuario is null)
+                throw new CodigoErrorHttpException($"No existe el token {token}", HttpStatusCode.NotFound);
+
             return tokenUsuario;
         }
     }

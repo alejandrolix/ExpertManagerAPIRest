@@ -40,7 +40,9 @@ namespace APIRest
                                                                                                   .RequestServices
                                                                                                   .GetService(typeof(RepositorioTokensUsuario));
 
-            TokenUsuario tokenUsuario = repositorioTokensUsuario.ObtenerDatosToken(token).GetAwaiter().GetResult();                                
+            TokenUsuario tokenUsuario = repositorioTokensUsuario.ObtenerDatosToken(token)
+                                                                .GetAwaiter()
+                                                                .GetResult();                                
 
             if (DateTime.Now > tokenUsuario.FechaHasta)
                 AsignarMensajeRespuesta(context, "Sesión expirada. Por favor, inicie sesión");
