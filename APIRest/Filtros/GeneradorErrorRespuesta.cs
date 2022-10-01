@@ -2,6 +2,7 @@
 using APIRest.Filtros.Clases;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 using System.Net;
 
 namespace APIRest
@@ -10,19 +11,41 @@ namespace APIRest
     {
         public void OnException(ExceptionContext context)
         {
-            CodigoErrorHttpException excepcion = (CodigoErrorHttpException)context.Exception;
+            Exception excepcion = context.Exception;
+
             RespuestaExcepcion respuestaExcepcion = new RespuestaExcepcion()
             {
-                Error = context.Exception.Message
+                Error = excepcion.Message
             };
 
-            if (excepcion.CodigoErrorHttp == HttpStatusCode.NotFound)            
-                context.Result = new NotFoundObjectResult(respuestaExcepcion);
+            if (excepcion is not CodigoErrorHttpException)
+            {
+                AsignarRespuestaPorCodigoHttp(context, respuestaExcepcion, HttpStatusCode.InternalServerError);
+
+                return;
+            }
+
+            CodigoErrorHttpException excepcionCodigoErrorHttp = (CodigoErrorHttpException) excepcion;
+
+            if (excepcionCodigoErrorHttp.CodigoErrorHttp == HttpStatusCode.NotFound)
+                AsignarRespuestaPorCodigoHttp(context, respuestaExcepcion, HttpStatusCode.NotFound);
             else
-                context.Result = new ObjectResult(respuestaExcepcion)
-                {
-                    StatusCode = 500
-                };
+                AsignarRespuestaPorCodigoHttp(context, respuestaExcepcion, HttpStatusCode.InternalServerError);
+        }
+
+        private void AsignarRespuestaPorCodigoHttp(ExceptionContext context, RespuestaExcepcion respuestaExcepcion, HttpStatusCode httpStatusCode)
+        {
+            if (httpStatusCode == HttpStatusCode.NotFound)
+            {
+                context.Result = new NotFoundObjectResult(respuestaExcepcion);
+                
+                return;
+            }
+
+            context.Result = new ObjectResult(respuestaExcepcion)
+            {
+                StatusCode = 500
+            };
         }
     }
 }
