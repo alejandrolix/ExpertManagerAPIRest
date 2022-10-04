@@ -42,11 +42,11 @@ namespace APIRest
 
             if (esContenedor is null)
             {
-                cadenaConexionBd = Configuration.GetConnectionString("ExpertManagerContext");
+                cadenaConexionBd = "Data Source=localhost,31484;Initial Catalog=ExpertManager;Integrated Security=False;Persist Security Info=False;User ID=sa;Password=passwordPrueba1";
             }
             else
             {
-                cadenaConexionBd = $"Data Source=sql-server-service;Initial Catalog=ExpertManager;Integrated Security=False;Persist Security Info=False;User ID=sa;Password=passwordPrueba1";
+                cadenaConexionBd = "Data Source=sql-server-service;Initial Catalog=ExpertManager;Integrated Security=False;Persist Security Info=False;User ID=sa;Password=passwordPrueba1";
             }
 
             services.AddDbContext<ExpertManagerContext>(options => options.UseSqlServer(cadenaConexionBd));
