@@ -14,6 +14,12 @@ namespace APIRest
 {
     public class ComprobarToken : IActionFilter
     {
+        private enum CodigoRespuesta
+        {
+            SesionExpirada = 0,
+            NoInicioSesion = 1
+        }
+
         public void OnActionExecuted(ActionExecutedContext context)
         {
             return;
@@ -31,7 +37,7 @@ namespace APIRest
 
             if (string.IsNullOrEmpty(token))
             {
-                AsignarMensajeRespuesta(context, "No ha iniciado sesión. Por favor, inicie sesión");
+                AsignarMensajeRespuesta(context, "No ha iniciado sesión. Por favor, inicie sesión", CodigoRespuesta.NoInicioSesion);
 
                 return;
             }
@@ -42,17 +48,18 @@ namespace APIRest
 
             TokenUsuario tokenUsuario = repositorioTokensUsuario.ObtenerDatosToken(token)
                                                                 .GetAwaiter()
-                                                                .GetResult();                                
-
+                                                                .GetResult();     
+            
             if (DateTime.Now > tokenUsuario.FechaHasta)
-                AsignarMensajeRespuesta(context, "Sesión expirada. Por favor, inicie sesión");
+                AsignarMensajeRespuesta(context, "Sesión expirada. Por favor, inicie sesión", CodigoRespuesta.SesionExpirada);
         }
 
-        private void AsignarMensajeRespuesta(ActionExecutingContext context, string mensaje)
+        private void AsignarMensajeRespuesta(ActionExecutingContext context, string mensaje, CodigoRespuesta codigoRespuesta)
         {
             context.Result = new UnauthorizedObjectResult(new
             {
-                mensaje = mensaje
+                codigoRespuesta = (int) codigoRespuesta,
+                error = mensaje
             });
         }
     }
