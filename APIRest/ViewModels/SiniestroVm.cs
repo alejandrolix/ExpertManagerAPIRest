@@ -22,7 +22,7 @@ namespace APIRest.ViewModels
         public string SujetoAfectado { get; set; }
         public int IdDanio { get; set; }
         public string Danio { get; set; }
-        public string ImpValoracionDanios { get; set; }
+        public decimal ImpValoracionDanios { get; set; }
         public int IdUsuarioAlta { get; set; }        
 
         public static List<SiniestroVm> ConvertirASiniestroVm(List<Siniestro> siniestros)
@@ -40,7 +40,7 @@ namespace APIRest.ViewModels
                 FechaHoraAlta = siniestro.FechaHoraAlta.ToString("dd/MM/yyyy HH:mm"),
                 SujetoAfectado = siniestro.SujetoAfectado.ToString(),
                 Danio = siniestro.Danio.Nombre,
-                ImpValoracionDanios = siniestro.ImpValoracionDanios.ToString("C")
+                ImpValoracionDanios = siniestro.ImpValoracionDanios
             })
             .ToList();
 

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: em-api-rest
-        image: alejandrolix/em-api-rest:18
+        image: alejandrolix/em-api-rest:22
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

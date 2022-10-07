@@ -172,7 +172,7 @@ namespace APIRest.Controllers
                 SujetoAfectado = siniestro.SujetoAfectado.ToString(),
                 IdDanio = siniestro.DanioId.Value,
                 Danio = siniestro.Danio.Nombre,
-                ImpValoracionDanios = $"{siniestro.ImpValoracionDanios.ToString("F")} €"
+                ImpValoracionDanios = siniestro.ImpValoracionDanios
             };
 
             return Ok(siniestroVm);
@@ -271,7 +271,7 @@ namespace APIRest.Controllers
             siniestro.Danio = danio;
 
             if (siniestroVm.IdEstado == (int)TipoEstado.Valorado)
-                siniestro.ImpValoracionDanios = decimal.Parse(siniestroVm.ImpValoracionDanios);
+                siniestro.ImpValoracionDanios = siniestroVm.ImpValoracionDanios;
             else
                 siniestro.ImpValoracionDanios = 0;
             
