@@ -42,7 +42,7 @@ namespace APIRest
 
             if (esContenedor is null)
             {
-                cadenaConexionBd = "Data Source=localhost,31484;Initial Catalog=ExpertManager;Integrated Security=False;Persist Security Info=False;User ID=sa;Password=passwordPrueba1";
+                cadenaConexionBd = "Server=(localdb)\\mssqllocaldb;Database=ExpertManager;Trusted_Connection=True;MultipleActiveResultSets=true";
             }
             else
             {
