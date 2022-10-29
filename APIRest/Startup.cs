@@ -42,7 +42,7 @@ namespace APIRest
 
             if (esContenedor is null)
             {
-                cadenaConexionBd = "Server=(localdb)\\mssqllocaldb;Database=ExpertManager;Trusted_Connection=True;MultipleActiveResultSets=true";
+                cadenaConexionBd = Configuration.GetConnectionString("ExpertManagerContext");
             }
             else
             {
