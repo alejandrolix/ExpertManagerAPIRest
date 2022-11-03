@@ -46,7 +46,7 @@ namespace APIRest
             }
             else
             {
-                cadenaConexionBd = "Data Source=sql-server-service;Initial Catalog=ExpertManager;Integrated Security=False;Persist Security Info=False;User ID=sa;Password=passwordPrueba1";
+                cadenaConexionBd = Environment.GetEnvironmentVariable("CAD_CONEXION_BD");
             }
 
             services.AddDbContext<ExpertManagerContext>(options => options.UseSqlServer(cadenaConexionBd));
