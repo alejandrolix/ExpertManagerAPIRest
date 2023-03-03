@@ -13,14 +13,9 @@ namespace APIRest
         {
             Exception excepcion = context.Exception;
 
-            RespuestaExcepcion respuestaExcepcion = new RespuestaExcepcion()
-            {
-                Error = excepcion.Message
-            };
-
             if (excepcion is not CodigoErrorHttpException)
             {
-                AsignarRespuestaPorCodigoHttp(context, respuestaExcepcion, HttpStatusCode.InternalServerError);
+                AsignarRespuestaPorCodigoHttp(context, excepcion.Message, HttpStatusCode.InternalServerError);
 
                 return;
             }
@@ -28,24 +23,28 @@ namespace APIRest
             CodigoErrorHttpException excepcionCodigoErrorHttp = (CodigoErrorHttpException) excepcion;
 
             if (excepcionCodigoErrorHttp.CodigoErrorHttp == HttpStatusCode.NotFound)
-                AsignarRespuestaPorCodigoHttp(context, respuestaExcepcion, HttpStatusCode.NotFound);
+            {
+                AsignarRespuestaPorCodigoHttp(context, excepcion.Message, HttpStatusCode.NotFound);
+            }
             else
-                AsignarRespuestaPorCodigoHttp(context, respuestaExcepcion, HttpStatusCode.InternalServerError);
+            {
+                AsignarRespuestaPorCodigoHttp(context, excepcion.Message, HttpStatusCode.InternalServerError);
+            }
         }
 
-        private void AsignarRespuestaPorCodigoHttp(ExceptionContext context, RespuestaExcepcion respuestaExcepcion, HttpStatusCode httpStatusCode)
+        private void AsignarRespuestaPorCodigoHttp(ExceptionContext context, string mensaje, HttpStatusCode httpStatusCode)
         {
             if (httpStatusCode == HttpStatusCode.NotFound)
             {
-                context.Result = new NotFoundObjectResult(respuestaExcepcion);
-                
-                return;
+                context.Result = new NotFoundObjectResult(mensaje);
             }
-
-            context.Result = new ObjectResult(respuestaExcepcion)
+            else
             {
-                StatusCode = 500
-            };
+                context.Result = new ObjectResult(mensaje)
+                {
+                    StatusCode = 500
+                };
+            }
         }
     }
 }
