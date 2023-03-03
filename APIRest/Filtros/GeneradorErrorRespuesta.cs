@@ -1,5 +1,4 @@
 ﻿using APIRest.Excepciones;
-using APIRest.Filtros.Clases;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
