@@ -12,7 +12,7 @@ namespace APIRest
 
         public void OnException(ExceptionContext context)
         {
-           Excepcion = context.Exception;
+            Excepcion = context.Exception;
 
             if (Excepcion is not CodigoErrorHttpException)
             {
