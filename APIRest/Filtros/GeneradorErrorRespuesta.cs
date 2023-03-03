@@ -9,38 +9,40 @@ namespace APIRest
 {
     public class GeneradorErrorRespuesta : IExceptionFilter
     {
+        private Exception Excepcion { get; set; }
+
         public void OnException(ExceptionContext context)
         {
-            Exception excepcion = context.Exception;
+           Excepcion = context.Exception;
 
-            if (excepcion is not CodigoErrorHttpException)
+            if (Excepcion is not CodigoErrorHttpException)
             {
-                AsignarRespuestaPorCodigoHttp(context, excepcion.Message, HttpStatusCode.InternalServerError);
+                AsignarRespuestaPorCodigoHttp(context, HttpStatusCode.InternalServerError);
 
                 return;
             }
 
-            CodigoErrorHttpException excepcionCodigoErrorHttp = (CodigoErrorHttpException) excepcion;
+            CodigoErrorHttpException excepcionCodigoErrorHttp = (CodigoErrorHttpException) Excepcion;
 
             if (excepcionCodigoErrorHttp.CodigoErrorHttp == HttpStatusCode.NotFound)
             {
-                AsignarRespuestaPorCodigoHttp(context, excepcion.Message, HttpStatusCode.NotFound);
+                AsignarRespuestaPorCodigoHttp(context, HttpStatusCode.NotFound);
             }
             else
             {
-                AsignarRespuestaPorCodigoHttp(context, excepcion.Message, HttpStatusCode.InternalServerError);
+                AsignarRespuestaPorCodigoHttp(context, HttpStatusCode.InternalServerError);
             }
         }
 
-        private void AsignarRespuestaPorCodigoHttp(ExceptionContext context, string mensaje, HttpStatusCode httpStatusCode)
+        private void AsignarRespuestaPorCodigoHttp(ExceptionContext context, HttpStatusCode httpStatusCode)
         {
             if (httpStatusCode == HttpStatusCode.NotFound)
             {
-                context.Result = new NotFoundObjectResult(mensaje);
+                context.Result = new NotFoundObjectResult(Excepcion.Message);
             }
             else
             {
-                context.Result = new ObjectResult(mensaje)
+                context.Result = new ObjectResult(Excepcion.Message)
                 {
                     StatusCode = 500
                 };
