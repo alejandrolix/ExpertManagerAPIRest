@@ -8,16 +8,27 @@ using System.Net.Http;
 using System.Net;
 using APIRest.Repositorios;
 using APIRest.Models;
-using APIRest.Excepciones;
+using APIRest.Filtros.ActionFilters;
 
 namespace APIRest
 {
     public class ComprobarToken : IActionFilter
     {
+        private RutaExcluida[] RutasExlucidas { get; set; }
+
         private enum CodigoRespuesta
         {
             SesionExpirada = 0,
             NoInicioSesion = 1
+        }
+
+        public ComprobarToken()
+        {
+            RutasExlucidas = new RutaExcluida[]
+            {
+                new RutaExcluida(TipoMetodo.GET, "IniciarSesion"),
+                new RutaExcluida(TipoMetodo.POST, "/api/Usuarios")
+            };
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
@@ -27,17 +38,26 @@ namespace APIRest
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            string urlPeticion = context.HttpContext.Request.Path.Value;
+            string metodoHttp = context.HttpContext.Request.Method;
+            bool existeMetodo = RutasExlucidas.Any(rutaExcluida => Enum.IsDefined(typeof(TipoMetodo), metodoHttp));
 
-            if (urlPeticion.Contains("api/Usuarios/IniciarSesion"))     // Ignoramos la ruta de iniciar sesión.
-                return;            
+            if (existeMetodo)
+            {
+                string urlPeticion = context.HttpContext.Request.Path.Value;
+                bool existeRuta    = RutasExlucidas.Any(rutaExcluida => urlPeticion.Contains(rutaExcluida.Ruta));
+
+                if (existeRuta)
+                {
+                    return;
+                }
+            }          
 
             string cabeceraAutorizacion = context.HttpContext.Request.Headers["Authorization"];
-            string token = cabeceraAutorizacion?.Split(" ")[1];
+            string token                = cabeceraAutorizacion?.Split(" ")[1];
 
             if (string.IsNullOrEmpty(token))
             {
-                AsignarMensajeRespuesta(context, "No ha iniciado sesión. Por favor, inicie sesión", CodigoRespuesta.NoInicioSesion);
+                EnviarMensajeRespuesta(context, "No ha iniciado sesión. Por favor, inicie sesión", CodigoRespuesta.NoInicioSesion);
 
                 return;
             }
@@ -51,10 +71,12 @@ namespace APIRest
                                                                 .GetResult();     
             
             if (DateTime.Now > tokenUsuario.FechaHasta)
-                AsignarMensajeRespuesta(context, "Sesión expirada. Por favor, inicie sesión", CodigoRespuesta.SesionExpirada);
+            {
+                EnviarMensajeRespuesta(context, "Sesión expirada. Por favor, inicie sesión", CodigoRespuesta.SesionExpirada);
+            }
         }
 
-        private void AsignarMensajeRespuesta(ActionExecutingContext context, string mensaje, CodigoRespuesta codigoRespuesta)
+        private void EnviarMensajeRespuesta(ActionExecutingContext context, string mensaje, CodigoRespuesta codigoRespuesta)
         {
             context.Result = new UnauthorizedObjectResult(new
             {
