@@ -26,8 +26,7 @@ namespace APIRest
         {
             RutasExlucidas = new RutaExcluida[]
             {
-                new RutaExcluida(TipoMetodo.GET, "IniciarSesion"),
-                new RutaExcluida(TipoMetodo.POST, "/api/Usuarios")
+                new RutaExcluida(TipoMetodo.GET, "IniciarSesion")
             };
         }
 
