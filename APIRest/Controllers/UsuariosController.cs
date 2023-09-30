@@ -35,11 +35,10 @@ namespace APIRest.Controllers
             List<Usuario> usuarios = await _repositorioUsuarios.ObtenerTodos();
             List<Usuario> peritos = await _repositorioPeritos.ObtenerTodos();
 
-            if (usuarios is null || usuarios.Count == 0)
+            if (usuarios is null && peritos is null)
+            {
                 return NotFound("No existen usuarios");
-
-            if (peritos is null || peritos.Count == 0)
-                return NotFound("No existen peritos");
+            }
 
             List<UsuarioVm> usuariosVms = usuarios.Select(usuario => new UsuarioVm()
             {
