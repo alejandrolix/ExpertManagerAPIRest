@@ -23,34 +23,44 @@ namespace APIRest.Controllers
         private RepositorioDanios _repositorioDanios;
         private RepositorioPermisos _repositorioPermisos;
 
-        public SiniestrosController(RepositorioSiniestros repositorioSiniestros, RepositorioEstados repositorioEstados, RepositorioAseguradoras repositorioAseguradoras, RepositorioUsuarios repositorioUsuarios,
-                                    RepositorioPeritos repositorioPeritos, RepositorioDanios repositorioDanios, RepositorioPermisos repositorioPermisos)
+        public SiniestrosController(RepositorioSiniestros repositorioSiniestros,
+                                    RepositorioEstados repositorioEstados,
+                                    RepositorioAseguradoras repositorioAseguradoras,
+                                    RepositorioUsuarios repositorioUsuarios,
+                                    RepositorioPeritos repositorioPeritos,
+                                    RepositorioDanios repositorioDanios,
+                                    RepositorioPermisos repositorioPermisos)
         {
             _repositorioSiniestros = repositorioSiniestros;
             _repositorioEstados = repositorioEstados;
             _repositorioAseguradoras = repositorioAseguradoras;
-            _repositorioUsuarios = repositorioUsuarios;
-            _repositorioPeritos = repositorioPeritos;
-            _repositorioDanios = repositorioDanios;
-            _repositorioPermisos = repositorioPermisos;
+            _repositorioUsuarios     = repositorioUsuarios;
+            _repositorioPeritos      = repositorioPeritos;
+            _repositorioDanios       = repositorioDanios;
+            _repositorioPermisos     = repositorioPermisos;
         }
 
         [HttpGet]
         public async Task<ActionResult> Index(int idPerito, int idAseguradora)
         {
-            List<Siniestro> siniestros = null;
+            ValidarDatosListado(idPerito, idAseguradora);
+
+            List<Siniestro> siniestros;
 
             if (idPerito == 0)
+            {
                 siniestros = await _repositorioSiniestros.ObtenerTodos();
+            }
             else
+            {
                 siniestros = await _repositorioSiniestros.ObtenerPorIdPerito(idPerito);
+            }
 
-            if (idAseguradora != 0)
+            if (idAseguradora >= 1)
+            {
                 siniestros = siniestros.Where(siniestro => siniestro.Aseguradora.Id == idAseguradora)
-                                        .ToList();            
-
-            if (siniestros.Count == 0)            
-                return StatusCode(500, "No existen siniestros");            
+                                       .ToList();
+            }
 
             siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
                                    .ToList();
@@ -60,20 +70,34 @@ namespace APIRest.Controllers
             return Ok(siniestrosVms);            
         }
 
+        private void ValidarDatosListado(int idPerito, int idAseguradora)
+        {
+            if (idPerito < 0)
+            {
+                throw new CodigoErrorHttpException("No se ha introducido el perito", HttpStatusCode.InternalServerError);
+            }
+
+            if (idAseguradora < 0)
+            {
+                throw new CodigoErrorHttpException("No se ha introducido la aseguradora", HttpStatusCode.InternalServerError);
+            }
+        }
+
         [HttpGet("PeritoNoResponsable")]
         public async Task<ActionResult> ObtenerPorPeritoNoResponsable(int idPerito, int idAseguradora)
         {
+            ValidarDatosListado(idPerito, idAseguradora);
+
             List<Siniestro> siniestros = await _repositorioSiniestros.ObtenerPorIdPerito(idPerito);
 
             if (idAseguradora != 0)
+            {
                 siniestros = siniestros.Where(siniestro => siniestro.Aseguradora.Id == idAseguradora)
                                        .ToList();
+            }
 
             siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
-                                   .ToList();                        
-
-            if (siniestros.Count == 0)                            
-                return StatusCode(500, "No existen siniestros");            
+                                   .ToList();
 
             List<SiniestroVm> siniestrosVms = SiniestroVm.ConvertirASiniestroVm(siniestros);
 
@@ -83,17 +107,18 @@ namespace APIRest.Controllers
         [HttpGet("PeritoResponsable")]
         public async Task<ActionResult> ObtenerPorPeritoResponsable(int idPerito, int idAseguradora)
         {
+            ValidarDatosListado(idPerito, idAseguradora);
+
             List<Siniestro> siniestros = await _repositorioSiniestros.ObtenerPorIdPeritoResponsable(idPerito);
 
             if (idAseguradora != 0)
+            {
                 siniestros = siniestros.Where(siniestro => siniestro.Aseguradora.Id == idAseguradora)
                                        .ToList();
+            }
 
             siniestros = siniestros.OrderByDescending(siniestro => siniestro.FechaHoraAlta)
-                                   .ToList();                       
-
-            if (siniestros.Count == 0)                            
-                return StatusCode(500, "No existen siniestros");
+                                   .ToList();
 
             List<SiniestroVm> siniestrosVms = SiniestroVm.ConvertirASiniestroVm(siniestros);
 
