@@ -24,6 +24,23 @@ namespace APIRest.Controllers
             List<Aseguradora> aseguradoras = await _repositorioAseguradoras.ObtenerTodas();                                            
 
             return Ok(aseguradoras);
-        }        
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            Aseguradora aseguradora = await _repositorioAseguradoras.ObtenerPorId(id);
+
+            try
+            {
+                await _repositorioAseguradoras.Eliminar(aseguradora);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, $"No se ha podido eliminar la aseguradora con id {id}");
+            }
+
+            return Ok(true);
+        }
     }
 }

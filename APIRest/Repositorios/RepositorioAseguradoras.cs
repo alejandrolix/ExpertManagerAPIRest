@@ -39,5 +39,18 @@ namespace APIRest.Repositorios
 
             return aseguradoras;
         }
+
+        public async Task Eliminar(Aseguradora aseguradora)
+        {
+            try
+            {
+                _contexto.Remove(aseguradora);
+                await _contexto.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
